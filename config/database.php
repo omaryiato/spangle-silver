@@ -89,7 +89,7 @@ return [
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'Spangle_Silver'),
+            'database' => env('DB_DATABASE', 'spangle_silver'),
             'username' => env('DB_USERNAME', 'root_dev '),
             'password' => env('DB_PASSWORD', 'Root@o&a'),
             'charset' => env('DB_CHARSET', 'utf8'),
