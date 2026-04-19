@@ -5,7 +5,6 @@ namespace App\Repositories;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\SmsVerifyHelper;
-use App\Providers\ContactInfoProvider;
 use App\Helpers\ApproverEmailHelper;
 
 
@@ -13,17 +12,14 @@ use App\Helpers\ApproverEmailHelper;
 class MainControlPanelRepository
 {
 
-    protected $contactInfoProvider;
     protected $smsVerifyHelper;
     protected $approverEmailHelper;
 
 
     public function __construct(
-        ContactInfoProvider $contactInfoProvider,
         SmsVerifyHelper $smsVerifyHelper,
         ApproverEmailHelper $approverEmailHelper,)
     {
-        $this->contactInfoProvider = $contactInfoProvider;
         $this->smsVerifyHelper = $smsVerifyHelper;
         $this->approverEmailHelper = $approverEmailHelper;
 
@@ -195,22 +191,22 @@ class MainControlPanelRepository
                 Log::channel('sendnotification')->debug("Step 2 -> Get person ID for " . $next_approver_number . "");
                 // Get person ID
 
-                $person_id = $this->contactInfoProvider->GetPersonID($next_approver_number);
+                // $person_id = $this->contactInfoProvider->GetPersonID($next_approver_number);
 
 
-                Log::channel('sendnotification')->debug("Step 2 -> Get employee phone number for #$person_id");
+                // Log::channel('sendnotification')->debug("Step 2 -> Get employee phone number for #$person_id");
                 // Get employee phone number
-                $phone_number = $this->contactInfoProvider->GetPhoneEmpFromPersonId($person_id);
+                // $phone_number = $this->contactInfoProvider->GetPhoneEmpFromPersonId($person_id);
 
-                Log::channel('sendnotification')->info("Step 3-> Get approver email address ($phone_number)");
+                // Log::channel('sendnotification')->info("Step 3-> Get approver email address ($phone_number)");
 
                 // Get employee phone number
-                $email_address = $this->contactInfoProvider->GetEmailEmployee($next_approver_number);
+                // $email_address = $this->contactInfoProvider->GetEmailEmployee($next_approver_number);
 
 
                 Log::channel('sendnotification')->debug("Step 4 -> Send SMS message for approval num #" .$next_approver_number . "");
 
-                $notification_details['mail_to'] = $email_address?->email;
+                // $notification_details['mail_to'] = $email_address?->email;
                 $notification_details['next_approver_name'] = $email_address->full_name ?? null;
 
 
@@ -218,7 +214,7 @@ class MainControlPanelRepository
                 $smsSent = false;
                 $emailSent = false;
 
-                Log::channel('sendnotification')->debug("Step 5 -> Send SMS message for approval num #$next_approver_number on phone number ($phone_number) ");
+                // Log::channel('sendnotification')->debug("Step 5 -> Send SMS message for approval num #$next_approver_number on phone number ($phone_number) ");
                 // Send SMS message for approval num
 
                 // Try to send SMS
@@ -234,15 +230,15 @@ class MainControlPanelRepository
                     // Check if message sent or not
 
                     if ($smsSent) {
-                        Log::channel('sendnotification')->info("Step 8 -> SMS sent successfully to: ($phone_number)");
+                        // Log::channel('sendnotification')->info("Step 8 -> SMS sent successfully to: ($phone_number)");
                     } else {
-                        Log::channel('sendnotification')->error("Step 8 -> Failed to send SMS to: ($phone_number)");
+                        // Log::channel('sendnotification')->error("Step 8 -> Failed to send SMS to: ($phone_number)");
                     }
                 } catch (\Exception $exception) {
-                    Log::channel('sendnotification')->error("Step 8 -> Error sending SMS to ($phone_number): " . $exception->getMessage());
+                    // Log::channel('sendnotification')->error("Step 8 -> Error sending SMS to ($phone_number): " . $exception->getMessage());
                 }
 
-                Log::channel('sendnotification')->debug("Step 9 -> Send email message for approval num #$next_approver_number on email address (" . $email_address?->email  . ") ");
+                // Log::channel('sendnotification')->debug("Step 9 -> Send email message for approval num #$next_approver_number on email address (" . $email_address?->email  . ") ");
                 // Send email message for approval num
 
                 // Try to send email
@@ -264,12 +260,12 @@ class MainControlPanelRepository
                     // Check if message sent or not
 
                     if ($emailSent) {
-                        Log::channel('sendnotification')->info("Step 12 -> Email sent successfully to: (" . $email_address?->email . ")");
+                        // Log::channel('sendnotification')->info("Step 12 -> Email sent successfully to: (" . $email_address?->email . ")");
                     } else {
-                        Log::channel('sendnotification')->error("Step 12 -> Failed to send email to: (" . $email_address?->email . ")");
+                        // Log::channel('sendnotification')->error("Step 12 -> Failed to send email to: (" . $email_address?->email . ")");
                     }
                 } catch (\Exception $exception) {
-                    Log::channel('sendnotification')->error("Step 12 -> Error sending email to (" . $email_address?->email  . "): " . $exception->getMessage());
+                    // Log::channel('sendnotification')->error("Step 12 -> Error sending email to (" . $email_address?->email  . "): " . $exception->getMessage());
                 }
 
                 Log::channel('sendnotification')->debug("Step 13 -> Check the overall status and handle accordingly");
