@@ -5,7 +5,6 @@ namespace App\Repositories;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\SmsVerifyHelper;
-use App\Helpers\ApproverEmailHelper;
 
 
 
@@ -13,15 +12,11 @@ class MainControlPanelRepository
 {
 
     protected $smsVerifyHelper;
-    protected $approverEmailHelper;
-
 
     public function __construct(
-        SmsVerifyHelper $smsVerifyHelper,
-        ApproverEmailHelper $approverEmailHelper,)
+        SmsVerifyHelper $smsVerifyHelper)
     {
         $this->smsVerifyHelper = $smsVerifyHelper;
-        $this->approverEmailHelper = $approverEmailHelper;
 
     }
 
@@ -248,10 +243,10 @@ class MainControlPanelRepository
 
                     if($type == 'Approver'){
                         Log::channel('sendnotification')->debug("Step 6 ->" . $type );
-                        $emailSent = $this->approverEmailHelper->sendApproverNotify($notification_details);
+                        // $emailSent = $this->approverEmailHelper->sendApproverNotify($notification_details);
                     } else {
                         Log::channel('sendnotification')->debug("Step 6 ->" . $type );
-                        $emailSent = $this->approverEmailHelper->sendOwnerNotify($notification_details);
+                        // $emailSent = $this->approverEmailHelper->sendOwnerNotify($notification_details);
                     }
 
                     // Log::channel('sendnotification')->debug("Step 11 -> Send email message for approval num #{$email_ditals['employee_number']} on email address ($email_address) ");
