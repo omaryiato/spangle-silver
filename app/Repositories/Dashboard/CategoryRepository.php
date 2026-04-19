@@ -15,7 +15,7 @@ class CategoryRepository
     {
 
         try {
-            return DB::table('CATEGORY')->get();
+            return DB::table('category')->get();
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -26,7 +26,7 @@ class CategoryRepository
     {
 
         try {
-            return DB::table('CATEGORY')
+            return DB::table('category')
                         ->whereId($category_id)
                         ->first();
         } catch (\Exception $exception) {
@@ -42,7 +42,7 @@ class CategoryRepository
 
         try {
 
-            $category_id = DB::table('CATEGORY')
+            $category_id = DB::table('category')
                             ->insertGetId([
                                 'CATEGORY_EN_NAME' => $category_details['category_en_name'],
                                 'CATEGORY_AR_NAME' => $category_details['category_ar_name'],
@@ -98,7 +98,7 @@ class CategoryRepository
                                             ["category_id" => $category_details['category_id']]))->first()->category_logo ?? null;
             }
 
-            DB::table('CATEGORY')
+            DB::table('category')
                 ->whereId($category_details['category_id'])
                 ->update([
                             "CATEGORY_EN_NAME" => $category_details['category_en_name'],
@@ -142,7 +142,7 @@ class CategoryRepository
 
         try {
 
-            DB::table('PRODUCTS')
+            DB::table('products')
                 ->where('category_id',$category_id)
                 ->update([
                     'status' => 0,
@@ -150,7 +150,7 @@ class CategoryRepository
                     'updated_at' => now(),
                     'deleted_at' => now()
                 ]);
-            return DB::table('CATEGORY')
+            return DB::table('category')
                         ->whereId($category_id)
                         ->update([
                             'status' => 0,
@@ -158,7 +158,7 @@ class CategoryRepository
                             'updated_at' => now(),
                             'deleted_at' => now()
                         ]);
-            // return DB::table('CATEGORY')
+            // return DB::table('category')
             //             ->whereId($category_id)
             //             ->delete();
 

@@ -14,7 +14,7 @@ class AddressRepository
     public function getAddressesList($user_id)
     {
         try {
-            return DB::table('ADDRESSES')
+            return DB::table('addresses')
                         ->where('user_id', $user_id)
                         ->get();
         } catch (\Exception $exception) {
@@ -27,7 +27,7 @@ class AddressRepository
     {
 
         try {
-            return DB::table('ADDRESSES')
+            return DB::table('addresses')
                         ->whereId($address_id)
                         ->first();
 
@@ -44,7 +44,7 @@ class AddressRepository
 
         try {
 
-            $address_id = DB::table('ADDRESSES')
+            $address_id = DB::table('addresses')
                             ->insertGetId([
                                 'user_id' => $address_details['user_id'],
                                 'label' => $address_details['label'],
@@ -75,7 +75,7 @@ class AddressRepository
 
         try {
 
-            return DB::table('ADDRESSES')
+            return DB::table('addresses')
                 ->whereId($address_details['address_id'])
                 ->update([
                             'label' => $address_details['label'],
@@ -104,7 +104,7 @@ class AddressRepository
 
         try {
 
-            return DB::table('ADDRESSES')
+            return DB::table('addresses')
                 ->where('address_id',$address_id)
                 ->delete();
 

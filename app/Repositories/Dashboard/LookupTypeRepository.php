@@ -16,7 +16,7 @@ class LookupTypeRepository
 
         try {
             // Get Lookup Type
-            $lookup_types = DB::table('LOOKUP_TYPES')->get();
+            $lookup_types = DB::table('lookup_types')->get();
 
             if ($lookup_types->isEmpty()) {
                 return [];
@@ -74,7 +74,7 @@ class LookupTypeRepository
 
         try {
             // Get Lookup Type
-            $lookup_type = DB::table('LOOKUP_TYPES')
+            $lookup_type = DB::table('lookup_types')
                                 ->whereId($lookup_type_id)
                                 ->first();
 
@@ -137,7 +137,7 @@ class LookupTypeRepository
 
         try {
 
-            $lookup_type_id = DB::table('LOOKUP_TYPES')
+            $lookup_type_id = DB::table('lookup_types')
                             ->insertGetId([
                                 'type_en_name' => $lookup_type_details['lookup_type_en_name'],
                                 'type_ar_name' => $lookup_type_details['lookup_type_ar_name'],
@@ -165,7 +165,7 @@ class LookupTypeRepository
 
         try {
 
-            return DB::table('LOOKUP_TYPES')
+            return DB::table('lookup_types')
                         ->whereId($lookup_type_details['lookup_type_id'])
                         ->update([
                                     "type_en_name" => $lookup_type_details['lookup_type_en_name'],
@@ -191,7 +191,7 @@ class LookupTypeRepository
 
         try {
 
-            DB::table('LOOKUP_VALUES')
+            DB::table('lookup_values')
                 ->where('type_id',$lookup_type_id)
                 ->update([
                     'status' => 0,
@@ -200,7 +200,7 @@ class LookupTypeRepository
                     'deleted_at' => now()
                 ]);
 
-            return DB::table('LOOKUP_TYPES')
+            return DB::table('lookup_types')
                         ->whereId($lookup_type_id)
                         ->update([
                             'status' => 0,
@@ -208,7 +208,7 @@ class LookupTypeRepository
                             'updated_at' => now(),
                             'deleted_at' => now()
                         ]);
-            // return DB::table('LOOKUP_TYPES')
+            // return DB::table('lookup_types')
             //             ->whereId($lookup_type_id)
             //             ->delete();
 

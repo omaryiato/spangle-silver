@@ -15,7 +15,7 @@ class LookupValueRepository
     {
 
         try {
-            return DB::table('LOOKUP_VALUES')
+            return DB::table('lookup_values')
                         ->where('type_id', $lookup_type_id)
                         ->get();
         } catch (\Exception $exception) {
@@ -28,7 +28,7 @@ class LookupValueRepository
     {
 
         try {
-            return DB::table('LOOKUP_VALUES')
+            return DB::table('lookup_values')
                         ->whereId($lookup_value_id)
                         ->first();
         } catch (\Exception $exception) {
@@ -44,7 +44,7 @@ class LookupValueRepository
 
         try {
 
-            $lookup_value_id = DB::table('LOOKUP_VALUES')
+            $lookup_value_id = DB::table('lookup_values')
                             ->insertGetId([
                                 'type_id' => $lookup_value_details['lookup_type_id'],
                                 'code' => $lookup_value_details['lookup_value_code'],
@@ -73,7 +73,7 @@ class LookupValueRepository
 
         try {
 
-            return DB::table('LOOKUP_VALUES')
+            return DB::table('lookup_values')
                         ->whereId($lookup_value_details['lookup_value_id'])
                         ->update([
                                     "code" => $lookup_value_details['lookup_value_code'],
@@ -99,7 +99,7 @@ class LookupValueRepository
 
         try {
 
-            return DB::table('LOOKUP_VALUES')
+            return DB::table('lookup_values')
                         ->whereId($lookup_value_id)
                         ->update([
                             'status' => 0,
@@ -107,7 +107,7 @@ class LookupValueRepository
                             'updated_at' => now(),
                             'deleted_at' => now()
                         ]);
-            // return DB::table('LOOKUP_VALUES')
+            // return DB::table('lookup_values')
             //             ->whereId($lookup_value_id)
             //             ->delete();
 

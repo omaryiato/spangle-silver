@@ -15,7 +15,7 @@ class UserRepository
     {
         try {
             // Get Users
-            $users = DB::table('USERS')->get();
+            $users = DB::table('users')->get();
 
             if ($users->isEmpty()) {
                 return [];
@@ -24,7 +24,7 @@ class UserRepository
             $users_ids = $users->pluck('id');
 
             // Get Addresses
-            $addresses = DB::table('ADDRESSES')
+            $addresses = DB::table('addresses')
                 ->whereIn('user_id', $users_ids)
                 ->get()
                 ->groupBy('user_id');
@@ -80,14 +80,14 @@ class UserRepository
 
         try {
             // Get User
-            $user = DB::table('USERS')
+            $user = DB::table('users')
                         ->whereId($user_id)
                         ->first();
 
             $users_id = $user->pluck('id');
 
             // Get Addresses
-            $addresses = DB::table('ADDRESSES')
+            $addresses = DB::table('addresses')
                 ->whereIn('user_id', $users_id)
                 ->get()
                 ->groupBy('user_id');
@@ -145,7 +145,7 @@ class UserRepository
 
         try {
 
-            $user_id = DB::table('USERS')
+            $user_id = DB::table('users')
                             ->insertGetId([
                                 'full_name' => $user_details['full_name'],
                                 'user_name' => $user_details['user_name'],
@@ -176,7 +176,7 @@ class UserRepository
 
         try {
 
-            return DB::table('USERS')
+            return DB::table('users')
                 ->whereId($user_details['user_id'])
                 ->update([
                             'full_name' => $user_details['full_name'],
@@ -205,11 +205,11 @@ class UserRepository
 
         try {
 
-            DB::table('ADDRESSES')
+            DB::table('addresses')
                 ->where('user_id',$user_id)
                 ->delete();
 
-            return DB::table('USERS')
+            return DB::table('users')
                         ->whereId($user_id)
                         ->update([
                             'status' => 0,
@@ -217,7 +217,7 @@ class UserRepository
                             'updated_at' => now(),
                             'deleted_at' => now()
                         ]);
-            // return DB::table('USERS')
+            // return DB::table('users')
             //             ->whereId($user_id)
             //             ->delete();
 

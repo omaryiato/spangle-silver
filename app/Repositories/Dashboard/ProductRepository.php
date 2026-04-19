@@ -245,7 +245,7 @@ class ProductRepository
 
         try {
 
-            $product_id = DB::table('PRODUCTS')
+            $product_id = DB::table('products')
                             ->insertGetId([
                                 'PRODUCT_EN_NAME' => $product_details['product_en_name'],
                                 'PRODUCT_AR_NAME' => $product_details['product_ar_name'],
@@ -328,7 +328,7 @@ class ProductRepository
         try {
 
             //  Update Product
-            DB::table('PRODUCTS')
+            DB::table('products')
                 ->where('ID', $product_details['product_id'])
                 ->update([
                     'PRODUCT_EN_NAME' => $product_details['product_en_name'],
@@ -427,7 +427,7 @@ class ProductRepository
 
         try {
 
-            DB::table('PRODUCTS')
+            DB::table('products')
                 ->whereId($product_id)
                 ->update([
                     'status' => 0,

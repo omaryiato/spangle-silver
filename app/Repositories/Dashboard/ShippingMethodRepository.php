@@ -15,7 +15,7 @@ class ShippingMethodRepository
     {
 
         try {
-            return DB::table('SHIPPING_METHODS')->get();
+            return DB::table('shipping_methods')->get();
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -26,7 +26,7 @@ class ShippingMethodRepository
     {
 
         try {
-            return DB::table('SHIPPING_METHODS')
+            return DB::table('shipping_methods')
                         ->whereId($shipping_method_id)
                         ->first();
         } catch (\Exception $exception) {
@@ -41,7 +41,7 @@ class ShippingMethodRepository
         DB::beginTransaction();
 
         try {
-            $shipping_method_id = DB::table('SHIPPING_METHODS')
+            $shipping_method_id = DB::table('shipping_methods')
                             ->insertGetId([
                                 'method_en_name' => $shipping_method_details['method_en_name'],
                                 'method_ar_name' => $shipping_method_details['method_ar_name'],
@@ -68,7 +68,7 @@ class ShippingMethodRepository
 
         try {
 
-            return DB::table('SHIPPING_METHODS')
+            return DB::table('shipping_methods')
                 ->whereId($shipping_method_details['shipping_method_id'])
                 ->update([
                             'method_en_name' => $shipping_method_details['method_en_name'],
@@ -94,13 +94,13 @@ class ShippingMethodRepository
 
         try {
 
-            return DB::table('SHIPPING_METHODS')
+            return DB::table('shipping_methods')
                         ->whereId($shipping_method_id)
                         ->update([
                             'status' => 0,
                             'updated_at' => now()
                         ]);
-            // return DB::table('SHIPPING_METHODS')
+            // return DB::table('shipping_methods')
             //             ->whereId($shipping_method_id)
             //             ->delete();
 

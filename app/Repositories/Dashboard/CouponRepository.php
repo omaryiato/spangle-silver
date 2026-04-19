@@ -15,7 +15,7 @@ class CouponRepository
     {
 
         try {
-            return DB::table('COUPON')->get();
+            return DB::table('coupons')->get();
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -26,7 +26,7 @@ class CouponRepository
     {
 
         try {
-            return DB::table('COUPON')
+            return DB::table('coupons')
                         ->whereId($coupon_id)
                         ->first();
         } catch (\Exception $exception) {
@@ -41,7 +41,7 @@ class CouponRepository
         DB::beginTransaction();
 
         try {
-            $coupon_id = DB::table('COUPON')
+            $coupon_id = DB::table('coupons')
                             ->insertGetId([
                                 'code' => $coupon_details['coupon_code'],
                                 'discount_amount' => $coupon_details['coupon_discount_amount'],
@@ -72,7 +72,7 @@ class CouponRepository
 
         try {
 
-            return DB::table('COUPON')
+            return DB::table('coupons')
                 ->whereId($coupon_details['coupon_id'])
                 ->update([
                             'code' => $coupon_details['coupon_code'],
@@ -101,7 +101,7 @@ class CouponRepository
 
         try {
 
-            return DB::table('COUPON')
+            return DB::table('coupons')
                         ->whereId($coupon_id)
                         ->update([
                             'status' => 0,
@@ -109,7 +109,7 @@ class CouponRepository
                             'updated_at' => now(),
                             'deleted_at' => now()
                         ]);
-            // return DB::table('COUPON')
+            // return DB::table('coupons')
             //             ->whereId($coupon_id)
             //             ->delete();
 
