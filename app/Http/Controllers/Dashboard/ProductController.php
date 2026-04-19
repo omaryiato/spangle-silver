@@ -67,12 +67,12 @@ class ProductController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'product'       => 'bail|required|integer|exists:Products,id',
+                'product_id'       => 'bail|required|integer|exists:products,id',
             ],
             [
-                'product.required'      => trans('ValidationTranslation.product_required'),
-                'product.exists'      =>  trans('ValidationTranslation.product_exists'),
-                'product.integer'      =>  trans('ValidationTranslation.product_integer'),
+                'product_id.required'      => trans('ValidationTranslation.product_id_required'),
+                'product_id.exists'      =>  trans('ValidationTranslation.product_id_exists'),
+                'product_id.integer'      =>  trans('ValidationTranslation.product_id_integer'),
             ]);
 
             if ($validator->fails()) {
@@ -92,11 +92,11 @@ class ProductController extends Controller
                 return ResponsHelper::error($request->all(),$response_message,400);
             }
 
-            $product =  $request->product;
+            $product_id =  $request->product_id;
 
-            $product_details =  $this->productService->getProductDetails($product);
+            $product_details =  $this->productService->getProductDetails($product_id);
 
-            return ResponsHelper::success(new ProductResource($product_details), "Product #($product) Returned Successfully.", 200);
+            return ResponsHelper::success(new ProductResource($product_details), "Product #($product_id) Returned Successfully.", 200);
 
         } catch (\Exception $exception) {
             return ResponsHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);

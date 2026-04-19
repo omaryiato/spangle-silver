@@ -21,11 +21,39 @@ class LookupValueController extends Controller
     }
 
     // getLookupValueList Funtion to Get Lookup Value List
-    public function getLookupValueList()
+    public function getLookupValueList(Request $request)
     {
         try {
 
-            $lookup_value_list = $this->lookupValueService->getLookupValueList();
+            $validator = Validator::make($request->all(), [
+                'lookup_type_id'       => 'bail|required|integer|exists:lookup_types,id',
+            ],
+            [
+                'lookup_type_id.required'      => trans('ValidationTranslation.lookup_type_id_required'),
+                'lookup_type_id.exists'      =>  trans('ValidationTranslation.lookup_type_id_exists'),
+                'lookup_type_id.integer'      =>  trans('ValidationTranslation.lookup_type_id_integer'),
+            ]);
+
+            if ($validator->fails()) {
+
+                $field = $validator->errors()->keys()[0];
+
+                $failedRules = $validator->failed()[$field];
+                $rule = strtolower(array_key_first($failedRules));
+
+                $translation_key = 'ValidationTranslation.' . $field . '_' . $rule;
+
+                $response_message = [
+                    'en' => trans($translation_key, [], 'en'),
+                    'ar' => trans($translation_key, [], 'ar'),
+                ];
+
+                return ResponsHelper::error($request->all(),$response_message,400);
+            }
+
+            $lookup_type_id =  $request->lookup_type_id;
+
+            $lookup_value_list = $this->lookupValueService->getLookupValueList($lookup_type_id);
 
             return ResponsHelper::success(LookupValueResource::collection($lookup_value_list), "Lookup Value Returned Successfully.", 200);
 

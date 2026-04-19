@@ -25,10 +25,10 @@ class AddressService
     }
 
     // getAddressesList Funtion To Get Addresses List
-    public function getAddressesList()
+    public function getAddressesList($user_id)
     {
         try {
-            return  $this->addressRepository->getAddressesList();
+            return  $this->addressRepository->getAddressesList($user_id);
         } catch (\Exception $exception) {
             throw $exception;
         }

@@ -21,11 +21,39 @@ class AddressController extends Controller
     }
 
     // getAddressesList Funtion to Get Addresses List
-    public function getAddressesList()
+    public function getAddressesList(Request $request)
     {
         try {
 
-            $addresss_list = $this->addressService->getAddressesList();
+            $validator = Validator::make($request->all(), [
+                'user_id'       => 'bail|required|integer|exists:users,id',
+            ],
+            [
+                'user_id.required'      => trans('ValidationTranslation.user_id_required'),
+                'user_id.exists'      =>  trans('ValidationTranslation.user_id_exists'),
+                'user_id.integer'      =>  trans('ValidationTranslation.user_id_integer'),
+            ]);
+
+            if ($validator->fails()) {
+
+                $field = $validator->errors()->keys()[0];
+
+                $failedRules = $validator->failed()[$field];
+                $rule = strtolower(array_key_first($failedRules));
+
+                $translation_key = 'ValidationTranslation.' . $field . '_' . $rule;
+
+                $response_message = [
+                    'en' => trans($translation_key, [], 'en'),
+                    'ar' => trans($translation_key, [], 'ar'),
+                ];
+
+                return ResponsHelper::error($request->all(),$response_message,400);
+            }
+
+            $user_id =  $request->user_id;
+
+            $addresss_list = $this->addressService->getAddressesList($user_id);
 
             return ResponsHelper::success(AddressResource::collection($addresss_list), "Addresses Returned Successfully.", 200);
 

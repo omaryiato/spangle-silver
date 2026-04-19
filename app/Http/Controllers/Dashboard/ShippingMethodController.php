@@ -136,7 +136,7 @@ class ShippingMethodController extends Controller
 
             $respons_message = [
                 'en' => __('ValidationTranslation.add_new_shipping_method', [
-                    'method_en_name' => $request->method_en_name
+                    ' ' => $request->method_en_name
                 ], 'en'),
                 'ar' => __('ValidationTranslation.add_new_shipping_method', [
                     'method_ar_name' => $request->method_ar_name

@@ -11,10 +11,12 @@ class AddressRepository
 {
 
     // getAddressesList Funtion To Get Addresses List
-    public function getAddressesList()
+    public function getAddressesList($user_id)
     {
         try {
-            return DB::table('ADDRESSES')->get();
+            return DB::table('ADDRESSES')
+                        ->where('user_id', $user_id)
+                        ->get();
         } catch (\Exception $exception) {
             throw $exception;
         }

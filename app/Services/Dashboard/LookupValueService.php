@@ -25,10 +25,10 @@ class LookupValueService
     }
 
     // getLookupValueList Funtion To Get Lookup Value List
-    public function getLookupValueList()
+    public function getLookupValueList($lookup_type_id)
     {
         try {
-            return  $this->lookupValueRepository->getLookupValueList();
+            return  $this->lookupValueRepository->getLookupValueList($lookup_type_id);
         } catch (\Exception $exception) {
             throw $exception;
         }

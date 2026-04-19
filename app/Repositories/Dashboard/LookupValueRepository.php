@@ -11,11 +11,13 @@ class LookupValueRepository
 {
 
     // getLookupValueList Funtion To Get Lookup Value List
-    public function getLookupValueList()
+    public function getLookupValueList($lookup_type_id)
     {
 
         try {
-            return DB::table('LOOKUP_VALUES')->get();
+            return DB::table('LOOKUP_VALUES')
+                        ->where('type_id', $lookup_type_id)
+                        ->get();
         } catch (\Exception $exception) {
             throw $exception;
         }
