@@ -2,120 +2,33 @@
 
 namespace App\Repositories\Dashboard;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
-
+use App\Models\LookupValue;
 
 class LookupValueRepository
 {
-
-    // getLookupValueList Funtion To Get Lookup Value List
-    public function getLookupValueList($lookup_type_id)
+    public function getLookupValueList()
     {
-
-        try {
-            return DB::table('lookup_values')
-                        ->where('type_id', $lookup_type_id)
-                        ->get();
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return LookupValue::all();
     }
 
-    // getLookupValueDetails Funtion To Get Lookup Value Details
-    public function getLookupValueDetails($lookup_value_id)
+    public function getLookupValueDetails($id)
     {
-
-        try {
-            return DB::table('lookup_values')
-                        ->whereId($lookup_value_id)
-                        ->first();
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return LookupValue::findOrFail($id);
     }
 
-    // addNewLookupValue Funtion To Add new Lookup Value
-    public function addNewLookupValue($lookup_value_details)
+    public function addNewLookupValue($lookup_value_request)
     {
-
-        DB::beginTransaction();
-
-        try {
-
-            $lookup_value_id = DB::table('lookup_values')
-                            ->insertGetId([
-                                'type_id' => $lookup_value_details['lookup_type_id'],
-                                'code' => $lookup_value_details['lookup_value_code'],
-                                'meaning' => $lookup_value_details['lookup_value_meaning'],
-                                'description' => $lookup_value_details['lookup_value_description'],
-                                'status' => $lookup_value_details['lookup_value_status'],
-                                'created_by' => $lookup_value_details['login_user'],
-                                'created_at' => now(),
-                                'updated_by' => $lookup_value_details['login_user'],
-                                'updated_at' => now(),
-                            ], 'ID');
-
-            return $lookup_value_id;
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            throw $exception;
-        }
-
+        return LookupValue::create($lookup_value_request);
     }
 
-    // updateLookupValue Funtion To Update Lookup Value info
-    public function updateLookupValue($lookup_value_details)
+    public function updateLookupValue(LookupValue $lookupValue, $lookup_value_request)
     {
-
-        DB::beginTransaction();
-
-        try {
-
-            return DB::table('lookup_values')
-                        ->whereId($lookup_value_details['lookup_value_id'])
-                        ->update([
-                                    "code" => $lookup_value_details['lookup_value_code'],
-                                    "meaning" => $lookup_value_details['lookup_value_meaning'],
-                                    "description" => $lookup_value_details['lookup_value_description'],
-                                    "status" => $lookup_value_details['lookup_value_status'],
-                                    "updated_by" => $lookup_value_details['login_user'],
-                                    "updated_at" => now()
-                        ]);
-
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            throw $exception;
-        }
-
+        $lookupValue->update($lookup_value_request);
+        return $lookupValue;
     }
 
-    // deleteLookupValue Funtion To Delete Lookup Value
-    public function deleteLookupValue($lookup_value_id, $login_user)
+    public function deleteLookupValue(LookupValue $lookupValue)
     {
-
-        DB::beginTransaction();
-
-        try {
-
-            return DB::table('lookup_values')
-                        ->whereId($lookup_value_id)
-                        ->update([
-                            'status' => 0,
-                            'updated_by' => $login_user,
-                            'updated_at' => now(),
-                            'deleted_at' => now()
-                        ]);
-            // return DB::table('lookup_values')
-            //             ->whereId($lookup_value_id)
-            //             ->delete();
-
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            throw $exception;
-        }
-
+        return $lookupValue->delete();
     }
 }
-

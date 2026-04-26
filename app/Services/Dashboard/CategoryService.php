@@ -16,7 +16,6 @@ class CategoryService
 
     public function __construct(
                     CategoryRepository $categoryRepository,
-                    ControlPanelFeatureservice $controlPanelFeatureService,
                     MainControlPanelRepository $mainControlPanelRepository)
     {
         $this->categoryRepository = $categoryRepository;

@@ -3,89 +3,48 @@
 namespace App\Services\Dashboard;
 
 use App\Repositories\Dashboard\AddressRepository;
-use App\Repositories\MainControlPanelRepository;
-use App\Services\ControlPanelFeatureService;
-
 
 class AddressService
 {
 
     protected $addressRepository;
-    protected $controlPanelFeatureService;
-    protected $mainControlPanelRepository;
 
-    public function __construct(
-                    AddressRepository $addressRepository,
-                    ControlPanelFeatureservice $controlPanelFeatureService,
-                    MainControlPanelRepository $mainControlPanelRepository)
+    public function __construct(AddressRepository $addressRepository)
     {
         $this->addressRepository = $addressRepository;
-        $this->controlPanelFeatureService = $controlPanelFeatureService;
-        $this->mainControlPanelRepository = $mainControlPanelRepository;
     }
 
-    // getAddressesList Funtion To Get Addresses List
-    public function getAddressesList($user_id)
+    // Funtion To Get Addresses List
+    public function getAddressesList()
     {
-        try {
-            return  $this->addressRepository->getAddressesList($user_id);
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return  $this->addressRepository->getAddressesList();
     }
 
     // getAddressDetails Funtion To Get Address Details
-    public function getAddressDetails($address_id)
+    public function getAddressDetails($id)
     {
-
-        try {
-
-            $address_details =  $this->addressRepository->getAddressDetails($address_id);
-
-            return $address_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return $this->addressRepository->getAddressDetails($id);
     }
 
     // addNewAddress Funtion To Add new Address
-    public function addNewAddress($address_details)
+    public function addNewAddress($address_request)
     {
-
-        try {
-
-            $address_id = $this->addressRepository->addNewAddress($address_details);
-            $get_address_details = $this->addressRepository->getAddressDetails($address_id);
-
-            return $get_address_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return $this->addressRepository->addNewAddress($address_request);
     }
 
     // updateAddress Funtion To Update Address info
-    public function updateAddress($address_details)
+    public function updateAddress($address_request, $id)
     {
-
-        try {
-            $this->addressRepository->updateAddress($address_details);
-            $get_address_details = $this->addressRepository->getAddressDetails($address_details['address_id']);
-
-            return $get_address_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $address_details = $this->addressRepository->getAddressDetails($id);
+        return $this->addressRepository->updateAddress($address_details, $address_request);
     }
 
     // deleteAddress Funtion To Delete Address
-    public function deleteAddress($address_id, $login_user)
+    public function deleteAddress($address_request, $id)
     {
         try {
-
-            return $this->addressRepository->deleteAddress($address_id, $login_user);
+            $address_details = $this->addressRepository->getAddressDetails($id);
+            return $this->addressRepository->deleteAddress($address_details);
 
         } catch (\Exception $exception) {
             throw $exception;

@@ -10,9 +10,7 @@ use App\Http\Controllers\Dashboard\CategoryController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ShippingMethodController;
 use App\Http\Controllers\Dashboard\CouponController;
-use App\Http\Controllers\ControlPanelPageController;
-use App\Http\Controllers\ControlPanelFeatureController;
-use App\Http\Controllers\ControlPanelRoleController;
+// use App\Http\Controllers\Dashboard\OrderController;
 
 
 
@@ -37,88 +35,23 @@ Route::group(['prefix' => 'dashboard'], function () {
 
     /***************************************** Lookup Types *******************************************/
 
-        // Define a route to Get Lookup Type List
-        Route::GET('/get-lookup-type-list', [LookupTypeController::class, 'getLookupTypeList']);
-
-        // Define a route to Lookup Type Details
-        Route::GET('/get-lookup-type-details', [LookupTypeController::class, 'getLookupTypeDetails']);
-
-        // Define a route to Add New Lookup Type
-        Route::POST('/add-new-lookup-type', [LookupTypeController::class, 'addNewLookupType']);
-
-        // Define a route to Update Lookup Type
-        Route::POST('/update-lookup-type', [LookupTypeController::class, 'updateLookupType']);
-
-        // Define a route to Delete Lookup Type
-        Route::POST('/delete-lookup-type', [LookupTypeController::class, 'deleteLookupType']);
+        Route::apiResource('lookup-types', LookupTypeController::class);
 
     /***************************************** Lookup Values *******************************************/
 
-        // Define a route to Get Lookup Values List
-        Route::GET('/get-lookup-value-list', [LookupValueController::class, 'getLookupValueList']);
-
-        // Define a route to Lookup Values Details
-        Route::GET('/get-lookup-value-details', [LookupValueController::class, 'getLookupValueDetails']);
-
-        // Define a route to Add New Lookup Values
-        Route::POST('/add-new-lookup-value', [LookupValueController::class, 'addNewLookupValue']);
-
-        // Define a route to Update Lookup Values
-        Route::POST('/update-lookup-value', [LookupValueController::class, 'updateLookupValue']);
-
-        // Define a route to Delete Lookup Values
-        Route::POST('/delete-lookup-value', [LookupValueController::class, 'deleteLookupValue']);
+        Route::apiResource('lookup-values', LookupValueController::class);
 
     /***************************************** Users *******************************************/
 
-        // Define a route to Get Users List
-        Route::GET('/get-users-list', [UserController::class, 'getUsersList']);
-
-        // Define a route to Users Details
-        Route::GET('/get-user-details', [UserController::class, 'getUserDetails']);
-
-        // Define a route to Add New Users
-        Route::POST('/add-new-user', [UserController::class, 'addNewUser']);
-
-        // Define a route to Update Users
-        Route::POST('/update-user', [UserController::class, 'updateUser']);
-
-        // Define a route to Delete Users
-        Route::POST('/delete-user', [UserController::class, 'deleteUser']);
+        Route::apiResource('users', UserController::class);
 
     /***************************************** Addresses *******************************************/
 
-        // Define a route to Get Addresses List
-        Route::GET('/get-addresses-list', [AddressController::class, 'getAddressesList']);
-
-        // Define a route to Address Details
-        Route::GET('/get-address-details', [AddressController::class, 'getAddressDetails']);
-
-        // Define a route to Add New Address
-        Route::POST('/add-new-address', [AddressController::class, 'addNewAddress']);
-
-        // Define a route to Update Address
-        Route::POST('/update-address', [AddressController::class, 'updateAddress']);
-
-        // Define a route to Delete Address
-        Route::POST('/delete-address', [AddressController::class, 'deleteAddress']);
+        Route::apiResource('addresses', AddressController::class);
 
     /***************************************** Category *******************************************/
 
-        // Define a route to Get Category List
-        Route::GET('/get-category-list', [CategoryController::class, 'getCategoryList']);
-
-        // Define a route to Category Details
-        Route::GET('/get-category-details', [CategoryController::class, 'getCategoryDetails']);
-
-        // Define a route to Add New Category
-        Route::POST('/add-new-category', [CategoryController::class, 'addNewCategory']);
-
-        // Define a route to Update Category
-        Route::POST('/update-category', [CategoryController::class, 'updateCategory']);
-
-        // Define a route to Delete Category
-        Route::POST('/delete-category', [CategoryController::class, 'deleteCategory']);
+        Route::apiResource('category', CategoryController::class);
 
     /***************************************** Products *******************************************/
 
@@ -169,6 +102,16 @@ Route::group(['prefix' => 'dashboard'], function () {
 
         // Define a route to Delete Coupons
         Route::POST('/delete-coupon', [CouponController::class, 'deleteCoupon']);
+    /***************************************** Orders & Orders Details *******************************************/
+
+        // // Define a route to Get Orders List Orders
+        // Route::GET('/get-orders-list', [OrderController::class, 'getOrdersList']);
+
+        // // Define a route to Orders Details
+        // Route::GET('/get-order-details', [OrderController::class, 'getOrderDetails']);
+
+        // // Define a route to Confirm Order
+        // Route::POST('/confirm-order', [OrderController::class, 'confirmOrder']);
 
 });
 

@@ -3,116 +3,53 @@
 namespace App\Repositories\Dashboard;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
+use App\Models\Address;
 
 
 class AddressRepository
 {
 
     // getAddressesList Funtion To Get Addresses List
-    public function getAddressesList($user_id)
+    public function getAddressesList()
     {
         try {
-            return DB::table('addresses')
-                        ->where('user_id', $user_id)
-                        ->get();
+            return Address::all();
         } catch (\Exception $exception) {
             throw $exception;
         }
     }
 
     // getAddressDetails Funtion To Get Address Details
-    public function getAddressDetails($address_id)
+    public function getAddressDetails($id)
     {
 
         try {
-            return DB::table('addresses')
-                        ->whereId($address_id)
-                        ->first();
-
+            return Address::findorfail($id);
         } catch (\Exception $exception) {
             throw $exception;
         }
     }
 
     // addNewAddress Funtion To Add new Address
-    public function addNewAddress($address_details)
+    public function addNewAddress($address_request)
     {
 
-        DB::beginTransaction();
-
-        try {
-
-            $address_id = DB::table('addresses')
-                            ->insertGetId([
-                                'user_id' => $address_details['user_id'],
-                                'label' => $address_details['label'],
-                                'full_name' => $address_details['full_name'],
-                                'address_line' => $address_details['address_line'],
-                                'city' => $address_details['city'],
-                                'country' => $address_details['country'],
-                                'postal_code' => $address_details['user_postal_code'],
-                                'phone' => $address_details['phone'],
-                                'is_default' => $address_details['is_default'],
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ], 'ID');
-
-            return $address_id;
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            throw $exception;
-        }
+        return Address::create($address_request);
 
     }
 
     // updateAddress Funtion To Update Address info
-    public function updateAddress($address_details)
+    public function updateAddress(Address $address, $address_request)
     {
-
-        DB::beginTransaction();
-
-        try {
-
-            return DB::table('addresses')
-                ->whereId($address_details['address_id'])
-                ->update([
-                            'label' => $address_details['label'],
-                            'full_name' => $address_details['full_name'],
-                            'address_line' => $address_details['address_line'],
-                            'city' => $address_details['city'],
-                            'country' => $address_details['country'],
-                            'postal_code' => $address_details['user_postal_code'],
-                            'phone' => $address_details['phone'],
-                            'is_default' => $address_details['is_default'],
-                            'updated_at' => now(),
-                ]);
-
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            throw $exception;
-        }
-
+        $address->update($address_request);
+        return $address;
     }
 
     // deleteAddress Funtion To Delete Address
-    public function deleteAddress($address_id, $login_user)
+    public function deleteAddress(Address $address)
     {
-
-        DB::beginTransaction();
-
-        try {
-
-            return DB::table('addresses')
-                ->where('address_id',$address_id)
-                ->delete();
-
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            throw $exception;
-        }
-
+        $address->delete();
+        return $address;
     }
 }
 

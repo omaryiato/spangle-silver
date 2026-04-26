@@ -3,93 +3,50 @@
 namespace App\Services\Dashboard;
 
 use App\Repositories\Dashboard\UserRepository;
-use App\Repositories\MainControlPanelRepository;
-use App\Services\ControlPanelFeatureService;
+
 
 
 class UserService
 {
 
     protected $userRepository;
-    protected $controlPanelFeatureService;
-    protected $mainControlPanelRepository;
 
-    public function __construct(
-                    UserRepository $userRepository,
-                    ControlPanelFeatureservice $controlPanelFeatureService,
-                    MainControlPanelRepository $mainControlPanelRepository)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->controlPanelFeatureService = $controlPanelFeatureService;
-        $this->mainControlPanelRepository = $mainControlPanelRepository;
     }
 
     // getUsersList Funtion To Get Users List
     public function getUsersList()
     {
-        try {
-            return  $this->userRepository->getUsersList();
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return  $this->userRepository->getUsersList();
     }
 
     // getUserDetails Funtion To Get User Details
-    public function getUserDetails($user_id)
+    public function getUserDetails($id)
     {
 
-        try {
-
-            $user_details =  $this->userRepository->getUserDetails($user_id);
-
-            return $user_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return  $this->userRepository->getUserDetails($id);
     }
 
     // addNewUser Funtion To Add new User
-    public function addNewUser($user_details)
+    public function addNewUser($user_request)
     {
-
-        try {
-
-            $user_id = $this->userRepository->addNewUser($user_details);
-            $get_user_details = $this->userRepository->getUserDetails($user_id);
-
-            return $get_user_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return $this->userRepository->addNewUser($user_request);
     }
 
     // updateUser Funtion To Update User info
-    public function updateUser($user_details)
+    public function updateUser($user_request, $id)
     {
-
-        try {
-            $this->userRepository->updateUser($user_details);
-            $get_user_details = $this->userRepository->getUserDetails($user_details['user_id']);
-
-            return $get_user_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $user_details = $this->userRepository->getUserDetails($id);
+        return $this->userRepository->updateUser($user_details, $user_request);
     }
 
     // deleteUser Funtion To Delete User
-    public function deleteUser($user_id, $login_user)
+    public function deleteUser($user_request, $id)
     {
-        try {
-
-            return $this->userRepository->deleteUser($user_id, $login_user);
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $user_details = $this->userRepository->getUserDetails($id);
+        return $this->userRepository->deleteUser($user_details);
     }
 
 }
