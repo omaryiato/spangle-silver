@@ -35,8 +35,8 @@ class MainOrderController extends Controller
                     'en' => __('validation.exception_error'),
                     'ar' => __('validation.exception_error'),
                 ],
-                500,
-                $exception->getMessage());
+                $exception->getMessage(),
+                500);
 
         }
     }
