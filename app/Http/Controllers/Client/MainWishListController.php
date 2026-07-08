@@ -44,6 +44,13 @@ class MainWishListController extends Controller
                 200
             );
         } catch(Exception $exception){
+            return ResponseHelper::error(
+                [
+                    'en' => __('validation.exception_error'),
+                    'ar' => __('validation.exception_error'),
+                ],
+                500,
+                $exception->getMessage());
 
         }
     }
@@ -63,6 +70,13 @@ class MainWishListController extends Controller
                 200
             );
         } catch(Exception $exception){
+            return ResponseHelper::error(
+                [
+                    'en' => __('validation.exception_error'),
+                    'ar' => __('validation.exception_error'),
+                ],
+                500,
+                $exception->getMessage());
 
         }
     }
