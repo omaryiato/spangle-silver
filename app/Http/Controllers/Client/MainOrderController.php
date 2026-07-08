@@ -15,11 +15,11 @@ class MainOrderController extends Controller
         protected MainOrderService $mainOrderService
     ) {}
 
-    public function placeNewOrder(Request $request)
+    public function addNewOrder(Request $request)
     {
         try{
 
-            $order_details = $this->mainOrderService->placeNewOrder($request->all());
+            $order_details = $this->mainOrderService->addNewOrder($request->all());
 
             return ResponseHelper::success(
                 new OrderDetailResource($order_details),

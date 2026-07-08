@@ -14,13 +14,13 @@ class OrderRepository
     // getOrdersList Funtion To Get Orders List
     public function getOrdersList()
     {
-        return Order::with(['user', 'address', 'shipping', 'orderDetail.variant'])->get();
+        return Order::with(['user', 'address', 'shipping', 'details.variant'])->get();
     }
 
     // getOrderDetails Funtion To Get Order Details
     public function getOrderDetails(int $id)
     {
-        return Order::with(['user', 'address', 'shipping', 'orderDetail.variant'])->findOrFail($id);
+        return Order::with(['user', 'address', 'shipping', 'details.variant'])->findOrFail($id);
     }
 
     // confirmOrder Funtion To Add new Order
