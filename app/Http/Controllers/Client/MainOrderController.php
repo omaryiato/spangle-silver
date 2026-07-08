@@ -15,6 +15,21 @@ class MainOrderController extends Controller
         protected MainOrderService $mainOrderService
     ) {}
 
+    public function getUserOrders(int $user_id)
+    {
+
+        $orders_list = $this->mainOrderService->getUserOrders($user_id);
+
+        return ResponseHelper::success(
+            OrderResource::collection($orders_list),
+            [
+                'en' => trans('validation.home_page'),
+                'ar' => trans('validation.home_page'),
+            ],
+            200
+        );
+    }
+
     public function addNewOrder(Request $request)
     {
         try{

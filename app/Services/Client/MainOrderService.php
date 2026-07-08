@@ -14,6 +14,11 @@ class MainOrderService
         protected ContactMessageHelper $contactMessageHelper
     ) {}
 
+    public function getUserOrders(int $user_id)
+    {
+        return $this->mainOrderRepository->getUserOrders($user_id);
+    }
+
     public function addNewOrder($order_request)
     {
 

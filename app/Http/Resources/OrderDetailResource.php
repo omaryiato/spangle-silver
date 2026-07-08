@@ -20,6 +20,15 @@ class OrderDetailResource extends JsonResource
             'order_id' => $this->order_id ?? null,
             'variant_id' => $this->variant_id ?? null,
             'sku' => $this->variant?->sku ?? null,
+
+            'color' => $this->variants?->color?->variant_id ?? null,
+            'color_en_name' => $this->variants?->color?->en_meaning ?? null,
+            'color_ar_name' => $this->variants?->color?->ar_meaning ?? null,
+
+            'size' => $this->variants?->size?->variant_id ?? null,
+            'size_en_name' => $this->variants?->size?->en_meaning ?? null,
+            'size_ar_name' => $this->variants?->size?->ar_meaning ?? null,
+
             'quantity' => $this->quantity ?? null,
             'unit_price' => $this->unit_price ?? null,
             'total_price' => $this->total_price ?? null,

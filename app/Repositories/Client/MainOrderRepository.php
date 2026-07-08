@@ -8,6 +8,20 @@ use App\Models\OrderDetail;
 class MainOrderRepository
 {
 
+    public function getUserOrders($user_id)
+    {
+        return Order::where('user_id', $user_id)->with([
+            'user',
+            'address',
+            'shipping',
+            'details',
+            'details.variant',
+            'details.variant.color',
+            'details.variant.size',
+            'user',
+        ])->get();
+    }
+
     public function addNewOrder($order_request)
     {
         return Order::create($order_request);

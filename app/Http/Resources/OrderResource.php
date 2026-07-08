@@ -27,6 +27,7 @@ class OrderResource extends JsonResource
             'shipping_id' => $this->shipping_id ?? null,
             'method_en_name' => $this->shipping?->method_en_name ?? null,
             'method_ar_name' => $this->shipping?->method_ar_name ?? null,
+            
             'subtotal' => $this->subtotal ?? null,
             'shipping_cost' => $this->shipping_cost ?? null,
             'discount' => $this->discount ?? null,
