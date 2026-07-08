@@ -174,9 +174,10 @@ Route::group(['prefix' => 'client'], function () {
     /***************************************** Orders *******************************************/
 
         // Define a route to Confirm Order
+        Route::POST('/place-new-order', [MainOrderController::class, 'addNewOrder']);
+
+        // Define a route to Confirm Order
         Route::GET('/get-user-orders/{user_id}', [MainOrderController::class, 'getUserOrders']);
-
-
 
 });
 
