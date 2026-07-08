@@ -166,7 +166,7 @@ Route::group(['prefix' => 'client'], function () {
         Route::POST('/add-to-cart', [MainCartController::class, 'addToCart']);
 
         // Define a route to Get Orders List Orders
-        Route::POST('/update-cart-details', [MainCartController::class, 'updateCartDetails']);
+        Route::POST('/update-cart-details/{id}', [MainCartController::class, 'updateCartDetails']);
 
         // Define a route to Orders Details
         Route::POST('/delete-cart-list', [MainCartController::class, 'deleteCartList']);
