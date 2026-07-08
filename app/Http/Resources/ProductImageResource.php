@@ -15,17 +15,17 @@ class ProductImageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->id ?? null,
             'image' => asset("documents/product_{$this->product_id}/" . $this->image) ?? null,
-            'is_primary' => $this->is_primary,
-            'sort_order' => $this->sort_order,
-            'created_by' => $this->created_by,
+            'is_primary' => $this->is_primary ?? null,
+            'sort_order' => $this->sort_order ?? null,
+            'created_by' => $this->created_by ?? null,
 
-            'updated_by' => $this->updated_by,
+            'updated_by' => $this->updated_by ?? null,
 
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
         ];
     }
 }

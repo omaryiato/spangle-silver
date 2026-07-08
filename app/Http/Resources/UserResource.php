@@ -16,21 +16,21 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'full_name' => $this->full_name,
-            'user_name' => $this->user_name,
+            'id' => $this->id ?? null,
+            'full_name' => $this->full_name ?? null,
+            'user_name' => $this->user_name ?? null,
             'phone_number' => $this->phone_number ?? null,
-            'password' => $this->password,
-            'user_status' => $this->status,
-            'user_type' => $this->user_type,
+            // 'password' => $this->password ?? null,
+            'user_status' => $this->status ?? null,
+            'user_type' => $this->user_type ?? null,
             'user_addresses' => AddressResource::collection($this->whenLoad('addresses')),
-            'created_by' => $this->created_by,
+            'created_by' => $this->created_by ?? null,
 
-            'updated_by' => $this->updated_by,
+            'updated_by' => $this->updated_by ?? null,
 
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
         ];
     }
 }

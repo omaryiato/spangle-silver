@@ -15,26 +15,26 @@ class ProductVariantResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'sku' => $this->sku,
-            'stock' => $this->stock,
-            'price' => $this->price,
-            'status' => $this->status,
-            'created_by' => $this->created_by,
+            'id' => $this->id ?? null,
+            'sku' => $this->sku ?? null,
+            'stock' => $this->stock ?? null,
+            'price' => $this->price ?? null,
+            'status' => $this->status ?? null,
+            'created_by' => $this->created_by ?? null,
 
-            'updated_by' => $this->updated_by,
+            'updated_by' => $this->updated_by ?? null,
 
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
 
-            'color_id' => $this->color_id,
-            'color_en_name' => $this->color?->en_meaning,
-            'color_ar_name' => $this->color?->ar_meaning,
+            'color_id' => $this->color_id ?? null,
+            'color_en_name' => $this->color?->en_meaning ?? null,
+            'color_ar_name' => $this->color?->ar_meaning ?? null,
 
-            'size_id' => $this->size_id,
-            'size_en_name' => $this->size?->en_meaning,
-            'size_ar_name' => $this->size?->ar_meaning,
+            'size_id' => $this->size_id ?? null,
+            'size_en_name' => $this->size?->en_meaning ?? null,
+            'size_ar_name' => $this->size?->ar_meaning ?? null,
         ];
     }
 }

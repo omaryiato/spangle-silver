@@ -15,18 +15,18 @@ class ProductReviewResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'product_id' => $this->product_id,
-            'comment' => $this->comment,
-            'rating' => $this->rating,
-            'created_by' => $this->created_by,
+            'id' => $this->id ?? null,
+            'user_id' => $this->user_id ?? null,
+            'product_id' => $this->product_id ?? null,
+            'comment' => $this->comment ?? null,
+            'rating' => $this->rating ?? null,
+            'created_by' => $this->created_by ?? null,
 
-            'updated_by' => $this->updated_by,
+            'updated_by' => $this->updated_by ?? null,
 
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
         ];
     }
 }

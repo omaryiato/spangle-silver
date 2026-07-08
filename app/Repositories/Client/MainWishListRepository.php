@@ -13,7 +13,7 @@ class MainWishListRepository
     }
     public function getUserWishList(int $user_id)
     {
-        return UserWishlist::where('user_id', $user_id)->get();
+        return UserWishlist::where('user_id', $user_id)->with(['user','product'])->get();
     }
 
     public function addToWishList($wishlist_request)

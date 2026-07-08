@@ -15,20 +15,20 @@ class AddressResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'user_full_name' => $this->user?->full_name,
-            'label' => $this->label,
-            'full_name' => $this->full_name,
+            'id' => $this->id ?? null,
+            'user_id' => $this->user_id ?? null,
+            'user_full_name' => $this->user?->full_name ?? null,
+            'label' => $this->label ?? null,
+            'full_name' => $this->full_name ?? null,
             'address_line' => $this->address_line ?? null,
-            'city' => $this->city,
-            'country' => $this->country,
-            'postal_code' => $this->postal_code,
-            'phone' => $this->phone,
-            'is_default' => $this->is_default,
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
+            'city' => $this->city ?? null,
+            'country' => $this->country ?? null,
+            'postal_code' => $this->postal_code ?? null,
+            'phone' => $this->phone ?? null,
+            'is_default' => $this->is_default ?? null,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
         ];
     }
 }

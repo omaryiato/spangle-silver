@@ -16,16 +16,16 @@ class SiteImageResource extends JsonResource
     {
         return [
             'id' => $this->id ?? null,
-            'image' => asset("documents/site_images/" . $this->image),
-            'type' => $this->type,
-            'status' => $this->status,
-            'created_by' => $this->created_by,
+            'image' => asset("documents/site_images/" . $this->image) ?? null,
+            'type' => $this->type ?? null,
+            'status' => $this->status ?? null,
+            'created_by' => $this->created_by ?? null,
 
-            'updated_by' => $this->updated_by,
+            'updated_by' => $this->updated_by ?? null,
 
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
-            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
         ];
     }
 }

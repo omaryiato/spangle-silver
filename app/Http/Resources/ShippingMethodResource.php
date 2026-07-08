@@ -16,13 +16,13 @@ class ShippingMethodResource extends JsonResource
     {
         return [
             'id' => $this->id ?? null,
-            'method_en_name' => $this->method_en_name,
-            'method_ar_name' => $this->method_ar_name,
+            'method_en_name' => $this->method_en_name ?? null,
+            'method_ar_name' => $this->method_ar_name ?? null,
             'method_price' => $this->price ?? null,
             'method_estimated_days' => $this->estimated_days ?? null,
-            'status' => $this->status,
-            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'status' => $this->status ?? null,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
         ];
     }
 }
