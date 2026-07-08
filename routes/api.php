@@ -172,7 +172,7 @@ Route::group(['prefix' => 'client'], function () {
         Route::POST('/delete-cart-list', [MainCartController::class, 'deleteCartList']);
 
         // Define a route to Confirm Order
-        Route::POST('/place-new-order', [MainOrderController::class, 'placeNewOrder']);
+        Route::POST('/place-new-order', [MainOrderController::class, 'addNewOrder']);
 
 
 
