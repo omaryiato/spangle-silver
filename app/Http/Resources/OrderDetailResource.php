@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Dashboard;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\LookupValue;
 
 
-class LookupTypeResource extends JsonResource
+class OrderDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,16 +17,18 @@ class LookupTypeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'type_en_name' => $this->type_en_name,
-            'type_ar_name' => $this->type_ar_name,
-            'type_description' => $this->type_description ?? null,
-            'status' => $this->status,
+            'order_id' => $this->order_id,
+            'variant_id' => $this->variant_id,
+            'sku' => $this->variant?->sku,
+            'quantity' => $this->quantity,
+            'unit_price' => $this->unit_price ?? null,
+            'total_price' => $this->total_price ?? null,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
-            'lookup_values' => LookupValueResource::collection($this->whenLoaded('values')),
         ];
     }
 }
+

@@ -3,12 +3,13 @@
 namespace App\Repositories\Dashboard;
 
 use App\Models\LookupType;
+use Illuminate\Support\Facades\DB;
 
 class LookupTypeRepository
 {
     public function getLookupTypeList()
     {
-        return LookupType::with('values')->get();
+        return DB::table('lookup_type')->get();
     }
 
     public function getLookupTypeDetails($id)

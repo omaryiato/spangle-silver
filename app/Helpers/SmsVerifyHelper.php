@@ -16,7 +16,7 @@ class SmsVerifyHelper
             // Check if the message contains Arabic characters
             return preg_match($pattern, $message) === 1;
         } catch (\Exception $exception) {
-            return ResponsHelper::error($message,'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error($message,'Error -> ' . $exception->getMessage(),400);
         }
     }
 
@@ -47,7 +47,7 @@ class SmsVerifyHelper
             curl_close($ch);
         } catch (\Exception $exception) {
 
-            return ResponsHelper::error($message,'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error($message,'Error -> ' . $exception->getMessage(),400);
         }
     }
 
@@ -114,7 +114,7 @@ class SmsVerifyHelper
             }
         } catch (\Exception $exception) {
 
-            return ResponsHelper::error($currentDomain,'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error($currentDomain,'Error -> ' . $exception->getMessage(),400);
         }
     }
 
@@ -197,7 +197,7 @@ class SmsVerifyHelper
             }
         } catch (\Exception $exception) {
 
-            return ResponsHelper::error($currentDomain,'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error($currentDomain,'Error -> ' . $exception->getMessage(),400);
         }
     }
 
@@ -216,7 +216,7 @@ class SmsVerifyHelper
             }
         } catch (\Exception $exception) {
 
-            return ResponsHelper::error($phone_number,'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error($phone_number,'Error -> ' . $exception->getMessage(),400);
         }
     }
 

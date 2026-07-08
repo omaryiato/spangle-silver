@@ -22,7 +22,7 @@ class LookupTypeService
     }
 
     // getLookupTypeDetails Funtion To Get Lookup Type Details
-    public function getLookupTypeDetails($id)
+    public function getLookupTypeDetails(int $id)
     {
 
         $lookup_type_details =  $this->lookupTypeRepository->getLookupTypeDetails($id);
@@ -31,20 +31,20 @@ class LookupTypeService
     }
 
     // addNewLookupType Funtion To Add new Lookup Type
-    public function addNewLookupType($lookup_type_request)
+    public function addNewLookupType(array $lookup_type_request)
     {
         return $this->lookupTypeRepository->addNewLookupType($lookup_type_request);
     }
 
     // updateLookupType Funtion To Update Lookup Type info
-    public function updateLookupType($lookup_type_request, $id)
+    public function updateLookupType(array $lookup_type_request, int $id)
     {
         $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
-        return $this->lookupTypeRepository->updateLookupType($lookup_type_details, $lookup_type_request);
+        return $this->lookupTypeRepository->updateLookupType( $lookup_type_details,$lookup_type_request);
     }
 
     // deleteLookupType Funtion To Delete Lookup Type
-    public function deleteLookupType($lookup_type_request, $id)
+    public function deleteLookupType($lookup_type_request, int $id)
     {
         $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
         return $this->lookupTypeRepository->deleteLookupType($lookup_type_details);

@@ -11,6 +11,17 @@ class LookupValue extends Model
 
     protected $table = 'lookup_values';
 
+    protected $fillable = [
+        'type_id',
+        'en_meaning',
+        'ar_meaning',
+        'code',
+        'description',
+        'status',
+        'created_by',
+        'updated_by'
+    ];
+
     protected $guarded = [];
 
     public function type()

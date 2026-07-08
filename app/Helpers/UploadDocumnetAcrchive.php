@@ -5,7 +5,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\DB;
 use phpseclib3\Net\SFTP;
-use App\Helpers\ResponsHelper;
+use App\Helpers\ResponseHelper;
 use Illuminate\Support\Facades\Log;
 
 
@@ -44,7 +44,7 @@ class UploadDocumnetAcrchive
 
             // Authenticate with the server using a username and password
             if (!$sftp->login($FTP_USER_ARCHIVE, $FTP_PASS_ARCHIVE)) {
-                return  ResponsHelper::error("Login failed.");
+                return  ResponseHelper::error("Login failed.");
             }
 
             Log::channel('submittransfer')->info("Step 4: -> Convert bytes to megabytes (1 megabyte = 1024 kilobytes)");
@@ -108,7 +108,7 @@ class UploadDocumnetAcrchive
         } catch (\Exception $exceptionxception) {
             Log::channel('submittransfer')->info("Step 8: -> Feild to insert ($file_output_name) into archive");
 
-            return ResponsHelper::error($exceptionxception->getMessage());
+            return ResponseHelper::error($exceptionxception->getMessage());
         }
     }
 }

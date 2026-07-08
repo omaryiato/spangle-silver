@@ -3,94 +3,155 @@
 namespace App\Services\Dashboard;
 
 use App\Repositories\Dashboard\ProductRepository;
-use App\Repositories\MainControlPanelRepository;
-use App\Services\ControlPanelFeatureService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+
 
 
 class ProductService
 {
 
     protected $productRepository;
-    protected $controlPanelFeatureService;
-    protected $mainControlPanelRepository;
-
-    public function __construct(
-                    ProductRepository $productRepository,
-                    ControlPanelFeatureservice $controlPanelFeatureService,
-                    MainControlPanelRepository $mainControlPanelRepository)
+    public function __construct(ProductRepository $productRepository,)
     {
         $this->productRepository = $productRepository;
-        $this->controlPanelFeatureService = $controlPanelFeatureService;
-        $this->mainControlPanelRepository = $mainControlPanelRepository;
     }
 
     // getProductsList Funtion To Get Product List
-    public function getProductsList($category_id)
+    public function getProductsList()
     {
-        try {
-
-            return  $this->productRepository->getProductsList($category_id);
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return  $this->productRepository->getProductsList();
     }
 
     // getProductDetails Funtion To Get Product Details
-    public function getProductDetails($product_id)
+    public function getProductDetails(int $product_id)
     {
-
-        try {
-
-            $product_details =  $this->productRepository->getProductDetails($product_id);
-
-            return $product_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return $this->productRepository->getProductDetails($product_id);
     }
 
     // addNewProduct Funtion To Add new Product
-    public function addNewProduct($product_details)
+    public function addNewProduct(array $product_request)
     {
+        return DB::transaction(function () use ($product_request) {
 
-        try {
+            $product = $this->productRepository->addNewProduct($this->prepareProductRequest($product_request));
 
-            $product_id = $this->productRepository->addNewProduct($product_details);
-            $get_product_details = $this->productRepository->getProductDetails($product_id);
+            if (!empty($data['product_images'])) {
+                $images = $this->uploadProductImages($product_request, $product['id']);
+                $this->productRepository->addProductImages($product, $images);
+            }
 
-            return $get_product_details;
+            if (!empty($data['product_variants'])) {
+                $variants = $this->prepareProductVariants($product_request);
+                $this->productRepository->addProductVariants($product, $variants);
+            }
 
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+            return $product;
+        });
     }
 
-    // updateProduct Funtion To Update Product info
-    public function updateProduct($product_details)
+    public function prepareProductRequest(array $product_request)
     {
+        return [
+            'product_en_name' => $product_request['product_en_name'],
+            'product_ar_name' => $product_request['product_ar_name'],
+            'product_en_description' => $product_request['product_en_description'],
+            'product_ar_description' => $product_request['product_ar_description'],
+            'status' => $product_request['product_status'],
+            'product_price' => $product_request['product_price'],
+            'product_material' => $product_request['product_material'],
+            'product_stone' => $product_request['product_stone'],
+            'product_reels' => $product_request['product_reels'],
+            'category_id' => $product_request['category_id'],
+            'created_by' => $product_request['created_by'],
+            'updated_by' => $product_request['created_by'],
+        ];
+    }
 
-        try {
-            $this->productRepository->updateProduct($product_details);
-            $get_product_details = $this->productRepository->getProductDetails($product_details['product_id']);
+    public function uploadProductImages(array $product_request, int $product_id)
+    {
+        $product_images = [];
 
-            return $get_product_details;
+        foreach ($product_request['product_images'] as $image) {
 
-        } catch (\Exception $exception) {
-            throw $exception;
+            $product_name = str_replace(' ', '_', $product_request['product_en_name']);
+            $extension = $image['file']->getClientOriginalExtension();
+            $file_name = "{$product_name}_" . uniqid() . ".{$extension}";
+
+            $path = public_path("documents/product_{$product_id}");
+
+            if (!File::exists($path)) {
+                File::makeDirectory($path, 0755, true);
+            }
+
+            $image['file']->move($path, $file_name);
+
+            $product_images[] = [
+                'image' => $file_name,
+                'is_primary' => $image['is_primary'] ?? 0,
+                'sort_order' => $image['sort_order'] ?? 0,
+                'created_by' => $product_request['created_by'],
+                'updated_by' => $product_request['created_by'],
+            ];
         }
+
+        return $product_images;
+    }
+
+    public function prepareProductVariants(array $product_request)
+    {
+        return array_map(function ($variant) use ($product_request) {
+            return [
+                'color_id' => $variant['color_id'],
+                'size_id' => $variant['size_id'],
+                'sku' => $variant['sku'],
+                'stock' => $variant['stock'],
+                'price' => $variant['price'],
+                'status' => $variant['status'],
+                'created_by' => $product_request['created_by'],
+                'updated_by' => $product_request['created_by'],
+            ];
+        }, $product_request['product_variants']);
+    }
+
+    public function updateProduct(array $product_request, int $id)
+    {
+        return DB::transaction(function () use ($product_request, $id) {
+
+            $product = $this->productRepository->getProductDetails($id);
+
+            $this->productRepository->updateProduct(
+                $product,
+                $this->prepareProductRequest($product_request)
+            );
+
+            if (isset($product_request['product_images'])) {
+
+                $this->productRepository->deleteProductImages($product);
+
+                $images = $this->uploadProductImages($product_request, $id);
+
+                $this->productRepository->addProductImages($product, $images);
+            }
+
+            if (isset($product_request['product_variants'])) {
+
+                $this->productRepository->deleteProductVariants($product);
+
+                $variants = $this->prepareProductVariants($product_request);
+
+                $this->productRepository->addProductVariants($product, $variants);
+            }
+
+            return $product;
+        });
     }
 
     // deleteProduct Funtion To Delete Product
-    public function deleteProduct($product_id, $login_user)
+    public function deleteProduct(int $id)
     {
-        try {
-
-            return $this->productRepository->deleteProduct($product_id, $login_user);
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $product_details =  $this->productRepository->getProductDetails($id);
+        return $this->productRepository->deleteProduct($product_details);
     }
 
 }

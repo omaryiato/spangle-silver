@@ -4,76 +4,48 @@ namespace App\Services\Dashboard;
 
 use App\Repositories\Dashboard\ShippingMethodRepository;
 use App\Repositories\MainControlPanelRepository;
-use App\Services\ControlPanelFeatureService;
 
 
 class ShippingMethodService
 {
 
     protected $shippingMethodRepository;
-    protected $controlPanelFeatureService;
-    protected $mainControlPanelRepository;
 
-    public function __construct(
-                    ShippingMethodRepository $shippingMethodRepository,
-                    ControlPanelFeatureservice $controlPanelFeatureService,
-                    MainControlPanelRepository $mainControlPanelRepository)
+    public function __construct(ShippingMethodRepository $shippingMethodRepository)
     {
         $this->shippingMethodRepository = $shippingMethodRepository;
-        $this->controlPanelFeatureService = $controlPanelFeatureService;
-        $this->mainControlPanelRepository = $mainControlPanelRepository;
     }
 
     // getShippingMethodsList Funtion To Get Shipping Methods List
     public function getShippingMethodsList()
     {
-        try {
-            return  $this->shippingMethodRepository->getShippingMethodsList();
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return  $this->shippingMethodRepository->getShippingMethodsList();
     }
 
     // getShippingMethodDetails Funtion To Get Shipping Method Details
-    public function getShippingMethodDetails($shipping_method_id)
+    public function getShippingMethodDetails(int $id)
     {
-
-        try {
-
-            $shipping_method_details =  $this->shippingMethodRepository->getShippingMethodDetails($shipping_method_id);
-
-            return $shipping_method_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return $this->shippingMethodRepository->getShippingMethodDetails($id);
     }
 
     // addNewShippingMethod Funtion To Add new Shipping Method
-    public function addNewShippingMethod($shipping_method_details)
+    public function addNewShippingMethod(array $shipping_method_request)
     {
 
         try {
-
-            $shipping_method_id = $this->shippingMethodRepository->addNewShippingMethod($shipping_method_details);
-            $get_shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($shipping_method_id);
-
-            return $get_shipping_method_details;
-
+            return $this->shippingMethodRepository->addNewShippingMethod($shipping_method_request);
         } catch (\Exception $exception) {
             throw $exception;
         }
     }
 
     // updateShippingMethod Funtion To Update Shipping Method info
-    public function updateShippingMethod($shipping_method_details)
+    public function updateShippingMethod(array $shipping_method_request, int $id)
     {
 
         try {
-            $this->shippingMethodRepository->updateShippingMethod($shipping_method_details);
-            $get_shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($shipping_method_details['shipping_method_id']);
-
-            return $get_shipping_method_details;
+            $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($id);
+            return $this->shippingMethodRepository->updateShippingMethod($shipping_method_details, $shipping_method_request);
 
         } catch (\Exception $exception) {
             throw $exception;
@@ -81,12 +53,11 @@ class ShippingMethodService
     }
 
     // deleteShippingMethod Funtion To Delete Shipping Method
-    public function deleteShippingMethod($shipping_method_id, $login_user)
+    public function deleteShippingMethod(int $id)
     {
         try {
-
-            return $this->shippingMethodRepository->deleteShippingMethod($shipping_method_id, $login_user);
-
+            $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($id);
+            return $this->shippingMethodRepository->deleteShippingMethod($shipping_method_details);
         } catch (\Exception $exception) {
             throw $exception;
         }

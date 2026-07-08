@@ -8,20 +8,20 @@ class LookupValueRepository
 {
     public function getLookupValueList()
     {
-        return LookupValue::all();
+        return LookupValue::with('type')->get();
     }
 
-    public function getLookupValueDetails($id)
+    public function getLookupValueDetails(int $id)
     {
-        return LookupValue::findOrFail($id);
+        return LookupValue::with('type')->findOrFail($id);
     }
 
-    public function addNewLookupValue($lookup_value_request)
+    public function addNewLookupValue(array $lookup_value_request)
     {
         return LookupValue::create($lookup_value_request);
     }
 
-    public function updateLookupValue(LookupValue $lookupValue, $lookup_value_request)
+    public function updateLookupValue(LookupValue $lookupValue, array $lookup_value_request)
     {
         $lookupValue->update($lookup_value_request);
         return $lookupValue;

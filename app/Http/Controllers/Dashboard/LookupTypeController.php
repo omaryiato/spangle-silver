@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Resources\Dashboard\LookupTypeResource;
+use App\Http\Resources\LookupTypeResource;
 use App\Services\Dashboard\LookupTypeService;
-use App\Helpers\ResponsHelper;
+use App\Helpers\ResponseHelper;
 
 class LookupTypeController extends Controller
 {
@@ -22,7 +22,7 @@ class LookupTypeController extends Controller
     {
         $lookupTypes = $this->lookupTypeService->getLookupTypeList();
 
-        return ResponsHelper::success(
+        return ResponseHelper::success(
             LookupTypeResource::collection($lookupTypes),
             "Lookup Type Returned Successfully.",
             200
@@ -30,11 +30,11 @@ class LookupTypeController extends Controller
     }
 
     // GET /lookup-types/{id}
-    public function show($id)
+    public function show(int $id)
     {
         $lookupType = $this->lookupTypeService->getLookupTypeDetails($id);
 
-        return ResponsHelper::success(
+        return ResponseHelper::success(
             new LookupTypeResource($lookupType),
             "Lookup Type Returned Successfully.",
             200
@@ -47,41 +47,41 @@ class LookupTypeController extends Controller
         try {
             $lookupType = $this->lookupTypeService->addNewLookupType($request->all());
 
-            return ResponsHelper::success(
+            return ResponseHelper::success(
                 new LookupTypeResource($lookupType),
                 "Lookup Type Added Successfully.",
                 201
             );
         } catch (\Exception $e) {
-            return ResponsHelper::error($request->all(), $e->getMessage(), 400);
+            return ResponseHelper::error($request->all(), $e->getMessage(), 400);
         }
     }
 
     // PUT /lookup-types/{id}
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         try {
             $lookupType = $this->lookupTypeService->updateLookupType($request->all(), $id);
 
-            return ResponsHelper::success(
+            return ResponseHelper::success(
                 new LookupTypeResource($lookupType),
                 "Lookup Type Updated Successfully.",
                 200
             );
         } catch (\Exception $e) {
-            return ResponsHelper::error($request->all(), $e->getMessage(), 400);
+            return ResponseHelper::error($request->all(), $e->getMessage(), 400);
         }
     }
 
     // DELETE /lookup-types/{id}
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, int $id)
     {
         try {
             $this->lookupTypeService->deleteLookupType($request->all(), $id);
 
-            return ResponsHelper::success(null, "Lookup Type Deleted Successfully", 200);
+            return ResponseHelper::success(null, "Lookup Type Deleted Successfully", 200);
         } catch (\Exception $e) {
-            return ResponsHelper::error($request->all(), $e->getMessage(), 400);
+            return ResponseHelper::error($request->all(), $e->getMessage(), 400);
         }
     }
 }

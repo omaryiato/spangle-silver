@@ -23,27 +23,27 @@ class UserService
     }
 
     // getUserDetails Funtion To Get User Details
-    public function getUserDetails($id)
+    public function getUserDetails(int $id)
     {
 
         return  $this->userRepository->getUserDetails($id);
     }
 
     // addNewUser Funtion To Add new User
-    public function addNewUser($user_request)
+    public function addNewUser(array $user_request)
     {
         return $this->userRepository->addNewUser($user_request);
     }
 
     // updateUser Funtion To Update User info
-    public function updateUser($user_request, $id)
+    public function updateUser(array $user_request, int $id)
     {
         $user_details = $this->userRepository->getUserDetails($id);
         return $this->userRepository->updateUser($user_details, $user_request);
     }
 
     // deleteUser Funtion To Delete User
-    public function deleteUser($user_request, $id)
+    public function deleteUser($user_request, int $id)
     {
         $user_details = $this->userRepository->getUserDetails($id);
         return $this->userRepository->deleteUser($user_details);

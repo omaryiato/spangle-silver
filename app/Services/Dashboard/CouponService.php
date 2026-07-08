@@ -3,93 +3,48 @@
 namespace App\Services\Dashboard;
 
 use App\Repositories\Dashboard\CouponRepository;
-use App\Repositories\MainControlPanelRepository;
-use App\Services\ControlPanelFeatureService;
 
 
 class CouponService
 {
 
     protected $couponRepository;
-    protected $controlPanelFeatureService;
-    protected $mainControlPanelRepository;
 
-    public function __construct(
-                    CouponRepository $couponRepository,
-                    ControlPanelFeatureservice $controlPanelFeatureService,
-                    MainControlPanelRepository $mainControlPanelRepository)
+    public function __construct(CouponRepository $couponRepository)
     {
         $this->couponRepository = $couponRepository;
-        $this->controlPanelFeatureService = $controlPanelFeatureService;
-        $this->mainControlPanelRepository = $mainControlPanelRepository;
     }
 
     // getCouponsList Funtion To Get Coupons List
     public function getCouponsList()
     {
-        try {
-            return  $this->couponRepository->getCouponsList();
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return  $this->couponRepository->getCouponsList();
     }
 
     // getCouponDetails Funtion To Get Coupon Details
-    public function getCouponDetails($coupon_id)
+    public function getCouponDetails(int $id)
     {
-
-        try {
-
-            $coupon_details =  $this->couponRepository->getCouponDetails($coupon_id);
-
-            return $coupon_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return $this->couponRepository->getCouponDetails($id);
     }
 
     // addNewCoupon Funtion To Add new Coupon
-    public function addNewCoupon($coupon_details)
+    public function addNewCoupon(array $coupon_request)
     {
-
-        try {
-
-            $coupon_id = $this->couponRepository->addNewCoupon($coupon_details);
-            $get_coupon_details = $this->couponRepository->getCouponDetails($coupon_id);
-
-            return $get_coupon_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return $this->couponRepository->addNewCoupon($coupon_request);
     }
 
     // updateCoupon Funtion To Update Coupon info
-    public function updateCoupon($coupon_details)
+    public function updateCoupon(array $coupon_request, int $id)
     {
-
-        try {
-            $this->couponRepository->updateCoupon($coupon_details);
-            $get_coupon_details = $this->couponRepository->getCouponDetails($coupon_details['coupon_id']);
-
-            return $get_coupon_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $coupon_details = $this->couponRepository->getCouponDetails($id);
+        return $this->couponRepository->updateCoupon($coupon_details, $coupon_request);
     }
 
     // deleteCoupon Funtion To Delete Coupon
-    public function deleteCoupon($coupon_id, $login_user)
+    public function deleteCoupon(array $coupon_request, int $id)
     {
-        try {
-
-            return $this->couponRepository->deleteCoupon($coupon_id, $login_user);
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        $coupon_details = $this->couponRepository->getCouponDetails($id);
+        return $this->couponRepository->deleteCoupon($coupon_details);
     }
 
 }

@@ -21,26 +21,26 @@ class AddressService
     }
 
     // getAddressDetails Funtion To Get Address Details
-    public function getAddressDetails($id)
+    public function getAddressDetails(int $id)
     {
         return $this->addressRepository->getAddressDetails($id);
     }
 
     // addNewAddress Funtion To Add new Address
-    public function addNewAddress($address_request)
+    public function addNewAddress(array $address_request)
     {
         return $this->addressRepository->addNewAddress($address_request);
     }
 
     // updateAddress Funtion To Update Address info
-    public function updateAddress($address_request, $id)
+    public function updateAddress(array $address_request, int $id)
     {
         $address_details = $this->addressRepository->getAddressDetails($id);
         return $this->addressRepository->updateAddress($address_details, $address_request);
     }
 
     // deleteAddress Funtion To Delete Address
-    public function deleteAddress($address_request, $id)
+    public function deleteAddress($address_request, int $id)
     {
         try {
             $address_details = $this->addressRepository->getAddressDetails($id);

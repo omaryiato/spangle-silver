@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Http\Controllers\Client;
+
+use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\SiteImageResource;
+use App\Http\Resources\SiteThemeResource;
+use App\Services\Client\MainService;
+use Exception;
+use Illuminate\Http\Request;
+
+class MainController extends Controller
+{
+    public function __construct(
+        protected MainService $mainService
+    ) {}
+
+    public function index()
+    {
+        $all_data = $this->mainService->getAllActiveData();
+
+        return ResponseHelper::success(
+            CategoryResource::collection($all_data),
+            [
+                'en' => trans('validation.home_page'),
+                'ar' => trans('validation.home_page'),
+            ],
+            200
+        );
+    }
+
+    public function getSiteTheme()
+    {
+        $site_theme = $this->mainService->getSiteTheme();
+
+        return ResponseHelper::success(
+            SiteThemeResource::collection($site_theme),
+            [
+                'en' => trans('validation.home_page'),
+                'ar' => trans('validation.home_page'),
+            ],
+            200
+        );
+    }
+    public function getSiteMedia()
+    {
+        $site_media = $this->mainService->getSiteMedia();
+
+        return ResponseHelper::success(
+            SiteImageResource::collection($site_media),
+            [
+                'en' => trans('validation.home_page'),
+                'ar' => trans('validation.home_page'),
+            ],
+            200
+        );
+    }
+
+}

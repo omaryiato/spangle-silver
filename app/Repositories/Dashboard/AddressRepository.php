@@ -13,25 +13,25 @@ class AddressRepository
     public function getAddressesList()
     {
         try {
-            return Address::all();
+            return Address::with('user')->get();
         } catch (\Exception $exception) {
             throw $exception;
         }
     }
 
     // getAddressDetails Funtion To Get Address Details
-    public function getAddressDetails($id)
+    public function getAddressDetails(int $id)
     {
 
         try {
-            return Address::findorfail($id);
+            return Address::with('user')->findorfail($id);
         } catch (\Exception $exception) {
             throw $exception;
         }
     }
 
     // addNewAddress Funtion To Add new Address
-    public function addNewAddress($address_request)
+    public function addNewAddress(array $address_request)
     {
 
         return Address::create($address_request);
@@ -39,7 +39,7 @@ class AddressRepository
     }
 
     // updateAddress Funtion To Update Address info
-    public function updateAddress(Address $address, $address_request)
+    public function updateAddress(Address $address, array $address_request)
     {
         $address->update($address_request);
         return $address;

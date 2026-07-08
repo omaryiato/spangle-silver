@@ -1,95 +1,82 @@
 <?php
 
-namespace App\Services\Dashboard;
+namespace App\Service\Dashboard;
 
 use App\Repositories\Dashboard\CategoryRepository;
-use App\Repositories\MainControlPanelRepository;
-use App\Services\ControlPanelFeatureService;
+use Illuminate\Support\Facades\File;
 
 
-class CategoryService
-{
+class CategoryService {
 
     protected $categoryRepository;
-    protected $controlPanelFeatureService;
-    protected $mainControlPanelRepository;
-
-    public function __construct(
-                    CategoryRepository $categoryRepository,
-                    MainControlPanelRepository $mainControlPanelRepository)
-    {
+    public function __construct(CategoryRepository $categoryRepository) {
         $this->categoryRepository = $categoryRepository;
-        $this->controlPanelFeatureService = $controlPanelFeatureService;
-        $this->mainControlPanelRepository = $mainControlPanelRepository;
     }
 
-    // getCategoryList Funtion To Get Category List
-    public function getCategoryList()
+    public function getCategoryList(){
+        return $this->categoryRepository->getCategoryList();
+    }
+
+    public function getCategoryDetails(int $id){
+        return $this->categoryRepository->getCategoryDetails($id);
+    }
+
+    public function addNewCategory(array $category_request)
     {
-        try {
-            return  $this->categoryRepository->getCategoryList();
-        } catch (\Exception $exception) {
-            throw $exception;
+        $category_image = $category_request["category_image"];
+
+        $category_image_file_extension = $category_request['category_image']?->getClientOriginalExtension();
+        $category_en_name = isset($category_request['category_image']) ?
+                                    str_replace(' ', '_', $category_request['category_en_name']) : null;
+
+        $category_request["category_image"] = "{$category_en_name}.{$category_image_file_extension}";
+
+        $category_details = $this->categoryRepository->addNewCategory($category_request);
+
+        if($category_image){
+            $category_image_file_name = "{$category_en_name}.{$category_image_file_extension}";
+
+            $category_image_folder_path = public_path("documents/category_".$category_request['category_id']);
+
+            if (!File::exists($category_image_folder_path)) {
+                File::makeDirectory($category_image_folder_path, 0755, true);
+            }
+
+            $category_image->move($category_image_folder_path, $category_image_file_name);
         }
+
+        return $category_details;
     }
 
-    // getCategoryDetails Funtion To Get Category Details
-    public function getCategoryDetails($category_id)
-    {
+    public function updateCategoryDetails(array $category_request, int $id){
+        $categroy_details = $this->categoryRepository->getCategoryDetails($id);
 
-        try {
+        if ($category_request['category_image']) {
+            $category_image = $category_request["category_image"];
 
-            $category_details =  $this->categoryRepository->getCategoryDetails($category_id);
+            $category_image_file_extension = $category_request['category_image']?->getClientOriginalExtension();
+            $category_en_name = isset($category_request['category_image']) ?
+                                        str_replace(' ', '_', $category_request['category_en_name']) : null;
 
-            return $category_details;
+            $category_request["category_image"] = "{$category_en_name}.{$category_image_file_extension}";
+            $category_image_file_name = "{$category_en_name}.{$category_image_file_extension}";
 
-        } catch (\Exception $exception) {
-            throw $exception;
+            $category_image_folder_path = public_path("documents/category_image");
+
+            if (!File::exists($category_image_folder_path)) {
+                File::makeDirectory($category_image_folder_path, 0755, true);
+            }
+
+            $category_image->move($category_image_folder_path, $category_image_file_name);
+        } else {
+            $category_request['category_image'] = $categroy_details['category_image'];
         }
+
+        return $this->categoryRepository->updateCategoryDetails($categroy_details, $category_request);
     }
 
-    // addNewCategory Funtion To Add new Category
-    public function addNewCategory($category_details)
-    {
-
-        try {
-
-            $category_id = $this->categoryRepository->addNewCategory($category_details);
-            $get_category_details = $this->categoryRepository->getCategoryDetails($category_id);
-
-            return $get_category_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+    public function deleteCategory(int $id){
+        $category_details = $this->categoryRepository->getCategoryDetails($id);
+        return $this->categoryRepository->deleteCategory($category_details);
     }
-
-    // updateCategory Funtion To Update Category info
-    public function updateCategory($category_details)
-    {
-
-        try {
-            $this->categoryRepository->updateCategory($category_details);
-            $get_category_details = $this->categoryRepository->getCategoryDetails($category_details['category_id']);
-
-            return $get_category_details;
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
-    }
-
-    // deleteCategory Funtion To Delete Category
-    public function deleteCategory($category_id, $login_user)
-    {
-        try {
-
-            return $this->categoryRepository->deleteCategory($category_id, $login_user);
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
-    }
-
 }
-

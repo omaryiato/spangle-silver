@@ -22,14 +22,14 @@ class LookupValueService
     }
 
     // getLookupValueDetails Funtion To Get Lookup Value Details
-    public function getLookupValueDetails($id)
+    public function getLookupValueDetails(int $id)
     {
         $lookup_value_details =  $this->lookupValueRepository->getLookupValueDetails($id);
         return $lookup_value_details;
     }
 
     // addNewLookupValue Funtion To Add new Lookup Value
-    public function addNewLookupValue($lookup_value_details)
+    public function addNewLookupValue(array $lookup_value_details)
     {
 
         return $this->lookupValueRepository->addNewLookupValue($lookup_value_details);
@@ -37,7 +37,7 @@ class LookupValueService
     }
 
     // updateLookupValue Funtion To Update Lookup Value info
-    public function updateLookupValue($lookup_value_request, $id)
+    public function updateLookupValue(array $lookup_value_request, int $id)
     {
         $lookup_value_details = $this->lookupValueRepository->getLookupValueDetails($id);
         return $this->lookupValueRepository->updateLookupValue($lookup_value_details, $lookup_value_request);
@@ -45,7 +45,7 @@ class LookupValueService
     }
 
     // deleteLookupValue Funtion To Delete Lookup Value
-    public function deleteLookupValue($lookup_type_request, $id)
+    public function deleteLookupValue($lookup_type_request, int $id)
     {
         $lookup_value_details = $this->lookupValueRepository->getLookupValueDetails($id);
         return $this->lookupValueRepository->deleteLookupValue($lookup_value_details);
