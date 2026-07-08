@@ -11,6 +11,27 @@ class Order extends Model
 
     protected $table = 'orders';
 
+    protected $fillable = [
+        'user_id',
+        'address_id',
+        'shipping_id',
+        'subtotal',
+        'shipping_cost',
+        'discount',
+        'total_price',
+        'status',
+        'notes',
+        'snap_user_name',
+        'snap_address',
+        'snap_city',
+        'snap_country',
+        'snap_phone',
+        'snap_email',
+        'snap_postal_code',
+        'created_by',
+        'updated_by',
+    ];
+
     protected $guarded = [];
 
     protected $casts = [
