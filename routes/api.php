@@ -21,22 +21,6 @@ use App\Http\Controllers\Client\MainWishListController;
 use App\Http\Controllers\Client\MainCartController;
 use App\Http\Controllers\Client\MainOrderController;
 
-//     // Define a route to Check Hashkey
-//     Route::GET('/control-panel-system', [MainControlPanelController::class, 'controlPanelSystem']);
-
-// /*************************************** Dashboard APIs ******************************************/
-
-//     // Define a route to Get All Active Employee List
-//     Route::GET('/get-all-active-employee-list', [MainControlPanelController::class, 'getAllActiveEmployeeList'])->name('get_all_active_employee_list');
-
-//     // Define a route to Get Employee Information
-//     Route::GET('/get-employee-information', [MainControlPanelController::class, 'getEmployeeInformation'])->name('get_employee_information');
-
-//     // Define a route to Get Employee Assigned Feature
-//     Route::GET('/get-employee-assigned_feature', [MainControlPanelController::class, 'getEmployeeAssignedFeature']);
-
-//     // Define a route to Delete all tables data
-//     Route::POST('/truncate-all-tables', [MainControlPanelController::class, 'truncateAllTables'])->name('truncate_all_tables');
 
 Route::group(['prefix' => 'dashboard'], function () {
 
@@ -180,28 +164,6 @@ Route::group(['prefix' => 'client'], function () {
         Route::GET('/get-user-orders/{user_id}', [MainOrderController::class, 'getUserOrders']);
 
 });
-
-/***************************************** Control Panel Chats *******************************************/
-
-    // // Define a route to Get ControlPanel Request Messages List
-    // Route::GET('/get-ControlPanel-request-messages-list', [ControlPanelRequestChatController::class, 'getControlPanelRequestMessagesList']);
-
-    // // Define a route to Add new ControlPanel Request Message
-    // Route::POST('/add-new-ControlPanel-request-message', [ControlPanelRequestChatController::class, 'addNewControlPanelRequestMessage']);
-
-    // // Define a route to Update ControlPanel Request Message
-    // Route::POST('/update-ControlPanel-request-message', [ControlPanelRequestChatController::class, 'updateControlPanelRequestMessage']);
-
-    // // Define a route to Delete  ControlPanel Request Message
-    // Route::POST('/delete-ControlPanel-request-message', [ControlPanelRequestChatController::class, 'deleteControlPanelRequestMessage']);
-
-    // // Define a route to Read ControlPanel Request Message
-    // Route::POST('/read-ControlPanel-request-message', [ControlPanelRequestChatController::class, 'readControlPanelRequestMessage']);
-
-
-/****************************************************************************************************/
-/***************************************** ControlPanel Setup *******************************************/
-/****************************************************************************************************/
 
 
 
