@@ -79,7 +79,7 @@ class MainProductController extends Controller
     {
         try{
 
-            $review_details = $this->mainProductService->reviewProduct($request);
+            $review_details = $this->mainProductService->reviewProduct($request->all());
 
             return ResponseHelper::success(
                 ProductReviewResource::collection($review_details),

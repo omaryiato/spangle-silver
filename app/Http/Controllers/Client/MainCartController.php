@@ -30,11 +30,11 @@ class MainCartController extends Controller
         );
     }
 
-    public function addToUserCart(Request $request)
+    public function addToCart(Request $request)
     {
         try{
 
-            $cart_details = $this->mainCartService->addToUserCart($request);
+            $cart_details = $this->mainCartService->addToCart($request->all());
 
             return ResponseHelper::success(
                 CartProductResource::collection($cart_details),
@@ -49,11 +49,11 @@ class MainCartController extends Controller
         }
     }
 
-    public function updateUserCartDetails(Request $request, int $id)
+    public function updateCartDetails(Request $request, int $id)
     {
         try{
 
-            $cart_details = $this->mainCartService->updateUserCartDetails($request, $id);
+            $cart_details = $this->mainCartService->updateCartDetails($request->all(), $id);
 
             return ResponseHelper::success(
                 CartProductResource::collection($cart_details),

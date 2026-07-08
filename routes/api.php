@@ -163,13 +163,13 @@ Route::group(['prefix' => 'client'], function () {
         Route::GET('/get-user-cart-list/{user_id}', [MainCartController::class, 'getUserCartList']);
 
         // Define a route to Get Orders List Orders
-        Route::POST('/add-to-user-cart', [MainCartController::class, 'addToUserCart']);
+        Route::POST('/add-to-cart', [MainCartController::class, 'addToCart']);
 
         // Define a route to Get Orders List Orders
-        Route::POST('/update-user-cart-details', [MainCartController::class, 'updateUserCartDetails']);
+        Route::POST('/update-cart-details', [MainCartController::class, 'updateCartDetails']);
 
         // Define a route to Orders Details
-        Route::GET('/delete-cart-list', [MainCartController::class, 'deleteCartList']);
+        Route::POST('/delete-cart-list', [MainCartController::class, 'deleteCartList']);
 
         // Define a route to Confirm Order
         Route::POST('/place-new-order', [MainOrderController::class, 'placeNewOrder']);

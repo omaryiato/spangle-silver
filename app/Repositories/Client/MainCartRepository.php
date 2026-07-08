@@ -16,12 +16,12 @@ class MainCartRepository
         return CartProduct::where('user_id', $user_id)->get();
     }
 
-    public function addToUserCart($cart_request)
+    public function addToCart($cart_request)
     {
         return CartProduct::create($cart_request);
     }
 
-    public function updateUserCartDetails(CartProduct $cart_details, $cart_request)
+    public function updateCartDetails(CartProduct $cart_details, $cart_request)
     {
         $cart_details->update($cart_request);
         return $cart_details;

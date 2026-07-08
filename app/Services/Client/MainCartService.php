@@ -17,15 +17,15 @@ class MainCartService
         return $this->mainCartRepository->getUserCartList($user_id);
     }
 
-    public function addToUserCart($cart_request)
+    public function addToCart($cart_request)
     {
-        return $this->mainCartRepository->addToUserCart($cart_request);
+        return $this->mainCartRepository->addToCart($cart_request);
     }
 
-    public function updateUserCartDetails($cart_request, int $id)
+    public function updateCartDetails($cart_request, int $id)
     {
         $cart_details = $this->mainCartRepository->getCartDetails($id);
-        return $this->mainCartRepository->updateUserCartDetails($cart_details, $cart_request);
+        return $this->mainCartRepository->updateCartDetails($cart_details, $cart_request);
     }
 
     public function deleteCartList($cart_request)

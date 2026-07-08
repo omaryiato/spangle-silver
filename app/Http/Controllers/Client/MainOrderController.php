@@ -19,7 +19,7 @@ class MainOrderController extends Controller
     {
         try{
 
-            $order_details = $this->mainOrderService->placeNewOrder($request);
+            $order_details = $this->mainOrderService->placeNewOrder($request->all());
 
             return ResponseHelper::success(
                 OrderDetailResource::collection($order_details),
