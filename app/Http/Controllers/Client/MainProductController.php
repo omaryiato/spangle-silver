@@ -38,7 +38,7 @@ class MainProductController extends Controller
         $product_details = $this->mainProductService->getProductDetails($product_id);
 
         return ResponseHelper::success(
-            ProductResource::collection($product_details),
+            new ProductResource($product_details),
             [
                 'en' => trans('validation.home_page'),
                 'ar' => trans('validation.home_page'),
@@ -82,7 +82,7 @@ class MainProductController extends Controller
             $review_details = $this->mainProductService->reviewProduct($request->all());
 
             return ResponseHelper::success(
-                ProductReviewResource::collection($review_details),
+                new ProductReviewResource($review_details),
                 [
                     'en' => trans('validation.home_page'),
                     'ar' => trans('validation.home_page'),

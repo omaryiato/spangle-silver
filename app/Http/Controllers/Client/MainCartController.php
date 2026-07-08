@@ -37,7 +37,7 @@ class MainCartController extends Controller
             $cart_details = $this->mainCartService->addToCart($request->all());
 
             return ResponseHelper::success(
-                CartProductResource::collection($cart_details),
+                new CartProductResource($cart_details),
                 [
                     'en' => trans('validation.home_page'),
                     'ar' => trans('validation.home_page'),
@@ -56,7 +56,7 @@ class MainCartController extends Controller
             $cart_details = $this->mainCartService->updateCartDetails($request->all(), $id);
 
             return ResponseHelper::success(
-                CartProductResource::collection($cart_details),
+                new CartProductResource($cart_details),
                 [
                     'en' => trans('validation.home_page'),
                     'ar' => trans('validation.home_page'),
@@ -72,10 +72,10 @@ class MainCartController extends Controller
     {
         try{
 
-            $cart_details = $this->mainCartService->deleteCartList($request);
+            $this->mainCartService->deleteCartList($request);
 
             return ResponseHelper::success(
-                CartProduct::collection($cart_details),
+                null,
                 [
                     'en' => trans('validation.home_page'),
                     'ar' => trans('validation.home_page'),

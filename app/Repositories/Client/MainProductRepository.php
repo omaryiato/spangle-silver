@@ -32,8 +32,7 @@ class MainProductRepository
 
     public function getProductDetails(int $product_id)
     {
-        return Product::where('product_status', 1)
-                        ->with([
+        return Product::with([
                             'category',
                             'images',
                             'variants' => fn($q) => $q->where('status', 1),

@@ -36,7 +36,7 @@ class MainWishListController extends Controller
             $wishlist_details = $this->mainWishListService->addToWishList($request->all());
 
             return ResponseHelper::success(
-                UserWishListResource::collection($wishlist_details),
+                new UserWishListResource($wishlist_details),
                 [
                     'en' => trans('validation.home_page'),
                     'ar' => trans('validation.home_page'),
@@ -52,10 +52,10 @@ class MainWishListController extends Controller
     {
         try{
 
-            $wishlist_details = $this->mainWishListService->deleteWishList($request);
+            $this->mainWishListService->deleteWishList($request);
 
             return ResponseHelper::success(
-                UserWishListResource::collection($wishlist_details),
+                null,
                 [
                     'en' => trans('validation.home_page'),
                     'ar' => trans('validation.home_page'),

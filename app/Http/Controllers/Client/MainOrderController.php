@@ -22,7 +22,7 @@ class MainOrderController extends Controller
             $order_details = $this->mainOrderService->placeNewOrder($request->all());
 
             return ResponseHelper::success(
-                OrderDetailResource::collection($order_details),
+                new OrderDetailResource($order_details),
                 [
                     'en' => trans('validation.home_page'),
                     'ar' => trans('validation.home_page'),
