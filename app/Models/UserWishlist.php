@@ -7,11 +7,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserWishlist extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
     protected $table = 'user_wishlist';
 
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'created_at'
+    ];
+
     protected $guarded = [];
+
+    public $timestamps = false;
+
 
     protected $casts = [
         'created_at' => 'datetime',

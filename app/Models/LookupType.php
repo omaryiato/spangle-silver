@@ -11,7 +11,8 @@ use App\Models\LookupValue;
 
 class LookupType extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
+    
     protected $table = 'lookup_types';
 
     protected $fillable = [

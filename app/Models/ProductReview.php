@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductReview extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
     protected $table = 'product_review';
 

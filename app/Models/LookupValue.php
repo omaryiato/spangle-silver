@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LookupValue extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
     protected $table = 'lookup_values';
 
