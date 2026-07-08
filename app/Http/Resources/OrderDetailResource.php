@@ -21,13 +21,13 @@ class OrderDetailResource extends JsonResource
             'variant_id' => $this->variant_id ?? null,
             'sku' => $this->variant?->sku ?? null,
 
-            'color' => $this->variants?->color?->variant_id ?? null,
-            'color_en_name' => $this->variants?->color?->en_meaning ?? null,
-            'color_ar_name' => $this->variants?->color?->ar_meaning ?? null,
+            'color' => $this->variant?->color?->variant_id ?? null,
+            'color_en_name' => $this->variant?->color?->en_meaning ?? null,
+            'color_ar_name' => $this->variant?->color?->ar_meaning ?? null,
 
-            'size' => $this->variants?->size?->variant_id ?? null,
-            'size_en_name' => $this->variants?->size?->en_meaning ?? null,
-            'size_ar_name' => $this->variants?->size?->ar_meaning ?? null,
+            'size' => $this->variant?->size?->variant_id ?? null,
+            'size_en_name' => $this->variant?->size?->en_meaning ?? null,
+            'size_ar_name' => $this->variant?->size?->ar_meaning ?? null,
 
             'quantity' => $this->quantity ?? null,
             'unit_price' => $this->unit_price ?? null,
