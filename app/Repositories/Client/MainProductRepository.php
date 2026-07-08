@@ -17,14 +17,15 @@ class MainProductRepository
         return Product::where('product_status', 1)
                         ->where('category_id', $category_id)
                         ->with([
-                            'products.images',
-                            'products.variants' => fn($q) => $q->where('status', 1),
-                            'products.variants.color',
-                            'products.variants.size',
-                            'products.reviews',
-                            'products.reviews.user' => fn($q) => $q->where('status', 1),
-                            'products.material',
-                            'products.stone',
+                            'category',
+                            'images',
+                            'variants' => fn($q) => $q->where('status', 1),
+                            'variants.color',
+                            'variants.size',
+                            'reviews',
+                            'reviews.user' => fn($q) => $q->where('status', 1),
+                            'material',
+                            'stone',
                         ])
                         ->get();
     }
@@ -33,14 +34,15 @@ class MainProductRepository
     {
         return Product::where('product_status', 1)
                         ->with([
-                            'products.images',
-                            'products.variants' => fn($q) => $q->where('status', 1),
-                            'products.variants.color',
-                            'products.variants.size',
-                            'products.reviews',
-                            'products.reviews.user' => fn($q) => $q->where('status', 1),
-                            'products.material',
-                            'products.stone',
+                            'category',
+                            'images',
+                            'variants' => fn($q) => $q->where('status', 1),
+                            'variants.color',
+                            'variants.size',
+                            'reviews',
+                            'reviews.user' => fn($q) => $q->where('status', 1),
+                            'material',
+                            'stone',
                         ])
                         ->findOrFail($product_id);
     }

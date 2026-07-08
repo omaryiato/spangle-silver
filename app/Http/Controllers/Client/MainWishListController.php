@@ -33,7 +33,7 @@ class MainWishListController extends Controller
     {
         try{
 
-            $wishlist_details = $this->mainWishListService->addToWishList($request);
+            $wishlist_details = $this->mainWishListService->addToWishList($request->all());
 
             return ResponseHelper::success(
                 UserWishListResource::collection($wishlist_details),

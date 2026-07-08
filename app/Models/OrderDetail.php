@@ -13,6 +13,12 @@ class OrderDetail extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);

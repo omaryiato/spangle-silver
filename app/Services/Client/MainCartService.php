@@ -17,9 +17,9 @@ class MainCartService
         return $this->mainCartRepository->getUserCartList($user_id);
     }
 
-    public function addToCartList($cart_request)
+    public function addToUserCart($cart_request)
     {
-        return $this->mainCartRepository->addToCartList($cart_request);
+        return $this->mainCartRepository->addToUserCart($cart_request);
     }
 
     public function updateUserCartDetails($cart_request, int $id)

@@ -16,7 +16,7 @@ class MainCartRepository
         return CartProduct::where('user_id', $user_id)->get();
     }
 
-    public function addToCartList($cart_request)
+    public function addToUserCart($cart_request)
     {
         return CartProduct::create($cart_request);
     }

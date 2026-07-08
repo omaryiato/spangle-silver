@@ -75,7 +75,7 @@ class MainProductController extends Controller
         );
     }
 
-      public function reviewProduct(Request $request)
+    public function reviewProduct(Request $request)
     {
         try{
 

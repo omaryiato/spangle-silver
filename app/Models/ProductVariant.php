@@ -20,6 +20,12 @@ class ProductVariant extends Model
         "updated_by",
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public function product(){
         return $this->belongsTo(Product::class, "product_id");
     }

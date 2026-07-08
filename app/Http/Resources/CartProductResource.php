@@ -21,9 +21,9 @@ class CartProductResource extends JsonResource
 
             'variant_id' => $this->variant_id,
             'quantity' => $this->quantity,
-            'created_at' => $this->created_at ?? null,
-            'updated_at' => $this->updated_at ?? null,
-            'deleted_at' => $this->deleted_at ?? null,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
         ];
     }
 }

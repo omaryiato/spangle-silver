@@ -24,10 +24,12 @@ class OrderDetailResource extends JsonResource
             'unit_price' => $this->unit_price ?? null,
             'total_price' => $this->total_price ?? null,
             'created_by' => $this->created_by,
+
             'updated_by' => $this->updated_by,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
+
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
         ];
     }
 }

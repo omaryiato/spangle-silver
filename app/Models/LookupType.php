@@ -23,6 +23,12 @@ class LookupType extends Model
         'updated_by',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public $timestamps = false; // cus we already do it postgre
 
     public function values()

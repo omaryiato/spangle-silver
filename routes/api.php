@@ -134,7 +134,7 @@ Route::group(['prefix' => 'client'], function () {
         Route::GET('/get-product-details/{product_id}', [MainProductController::class, 'getProductDetails']);
 
         // Define a route to Get Orders List Orders
-        Route::POST('/review-product', [MainController::class, 'reviewProduct']);
+        Route::POST('/review-product', [MainProductController::class, 'reviewProduct']);
 
     /***************************************** Shipping Methods *******************************************/
 

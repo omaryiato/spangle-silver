@@ -30,11 +30,11 @@ class MainCartController extends Controller
         );
     }
 
-    public function addToCartList(Request $request)
+    public function addToUserCart(Request $request)
     {
         try{
 
-            $cart_details = $this->mainCartService->addToCartList($request);
+            $cart_details = $this->mainCartService->addToUserCart($request);
 
             return ResponseHelper::success(
                 CartProductResource::collection($cart_details),

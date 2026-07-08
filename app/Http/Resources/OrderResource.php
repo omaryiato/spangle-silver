@@ -41,10 +41,12 @@ class OrderResource extends JsonResource
             'snap_email' => $this->snap_email,
             'snap_postal_code' => $this->snap_postal_code,
             'created_by' => $this->created_by,
+
             'updated_by' => $this->updated_by,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'deleted_at' => $this->deleted_at,
+
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
             'order_details' => OrderDetailResource::collection($this->whenLoaded('orderDetail')),
         ];
     }

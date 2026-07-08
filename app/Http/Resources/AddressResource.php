@@ -26,9 +26,9 @@ class AddressResource extends JsonResource
             'postal_code' => $this->postal_code,
             'phone' => $this->phone,
             'is_default' => $this->is_default,
-            'created_at' => $this->created_at ?? null,
-            'updated_at' => $this->updated_at ?? null,
-            'deleted_at' => $this->deleted_at ?? null,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
         ];
     }
 }

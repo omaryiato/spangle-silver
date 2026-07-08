@@ -21,11 +21,13 @@ class CategoryResource extends JsonResource
             'category_description' => $this->category_description,
             'category_image' => asset("documents/category_image/" . $this->category_image) ?? null,
             'status' => $this->status,
-            'created_at' => $this->created_at ?? null,
-            'created_by' => $this->updated_at ?? null,
-            'updated_at' => $this->updated_at ?? null,
-            'updated_by' => $this->updated_at ?? null,
-            'deleted_at' => $this->deleted_at ?? null,
+            'created_by' => $this->created_by,
+
+            'updated_by' => $this->updated_by,
+
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
             'products' => ProductResource::collection($this->whenLoaded('products')),
         ];
     }

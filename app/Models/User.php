@@ -23,6 +23,16 @@ class User extends Model
         'updated_by'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
+
     protected $guarded = [];
 
     public function addresses()

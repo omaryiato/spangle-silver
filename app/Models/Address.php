@@ -22,6 +22,13 @@ class Address extends Model
         'is_default'
     ];
 
+    protected $casts = [
+        'is_default' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
 
     public function user()
     {

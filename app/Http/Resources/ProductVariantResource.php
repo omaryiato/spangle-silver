@@ -20,11 +20,13 @@ class ProductVariantResource extends JsonResource
             'stock' => $this->stock,
             'price' => $this->price,
             'status' => $this->status,
-            'created_by' => $this->created_by ?? null,
-            'updated_by' => $this->updated_by ?? null,
-            'created_at' => $this->created_at ?? null,
-            'updated_at' => $this->updated_at ?? null,
-            'deleted_at' => $this->deleted_at ?? null,
+            'created_by' => $this->created_by,
+
+            'updated_by' => $this->updated_by,
+
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
 
             'color_id' => $this->color_id,
             'color_en_name' => $this->color?->en_meaning,

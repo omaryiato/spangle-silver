@@ -16,17 +16,16 @@ class SiteImageResource extends JsonResource
     {
         return [
             'id' => $this->id ?? null,
-            'theme_name' => $this->theme_name,
-            'color_scheme' => $this->color_scheme,
-            'font_style' => $this->font_style ?? null,
-            'background_image' => $this->background_image ?? null,
-            'borders' => $this->borders,
+            'image' => asset("documents/site_images/" . $this->image),
+            'type' => $this->type,
             'status' => $this->status,
-            'created_at' => $this->created_at ?? null,
-            'created_by' => $this->created_by ?? null,
-            'updated_at' => $this->updated_at ?? null,
-            'updated_by' => $this->updated_by ?? null,
-            'deleted_at' => $this->deleted_at ?? null,
+            'created_by' => $this->created_by,
+
+            'updated_by' => $this->updated_by,
+
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s'),
         ];
     }
 }

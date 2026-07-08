@@ -21,8 +21,8 @@ class ShippingMethodResource extends JsonResource
             'method_price' => $this->price ?? null,
             'method_estimated_days' => $this->estimated_days ?? null,
             'status' => $this->status,
-            'created_at' => $this->created_at ?? null,
-            'updated_at' => $this->updated_at ?? null,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
     }
 }
