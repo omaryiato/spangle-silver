@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Dashboard\UserService;
-use App\Http\Resources\Dashboard\UserResource;
+use App\Http\Resources\UserResource;
 use App\Helpers\ResponseHelper;
 
 

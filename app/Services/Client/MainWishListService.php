@@ -25,10 +25,10 @@ class MainWishListService
 
     public function deleteWishList($wishlist_request)
     {
-        if(isset($wishlist_request->user_id)){
-            return $this->mainWishListRepository->deleteUserWishList($wishlist_request->user_id);
+        if(isset($wishlist_request['user_id'])){
+            return $this->mainWishListRepository->deleteUserWishList($wishlist_request['user_id']);
         }
-        $wishlist_details = $this->mainWishListRepository->getWishListDetails($wishlist_request->id);
+        $wishlist_details = $this->mainWishListRepository->getWishListDetails($wishlist_request['wishlist_id']);
         return $this->mainWishListRepository->deleteWishList($wishlist_details);
 
     }

@@ -38,8 +38,8 @@ class MainController extends Controller
         return ResponseHelper::success(
             SiteThemeResource::collection($site_theme),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.get_site_theme'),
+                'ar' => trans('validation.get_site_theme'),
             ],
             200
         );
@@ -51,8 +51,8 @@ class MainController extends Controller
         return ResponseHelper::success(
             SiteImageResource::collection($site_media),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.get_site_media'),
+                'ar' => trans('validation.get_site_media'),
             ],
             200
         );

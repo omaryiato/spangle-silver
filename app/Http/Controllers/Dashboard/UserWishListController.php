@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Dashboard\UserWishListResource;
+use App\Http\Resources\UserWishListResource;
 use Illuminate\Http\Request;
 use App\Services\Dashboard\UserWishListService;
 

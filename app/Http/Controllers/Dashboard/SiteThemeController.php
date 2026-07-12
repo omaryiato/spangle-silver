@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Dashboard\SiteThemeResource;
+use App\Http\Resources\SiteThemeResource;
 use Illuminate\Http\Request;
 use App\Services\Dashboard\SiteThemeService;
 

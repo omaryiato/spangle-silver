@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Client;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\ReviewProduct;
 use App\Http\Resources\CouponResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductReviewResource;
 use App\Http\Resources\ShippingMethodResource;
+use App\Models\Category;
+use App\Models\Product;
 use App\Services\Client\MainProductService;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,29 +22,30 @@ class MainProductController extends Controller
     ) {}
 
 
-    public function getProductsList(int $category_id)
+    public function getProductsList(Category $category)
     {
-        $products_list = $this->mainProductService->getProductsList($category_id);
+        $products_list = $this->mainProductService->getProductsList($category->id);
 
         return ResponseHelper::success(
             ProductResource::collection($products_list),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.get_products_list'),
+                'ar' => trans('validation.get_products_list'),
             ],
             200
         );
     }
 
-    public function getProductDetails(int $product_id)
+
+    public function getProductDetails(Product $product)
     {
-        $product_details = $this->mainProductService->getProductDetails($product_id);
+        $product_details = $this->mainProductService->getProductDetails($product->id);
 
         return ResponseHelper::success(
             new ProductResource($product_details),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.get_product_details'),
+                'ar' => trans('validation.get_product_details'),
             ],
             200
         );
@@ -54,8 +58,8 @@ class MainProductController extends Controller
         return ResponseHelper::success(
             ShippingMethodResource::collection($shipping_method_list),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.get_shipping_methods_list'),
+                'ar' => trans('validation.get_shipping_methods_list'),
             ],
             200
         );
@@ -68,32 +72,32 @@ class MainProductController extends Controller
         return ResponseHelper::success(
             CouponResource::collection($coupons_list),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.get_coupons_list'),
+                'ar' => trans('validation.get_coupons_list'),
             ],
             200
         );
     }
 
-    public function reviewProduct(Request $request)
+    public function reviewProduct(ReviewProduct $request)
     {
         try{
 
-            $review_details = $this->mainProductService->reviewProduct($request->all());
+            $review_details = $this->mainProductService->reviewProduct($request->validated());
 
             return ResponseHelper::success(
                 new ProductReviewResource($review_details),
                 [
-                    'en' => trans('validation.home_page'),
-                    'ar' => trans('validation.home_page'),
+                    'en' => trans('validation.review_product'),
+                    'ar' => trans('validation.review_product'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => __('validation.exception_error'),
-                    'ar' => __('validation.exception_error'),
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
                 ],
                 $exception->getMessage(),
                 500);

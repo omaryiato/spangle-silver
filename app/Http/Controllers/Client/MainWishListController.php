@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Client;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\AddToWishList;
+use App\Http\Requests\Client\DeleteWishList;
 use App\Http\Resources\UserWishListResource;
+use App\Models\User;
 use App\Services\Client\MainWishListService;
 use Exception;
 use Illuminate\Http\Request;
@@ -15,39 +18,39 @@ class MainWishListController extends Controller
         protected MainWishListService $mainWishListService
     ) {}
 
-    public function getUserWishList(int $user_id)
+    public function getUserWishList(User $user)
     {
-        $user_wishlist = $this->mainWishListService->getUserWishList($user_id);
+        $user_wishlist = $this->mainWishListService->getUserWishList($user->id);
 
         return ResponseHelper::success(
             UserWishListResource::collection($user_wishlist),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.get_user_wishlist'),
+                'ar' => trans('validation.get_user_wishlist'),
             ],
             200
         );
     }
 
-    public function addToWishList(Request $request)
+    public function addToWishList(AddToWishList $request)
     {
         try{
 
-            $wishlist_details = $this->mainWishListService->addToWishList($request->all());
+            $wishlist_details = $this->mainWishListService->addToWishList($request->validated());
 
             return ResponseHelper::success(
                 new UserWishListResource($wishlist_details),
                 [
-                    'en' => trans('validation.home_page'),
-                    'ar' => trans('validation.home_page'),
+                    'en' => trans('validation.add_to_wishlist'),
+                    'ar' => trans('validation.add_to_wishlist'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => __('validation.exception_error'),
-                    'ar' => __('validation.exception_error'),
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -55,25 +58,25 @@ class MainWishListController extends Controller
         }
     }
 
-    public function deleteWishList(Request $request)
+    public function deleteWishList(DeleteWishList $request)
     {
         try{
 
-            $this->mainWishListService->deleteWishList($request);
+            $this->mainWishListService->deleteWishList($request->validated());
 
             return ResponseHelper::success(
                 null,
                 [
-                    'en' => trans('validation.home_page'),
-                    'ar' => trans('validation.home_page'),
+                    'en' => trans('validation.delete_wishlist'),
+                    'ar' => trans('validation.delete_wishlist'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => __('validation.exception_error'),
-                    'ar' => __('validation.exception_error'),
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
                 ],
                 $exception->getMessage(),
                 500);

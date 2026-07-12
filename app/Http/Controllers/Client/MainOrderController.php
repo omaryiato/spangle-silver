@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
+use App\Models\User;
 use App\Services\Client\MainOrderService;
 use Exception;
 use Illuminate\Http\Request;
@@ -15,16 +16,16 @@ class MainOrderController extends Controller
         protected MainOrderService $mainOrderService
     ) {}
 
-    public function getUserOrders(int $user_id)
+    public function getUserOrders(User $user)
     {
 
-        $orders_list = $this->mainOrderService->getUserOrders($user_id);
+        $orders_list = $this->mainOrderService->getUserOrders($user->id);
 
         return ResponseHelper::success(
             OrderResource::collection($orders_list),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.get_user_orders'),
+                'ar' => trans('validation.get_user_orders'),
             ],
             200
         );
@@ -34,21 +35,21 @@ class MainOrderController extends Controller
     {
         try{
 
-            $order_details = $this->mainOrderService->addNewOrder($request->all());
+            $order_details = $this->mainOrderService->addNewOrder($request->validated());
 
             return ResponseHelper::success(
                 new OrderResource($order_details),
                 [
-                    'en' => trans('validation.home_page'),
-                    'ar' => trans('validation.home_page'),
+                    'en' => trans('validation.add_new_order'),
+                    'ar' => trans('validation.add_new_order'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => __('validation.exception_error'),
-                    'ar' => __('validation.exception_error'),
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
                 ],
                 $exception->getMessage(),
                 500);

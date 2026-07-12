@@ -28,9 +28,9 @@ class ProductController extends Controller
             //     'category_id'       => 'bail|required|integer|exists:category,id',
             // ],
             // [
-            //     'category_id.required'      => trans('ValidationTranslation.category_id_required'),
-            //     'category_id.exists'      =>  trans('ValidationTranslation.category_id_exists'),
-            //     'category_id.integer'      =>  trans('ValidationTranslation.category_id_integer'),
+            //     'category_id.required'      => trans('validation.category_id_required'),
+            //     'category_id.exists'      =>  trans('validation.category_id_exists'),
+            //     'category_id.integer'      =>  trans('validation.category_id_integer'),
             // ]);
 
             // if ($validator->fails()) {
@@ -40,7 +40,7 @@ class ProductController extends Controller
             //     $failedRules = $validator->failed()[$field];
             //     $rule = strtolower(array_key_first($failedRules));
 
-            //     $translation_key = 'ValidationTranslation.' . $field . '_' . $rule;
+            //     $translation_key = 'validation.' . $field . '_' . $rule;
 
             //     $response_message = [
             //         'en' => trans($translation_key, [], 'en'),
@@ -70,9 +70,9 @@ class ProductController extends Controller
                 'product_id'       => 'bail|required|integer|exists:products,id',
             ],
             [
-                'product_id.required'      => trans('ValidationTranslation.product_id_required'),
-                'product_id.exists'      =>  trans('ValidationTranslation.product_id_exists'),
-                'product_id.integer'      =>  trans('ValidationTranslation.product_id_integer'),
+                'product_id.required'      => trans('validation.product_id_required'),
+                'product_id.exists'      =>  trans('validation.product_id_exists'),
+                'product_id.integer'      =>  trans('validation.product_id_integer'),
             ]);
 
             if ($validator->fails()) {
@@ -82,7 +82,7 @@ class ProductController extends Controller
                 $failedRules = $validator->failed()[$field];
                 $rule = strtolower(array_key_first($failedRules));
 
-                $translation_key = 'ValidationTranslation.' . $field . '_' . $rule;
+                $translation_key = 'validation.' . $field . '_' . $rule;
 
                 $response_message = [
                     'en' => trans($translation_key, [], 'en'),
@@ -132,24 +132,24 @@ class ProductController extends Controller
                 'login_user'       => 'bail|required|integer',
             ],
             [
-                'category_id.required'      => trans('ValidationTranslation.category_id_required'),
-                'category_id.exists'      =>  trans('ValidationTranslation.category_id_exists'),
-                'category_id.integer'      =>  trans('ValidationTranslation.category_id_integer'),
+                'category_id.required'      => trans('validation.category_id_required'),
+                'category_id.exists'      =>  trans('validation.category_id_exists'),
+                'category_id.integer'      =>  trans('validation.category_id_integer'),
 
-                'product_en_name.required'      => trans('ValidationTranslation.product_en_name_required'),
-                'product_en_name.unique'      => trans('ValidationTranslation.product_en_name_unique'),
-                'product_ar_name.required'      => trans('ValidationTranslation.product_ar_name_required'),
-                'product_ar_name.unique'      => trans('ValidationTranslation.product_ar_name_unique'),
-                'product_image.required'      => trans('ValidationTranslation.product_image_required'),
-                'product_image.min'      => trans('ValidationTranslation.product_image_min'),
-                'product_image.image.mimes'      => trans('ValidationTranslation.product_image_mimes'),
-                'product_image.image.max'      => trans('ValidationTranslation.product_image_max'),
-                'product_image.is_primary.integer'      => trans('ValidationTranslation.product_status_integer'),
-                'product_image.sort_order.integer'      => trans('ValidationTranslation.product_status_integer'),
-                'product_status.integer'      => trans('ValidationTranslation.product_status_integer'),
-                'product_status.in'      => trans('ValidationTranslation.product_status_in'),
-                'login_user.required'      => trans('ValidationTranslation.login_user_required'),
-                'login_user.integer'      => trans('ValidationTranslation.login_user_integer'),
+                'product_en_name.required'      => trans('validation.product_en_name_required'),
+                'product_en_name.unique'      => trans('validation.product_en_name_unique'),
+                'product_ar_name.required'      => trans('validation.product_ar_name_required'),
+                'product_ar_name.unique'      => trans('validation.product_ar_name_unique'),
+                'product_image.required'      => trans('validation.product_image_required'),
+                'product_image.min'      => trans('validation.product_image_min'),
+                'product_image.image.mimes'      => trans('validation.product_image_mimes'),
+                'product_image.image.max'      => trans('validation.product_image_max'),
+                'product_image.is_primary.integer'      => trans('validation.product_status_integer'),
+                'product_image.sort_order.integer'      => trans('validation.product_status_integer'),
+                'product_status.integer'      => trans('validation.product_status_integer'),
+                'product_status.in'      => trans('validation.product_status_in'),
+                'login_user.required'      => trans('validation.login_user_required'),
+                'login_user.integer'      => trans('validation.login_user_integer'),
             ]);
 
             if ($validator->fails()) {
@@ -159,7 +159,7 @@ class ProductController extends Controller
                 $failedRules = $validator->failed()[$field];
                 $rule = strtolower(array_key_first($failedRules));
 
-                $translation_key = 'ValidationTranslation.' . $field . '_' . $rule;
+                $translation_key = 'validation.' . $field . '_' . $rule;
 
                 $response_message = [
                     'en' => trans($translation_key, [], 'en'),
@@ -191,10 +191,10 @@ class ProductController extends Controller
             DB::commit();
 
             $respons_message = [
-                'en' => __('ValidationTranslation.add_new_product', [
+                'en' => trans('validation.add_new_product', [
                     'product_en_name' => $request->product_en_name
                 ], 'en'),
-                'ar' => __('ValidationTranslation.add_new_product', [
+                'ar' => trans('validation.add_new_product', [
                     'product_ar_name' => $request->product_ar_name
                 ], 'ar'),
             ];
@@ -225,21 +225,21 @@ class ProductController extends Controller
                 'login_user'       => 'bail|required|integer',
             ],
             [
-                'category_id.required'      => trans('ValidationTranslation.category_id_required'),
-                'category_id.exists'      =>  trans('ValidationTranslation.category_id_exists'),
-                'category_id.integer'      =>  trans('ValidationTranslation.category_id_integer'),
+                'category_id.required'      => trans('validation.category_id_required'),
+                'category_id.exists'      =>  trans('validation.category_id_exists'),
+                'category_id.integer'      =>  trans('validation.category_id_integer'),
 
-                'product_id.required'      => trans('ValidationTranslation.product_id_required'),
-                'product_id.exists'      =>  trans('ValidationTranslation.product_id_exists'),
-                'product_id.integer'      =>  trans('ValidationTranslation.product_id_integer'),
-                'product_en_name.required'      => trans('ValidationTranslation.product_en_name_required'),
-                'product_en_name.unique'      => trans('ValidationTranslation.product_en_name_unique'),
-                'product_ar_name.required'      => trans('ValidationTranslation.product_ar_name_required'),
-                'product_ar_name.unique'      => trans('ValidationTranslation.product_ar_name_unique'),
-                'product_status.integer'      => trans('ValidationTranslation.product_status_integer'),
-                'product_status.in'      => trans('ValidationTranslation.product_status_in'),
-                'login_user.required'      => trans('ValidationTranslation.login_user_required'),
-                'login_user.integer'      => trans('ValidationTranslation.login_user_integer'),
+                'product_id.required'      => trans('validation.product_id_required'),
+                'product_id.exists'      =>  trans('validation.product_id_exists'),
+                'product_id.integer'      =>  trans('validation.product_id_integer'),
+                'product_en_name.required'      => trans('validation.product_en_name_required'),
+                'product_en_name.unique'      => trans('validation.product_en_name_unique'),
+                'product_ar_name.required'      => trans('validation.product_ar_name_required'),
+                'product_ar_name.unique'      => trans('validation.product_ar_name_unique'),
+                'product_status.integer'      => trans('validation.product_status_integer'),
+                'product_status.in'      => trans('validation.product_status_in'),
+                'login_user.required'      => trans('validation.login_user_required'),
+                'login_user.integer'      => trans('validation.login_user_integer'),
             ]);
 
             if ($validator->fails()) {
@@ -249,7 +249,7 @@ class ProductController extends Controller
                 $failedRules = $validator->failed()[$field];
                 $rule = strtolower(array_key_first($failedRules));
 
-                $translation_key = 'ValidationTranslation.' . $field . '_' . $rule;
+                $translation_key = 'validation.' . $field . '_' . $rule;
 
                 $response_message = [
                     'en' => trans($translation_key, [], 'en'),
@@ -281,10 +281,10 @@ class ProductController extends Controller
             DB::commit();
 
             $respons_message = [
-                'en' => trans('ValidationTranslation.update_Product', [
+                'en' => trans('validation.update_Product', [
                     'product_en_name' => $request->product_en_name
                 ], 'en'),
-                'ar' => trans('ValidationTranslation.update_Product', [
+                'ar' => trans('validation.update_Product', [
                     'product_ar_name' => $request->product_ar_name
                 ], 'ar'),
             ];
@@ -307,11 +307,11 @@ class ProductController extends Controller
                 'login_user'       => 'bail|required|integer',
             ],
             [
-                'product_id.required'      => trans('ValidationTranslation.product_id_required'),
-                'product_id.exists'      =>  trans('ValidationTranslation.product_id_exists'),
-                'product_id.integer'      =>  trans('ValidationTranslation.product_id_integer'),
-                'login_user.required'      => trans('ValidationTranslation.login_user_required'),
-                'login_user.integer'      => trans('ValidationTranslation.login_user_integer'),
+                'product_id.required'      => trans('validation.product_id_required'),
+                'product_id.exists'      =>  trans('validation.product_id_exists'),
+                'product_id.integer'      =>  trans('validation.product_id_integer'),
+                'login_user.required'      => trans('validation.login_user_required'),
+                'login_user.integer'      => trans('validation.login_user_integer'),
             ]);
 
             if ($validator->fails()) {
@@ -321,7 +321,7 @@ class ProductController extends Controller
                 $failedRules = $validator->failed()[$field];
                 $rule = strtolower(array_key_first($failedRules));
 
-                $translation_key = 'ValidationTranslation.' . $field . '_' . $rule;
+                $translation_key = 'validation.' . $field . '_' . $rule;
 
                 $response_message = [
                     'en' => trans($translation_key, [], 'en'),
@@ -339,10 +339,10 @@ class ProductController extends Controller
             DB::commit();
 
             $respons_message = [
-                'en' => trans('ValidationTranslation.delete_product', [
+                'en' => trans('validation.delete_product', [
                     'product_id' => $product_id
                 ], 'en'),
-                'ar' => trans('ValidationTranslation.delete_product', [
+                'ar' => trans('validation.delete_product', [
                     'product_id' => $product_id
                 ], 'ar'),
             ];
