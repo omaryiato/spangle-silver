@@ -120,6 +120,18 @@ return [
 
 
 
+    'data_retrieved' => 'Data retrieved successfully.',
+
+    'data_not_found' => 'Data not found.',
+
+    'data_added' => 'Data added successfully.',
+
+    'data_updated' => 'Data updated successfully.',
+
+    'data_deleted' => 'Data deleted successfully.',
+
+
+
 
 
 

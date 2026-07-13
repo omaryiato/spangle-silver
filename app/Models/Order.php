@@ -55,11 +55,6 @@ class Order extends Model
         return $this->belongsTo(ShippingMethod::class, 'shipping_id');
     }
 
-    public function items()
-    {
-        return $this->hasMany(OrderDetail::class);
-    }
-
     public function payment()
     {
         return $this->hasOne(PaymentTransaction::class);

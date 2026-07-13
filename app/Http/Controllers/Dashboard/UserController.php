@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\UserService;
 use App\Http\Resources\UserResource;
 use App\Helpers\ResponseHelper;
-
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -25,19 +25,35 @@ class UserController extends Controller
         $users_list = $this->userService->getUsersList();
         return ResponseHelper::success(
                 UserResource::collection($users_list),
-                "User Returned Successfully.",
+                [
+                    'en' => trans('validation.data_retrieved'),
+                    'ar' => trans('validation.data_retrieved'),
+                ],
                 200);
     }
 
     //  Funtion to Get User Details
-    public function show(int $id)
+    public function show(User $user)
     {
 
-        $user_details =  $this->userService->getUserDetails($id);
+        $user_details =  $this->userService->getUserDetails($user->id);
+
+        if (!$user_details) {
+            return ResponseHelper::error(
+                $user_details,
+                [
+                    'en' => trans('validation.data_not_found'),
+                    'ar' => trans('validation.data_not_found'),
+                ],
+                404);
+        }
 
         return ResponseHelper::success(
                 new UserResource($user_details),
-                "User #($id) Returned Successfully.",
+                [
+                    'en' => trans('validation.data_retrieved'),
+                    'ar' => trans('validation.data_retrieved'),
+                ],
                 200);
 
     }
@@ -48,41 +64,94 @@ class UserController extends Controller
         try{
 
             $user_details = $this->userService->addNewUser($request->all());
-            return ResponseHelper::success($user_details,"User Added Successfully.",201);
+            return ResponseHelper::success(
+                new UserResource($user_details),
+                [
+                    'en' => trans('validation.data_added'),
+                    'ar' => trans('validation.data_added'),
+                ],
+                201);
 
         } catch(\Exception $exception){
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
 
     }
 
     //  Funtion To Update User
-    public function update(Request $request, int $id)
+    public function update(Request $request, User $user)
     {
         try {
 
-            $user_details =  $this->userService->updateUser($request->all(), $id);
+            $user_details =  $this->userService->updateUser($request->all(), $user->id);
 
-            return ResponseHelper::success($user_details,"User Updated Successfully.",201);
+            if (!$user_details) {
+                return ResponseHelper::error(
+                    new UserResource($user_details),
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                $user_details,
+                [
+                    'en' => trans('validation.data_updated'),
+                    'ar' => trans('validation.data_updated'),
+                ],
+                201);
 
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // deleteUser Funtion To Delete User
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, User $user)
     {
         try {
 
-            $this->userService->deleteUser($request->all(), $id);
+            $user_details = $this->userService->deleteUser($request->all(), $user->id);
+
+            if (!$user_details) {
+                return ResponseHelper::error(
+                    $user_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
 
             return ResponseHelper::success(
                     null,
-                    "User Deleted Successfully.",
+                    [
+                        'en' => trans('validation.data_deleted'),
+                        'ar' => trans('validation.data_deleted'),
+                    ],
                     200);
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 

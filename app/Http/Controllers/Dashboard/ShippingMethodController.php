@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\ShippingMethodService;
 use App\Http\Resources\ShippingMethodResource;
 use App\Helpers\ResponseHelper;
+use App\Models\ShippingMethod;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -25,17 +26,29 @@ class ShippingMethodController extends Controller
     {
         $shipping_methods_list = $this->shippingMethodService->getShippingMethodsList();
 
-        return ResponseHelper::success(ShippingMethodResource::collection($shipping_methods_list), "Shipping Method Returned Successfully.", 200);
+        return ResponseHelper::success(
+            ShippingMethodResource::collection($shipping_methods_list),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
 
     }
 
     // show Funtion to Get Shipping Method Details
-    public function show(int $id)
+    public function show(ShippingMethod $shippingMethod)
     {
 
-        $shipping_method_details =  $this->shippingMethodService->getShippingMethodDetails($id);
+        $shipping_method_details =  $this->shippingMethodService->getShippingMethodDetails($shippingMethod->id);
 
-        return ResponseHelper::success(new ShippingMethodResource($shipping_method_details), "Shipping Method #($id) Returned Successfully.", 200);
+        return ResponseHelper::success(
+            new ShippingMethodResource($shipping_method_details),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
 
     }
 
@@ -47,24 +60,59 @@ class ShippingMethodController extends Controller
 
             $shipping_method_details = $this->shippingMethodService->addNewShippingMethod($request->all());
 
-            return ResponseHelper::success($shipping_method_details,"method added successfully",201);
+            return ResponseHelper::success(
+                new ShippingMethodResource($shipping_method_details),
+                [
+                    'en' => trans('validation.data_added'),
+                    'ar' => trans('validation.data_added'),
+                ],
+                201);
+
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // update Funtion To Update Shipping Method
-    public function update(Request $request, int $id)
+    public function update(Request $request, ShippingMethod $shippingMethod)
     {
         try {
 
-            $shipping_method_details =  $this->shippingMethodService->updateShippingMethod($request->all(), $id);
+            $shipping_method_details =  $this->shippingMethodService->updateShippingMethod($request->all(), $shippingMethod->id);
 
-            return ResponseHelper::success($shipping_method_details, "method updated successfully",201);
+            if (!$shipping_method_details) {
+                return ResponseHelper::error(
+                    $shipping_method_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                new ShippingMethodResource($shipping_method_details),
+                [
+                    'en' => trans('validation.data_updated'),
+                    'ar' => trans('validation.data_updated'),
+                ],
+                201);
 
         } catch (\Exception $exception) {
             DB::rollBack();
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
@@ -73,11 +121,34 @@ class ShippingMethodController extends Controller
     {
         try {
 
-            $this->shippingMethodService->deleteShippingMethod($id);
-            return ResponseHelper::success(null, "method deleted successfully", 200);
+            $shipping_method_details = $this->shippingMethodService->deleteShippingMethod($id);
+
+            if (!$shipping_method_details) {
+                return ResponseHelper::error(
+                    $shipping_method_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                null,
+                [
+                    'en' => trans('validation.data_deleted'),
+                    'ar' => trans('validation.data_deleted'),
+                ],
+                200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 

@@ -23,16 +23,6 @@ class ProductReviewRepository
         return ProductReview::with(['user', 'product'])->findorfail($id);
     }
 
-    public function addNewProductReview(array $product_review_request)
-    {
-        return ProductReview::create($product_review_request);
-    }
-
-    public function updateProductReview(ProductReview $productReview, array $product_review_request)
-    {
-        return $productReview->update($product_review_request);
-    }
-
     // deleteProductReview Funtion To Delete Category
     public function deleteProductReview(ProductReview $productReview)
     {

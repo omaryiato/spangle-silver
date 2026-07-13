@@ -9,7 +9,7 @@ class LookupTypeRepository
 {
     public function getLookupTypeList()
     {
-        return DB::table('lookup_type')->get();
+        return LookupType::with('values')->get();
     }
 
     public function getLookupTypeDetails($id)
@@ -30,6 +30,7 @@ class LookupTypeRepository
 
     public function deleteLookupType(LookupType $lookupType)
     {
-        return $lookupType->delete();
+        $lookupType->delete();
+        return $lookupType;
     }
 }

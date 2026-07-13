@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartProductResource;
+use App\Models\CartProduct;
 use Illuminate\Http\Request;
 use App\Services\Dashboard\CartProductService;
 
@@ -23,58 +24,29 @@ class CartProductController extends Controller
 
         $cart_products_list = $this->cartProductService->getCartProductsList();
 
-        return ResponseHelper::success(CartProductResource::collection($cart_products_list), "CartProducts Returned Successfully.", 200);
+        return ResponseHelper::success(
+            CartProductResource::collection($cart_products_list),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
 
     }
 
     // Funtion to Get Cart Product Details
-    public function show(int $id)
+    public function show(CartProduct $cartProduct)
     {
 
-        $cart_product_details =  $this->cartProductService->getCartProductDetails($id);
+        $cart_product_details =  $this->cartProductService->getCartProductDetails($cartProduct->id);
 
-        return ResponseHelper::success(new CartProductResource($cart_product_details), "Address #($id) Returned Successfully.", 200);
+        return ResponseHelper::success(
+            new CartProductResource($cart_product_details),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
 
-    }
-
-    // Funtion To Add New Cart Product
-    public function store(Request $request)
-    {
-
-        try {
-
-            $cart_product_details = $this->cartProductService->addNewCartProduct($request->all());
-
-            return ResponseHelper::success($cart_product_details,"User Address Add Successfully.",201);
-        } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
-        }
-    }
-
-    // Funtion To Update Cart Product
-    public function update(Request $request, int $id)
-    {
-        try {
-
-            $cart_product_details =  $this->cartProductService->updateCartProduct($request->all(), $id);
-
-            return ResponseHelper::success($cart_product_details,"User Address Updated Successfully.",201);
-
-        } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
-        }
-    }
-
-    // Funtion To Delete Cart Product
-    public function destroy(Request $request, int $id)
-    {
-        try {
-
-            $this->cartProductService->deleteCartProduct($request->all(), $id);
-
-            return ResponseHelper::success(null, "User Address Deleted Successfully.", 201);
-        } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
-        }
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\CouponService;
 use App\Http\Resources\CouponResource;
 use App\Helpers\ResponseHelper;
+use App\Models\Coupon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -28,18 +29,24 @@ class CouponController extends Controller
 
         return ResponseHelper::success(
             CouponResource::collection($coupon_list),
-            "Coupon Returned Successfully.",
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
             200);
     }
 
     // show Funtion to Get Coupon Details
-    public function show(int $id)
+    public function show(Coupon $coupon)
     {
-        $coupon_details =  $this->couponService->getCouponDetails($id);
+        $coupon_details =  $this->couponService->getCouponDetails($coupon->id);
 
         return ResponseHelper::success(
             new CouponResource($coupon_details),
-            "Coupon #($id) Returned Successfully.",
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
             200);
     }
 
@@ -50,39 +57,95 @@ class CouponController extends Controller
         try {
             $coupon_details = $this->couponService->addNewCoupon($request->all());
 
-            return ResponseHelper::success($coupon_details,"add new coupon",201);
+            return ResponseHelper::success(
+                new CouponResource($coupon_details),
+                [
+                    'en' => trans('validation.data_added'),
+                    'ar' => trans('validation.data_added'),
+                ],
+                201);
         } catch (\Exception $exception) {
             DB::rollBack();
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // update Funtion To Update Coupon
-    public function update(Request $request, int $id)
+    public function update(Request $request, Coupon $coupon)
     {
         try {
 
-            $coupon_details =  $this->couponService->updateCoupon($request->all(), $id);
+            $coupon_details =  $this->couponService->updateCoupon($request->all(), $coupon->id);
 
-            return ResponseHelper::success($coupon_details, "update coupon ",201);
+            if (!$coupon_details) {
+                return ResponseHelper::error(
+                    $coupon_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                new CouponResource($coupon_details),
+                [
+                    'en' => trans('validation.data_updated'),
+                    'ar' => trans('validation.data_updated'),
+                ],
+                201);
 
         } catch (\Exception $exception) {
             DB::rollBack();
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // deleteCoupon Funtion To Delete Coupon
-    public function deleteCoupon(Request $request, int $id)
+    public function deleteCoupon(Request $request, Coupon $coupon)
     {
         try {
 
-            $this->couponService->deleteCoupon($request->all(), $id);
+            $coupon_details = $this->couponService->deleteCoupon($request->all(), $coupon->id);
 
-            return ResponseHelper::success(null, "delete coupon ", 200);
+            if (!$coupon_details) {
+                return ResponseHelper::error(
+                    $coupon_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                null,
+                [
+                    'en' => trans('validation.data_deleted'),
+                    'ar' => trans('validation.data_deleted'),
+                ],
+                200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 

@@ -12,13 +12,71 @@ class UserRepository
     // getUsersList Funtion To Get Users List
     public function getUsersList()
     {
-        return User::with('addresses')->get();
+        return User::with([
+            // User Addresses
+            'addresses',
+
+            // Orders
+            'orders.shipping',
+            'orders.payment',
+            'orders.details.variant.product',
+            'orders.details.variant.color',
+            'orders.details.variant.size',
+            'orders.details.variant.product.images',
+            'orders.details.variant.product.material',
+            'orders.details.variant.product.stone',
+
+            // Cart
+            'cart.variant.product',
+            'cart.variant.color',
+            'cart.variant.size',
+            'cart.variant.product.images',
+            'cart.variant.product.material',
+            'cart.variant.product.stone',
+
+            // Wishlist
+            'wishlist.product',
+            'wishlist.product.images',
+            'wishlist.product.variants',
+            'wishlist.product.material',
+            'wishlist.product.stone',
+
+        ])->get();
     }
 
     // getUserDetails Funtion To Get User Details
     public function getUserDetails(int $id)
     {
-        return User::with("addresses")->findOrFail($id);
+        return User::with([
+            // User Addresses
+            'addresses',
+
+            // Orders
+            'orders.shipping',
+            'orders.payment',
+            'orders.details.variant.product',
+            'orders.details.variant.color',
+            'orders.details.variant.size',
+            'orders.details.variant.product.images',
+            'orders.details.variant.product.material',
+            'orders.details.variant.product.stone',
+
+            // Cart
+            'cart.variant.product',
+            'cart.variant.color',
+            'cart.variant.size',
+            'cart.variant.product.images',
+            'cart.variant.product.material',
+            'cart.variant.product.stone',
+
+            // Wishlist
+            'wishlist.product',
+            'wishlist.product.images',
+            'wishlist.product.variants',
+            'wishlist.product.material',
+            'wishlist.product.stone',
+
+        ])->findOrFail($id);
     }
 
     // addNewUser Funtion To Add new User
@@ -37,7 +95,8 @@ class UserRepository
     // deleteUser Funtion To Delete User
     public function deleteUser(User $user)
     {
-        return $user->delete();
+        $user->delete();
+        return $user;
     }
 }
 

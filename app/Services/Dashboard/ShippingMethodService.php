@@ -31,7 +31,8 @@ class ShippingMethodService
     {
 
         try {
-            return $this->shippingMethodRepository->addNewShippingMethod($shipping_method_request);
+            return $this->shippingMethodRepository->addNewShippingMethod(
+                $this->prepareRequestInfo($shipping_method_request));
         } catch (\Exception $exception) {
             throw $exception;
         }
@@ -43,7 +44,10 @@ class ShippingMethodService
 
         try {
             $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($id);
-            return $this->shippingMethodRepository->updateShippingMethod($shipping_method_details, $shipping_method_request);
+            if(!$shipping_method_details){
+                return null;
+            }
+            return $this->shippingMethodRepository->updateShippingMethod($shipping_method_details, $this->prepareRequestInfo($shipping_method_request));
 
         } catch (\Exception $exception) {
             throw $exception;
@@ -55,10 +59,26 @@ class ShippingMethodService
     {
         try {
             $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($id);
+            if(!$shipping_method_details){
+                return null;
+            }
             return $this->shippingMethodRepository->deleteShippingMethod($shipping_method_details);
         } catch (\Exception $exception) {
             throw $exception;
         }
+    }
+
+    public function prepareRequestInfo(array $request_info)
+    {
+        $request_data = [
+            'method_en_name' => $request_info['method_en_name'] ?? null,
+            'method_ar_name' => $request_info['method_ar_name'] ?? null,
+            'price' => $request_info['price'] ?? null,
+            'estimated_days' => $request_info['estimated_days'] ?? null,
+            'status' => $request_info['status'] ?? null,
+        ];
+
+        return $request_data;
     }
 
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Service\Dashboard\CategoryService;
 use App\Http\Resources\CategoryResource;
 use App\Helpers\ResponseHelper;
+use App\Models\Category;
 use Exception;
 
 class CategoryController extends Controller
@@ -21,43 +22,113 @@ class CategoryController extends Controller
     public function index()
     {
         $category_list  = $this->categoryService->getCategoryList();
-        return ResponseHelper::success(CategoryResource::collection($category_list), "Category list returned Successfully.", 200);
+        return ResponseHelper::success(
+            CategoryResource::collection($category_list),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
     }
 
-    public function show(int $id)
+    public function show(Category $category)
     {
-        $category_details = $this->categoryService->getCategoryDetails($id);
-        return ResponseHelper::success(new CategoryResource($category_details), "Catgeroy Details returned successfully.", 200);
+        $category_details = $this->categoryService->getCategoryDetails($category->id);
+
+        return ResponseHelper::success(
+            new CategoryResource($category_details),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
     }
 
     public function store(Request $request)
     {
         try{
-            $category_details = $this->categoryService->addNewCategory($request->all());
-            return ResponseHelper::success(new CategoryResource($category_details), "Category Added Successfully.", 201);
+            $category_details = $this->categoryService->addNewCategory($request);
+            return ResponseHelper::success(
+                new CategoryResource($category_details),
+                [
+                    'en' => trans('validation.data_added'),
+                    'ar' => trans('validation.data_added'),
+                ],
+                201);
 
-        } catch(Exception $exeption){
-            return ResponseHelper::error($exeption, "There's somthing wrong.", 400);
+        } catch(Exception $exception){
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
-    public function update(Request $request, int $id)
+    public function update(Request $request, Category $category)
     {
         try{
-            $category_details = $this->categoryService->updateCategoryDetails($request->all(), $id);
-            return ResponseHelper::success( new CategoryResource($category_details), "Category Updated Successfully.", 201);
+            $category_details = $this->categoryService->updateCategoryDetails($request, $category->id);
+
+            if (!$category_details) {
+                return ResponseHelper::error(
+                    $category_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                new CategoryResource($category_details),
+                [
+                    'en' => trans('validation.data_updated'),
+                    'ar' => trans('validation.data_updated'),
+                ],
+                201);
 
         } catch (Exception $exception){
-            return ResponseHelper::error($exception, "There's somthing wrong.", 400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
-    public function destroy(int$id)
+    public function destroy(Category $category)
     {
         try{
-            $this->categoryService->deleteCategory($id);
-            return  ResponseHelper::success(null, "Category Deleted Successfully.", 200);
+            $category_details = $this->categoryService->deleteCategory($category->id);
+
+            if (!$category_details) {
+                return ResponseHelper::error(
+                    $category_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+            return  ResponseHelper::success(
+                null,
+                [
+                    'en' => trans('validation.data_deleted'),
+                    'ar' => trans('validation.data_deleted'),
+                ],
+                200);
         } catch(Exception $exception){
-            return ResponseHelper::error($exception, "There's somthing wrong.", 400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
 
     }

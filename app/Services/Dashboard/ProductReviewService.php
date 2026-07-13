@@ -29,26 +29,13 @@ class ProductReviewService
         return $this->productReviewRepository->getProductReviewDetails($product_review_id);
     }
 
-    // addNewProductReview Funtion To Add new ProductReview
-    public function addNewProductReview(array $product_review_request)
-    {
-
-        return $this->productReviewRepository->addNewProductReview($product_review_request);
-
-    }
-
-    public function updateProductReview(array $product_review_request, int $id)
-    {
-        $product_review_details = $this->productReviewRepository->getProductReviewDetails($id);
-
-        return $this->productReviewRepository->updateProductReview($product_review_details, $product_review_request);
-
-    }
-
     // deleteProductReview Funtion To Delete ProductReview
     public function deleteProductReview(int $id)
     {
         $product_review_details =  $this->productReviewRepository->getProductReviewDetails($id);
+        if(!$product_review_details){
+            return null;
+        }
         return $this->productReviewRepository->deleteProductReview($product_review_details);
     }
 

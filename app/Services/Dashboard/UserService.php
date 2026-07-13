@@ -3,8 +3,7 @@
 namespace App\Services\Dashboard;
 
 use App\Repositories\Dashboard\UserRepository;
-
-
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
@@ -39,6 +38,9 @@ class UserService
     public function updateUser(array $user_request, int $id)
     {
         $user_details = $this->userRepository->getUserDetails($id);
+        if(!$user_details){
+            return null;
+        }
         return $this->userRepository->updateUser($user_details, $user_request);
     }
 
@@ -46,7 +48,35 @@ class UserService
     public function deleteUser($user_request, int $id)
     {
         $user_details = $this->userRepository->getUserDetails($id);
+        if(!$user_details){
+            return null;
+        }
         return $this->userRepository->deleteUser($user_details);
+    }
+
+    public function prepareRequestInfo(array $request_info)
+    {    -
+        $request_data = [
+            'full_name' => $request_info['full_name'] ?? null,
+            'user_name' => $request_info['user_name'] ?? null,
+            'phone_number' => $request_info['phone_number'] ?? null,
+            'email_address' => $request_info['email_address'] ?? null,
+            'password' => isset($request_info['password'])
+                    ? Hash::make($request_info['password'])
+                    : null,
+            'status' => $request_info['status'] ?? null,
+            'user_type' => $request_info['user_type'] ?? null,
+        ];
+
+        if (isset($request_info['created_by'])) {
+            $request_data['created_by'] = $request_info['created_by'];
+        }
+
+        if (isset($request_info['updated_by'])) {
+            $request_data['updated_by'] = $request_info['updated_by'];
+        }
+
+        return $request_data;
     }
 
 }

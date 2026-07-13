@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\AddressService;
 use App\Http\Resources\AddressResource;
 use App\Helpers\ResponseHelper;
-
+use App\Models\Address;
 
 class AddressController extends Controller
 {
@@ -25,17 +25,29 @@ class AddressController extends Controller
 
         $addresss_list = $this->addressService->getAddressesList();
 
-        return ResponseHelper::success(AddressResource::collection($addresss_list), "Addresses Returned Successfully.", 200);
+        return ResponseHelper::success(
+            AddressResource::collection($addresss_list),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
 
     }
 
     // Funtion to Get Address Details
-    public function show(int $id)
+    public function show(Address $address)
     {
 
-        $address_details =  $this->addressService->getAddressDetails($id);
+        $address_details =  $this->addressService->getAddressDetails($address->id);
 
-        return ResponseHelper::success(new AddressResource($address_details), "Address #($id) Returned Successfully.", 200);
+        return ResponseHelper::success(
+            new AddressResource($address_details),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
 
     }
 
@@ -47,36 +59,92 @@ class AddressController extends Controller
 
             $address_details = $this->addressService->addNewAddress($request->all());
 
-            return ResponseHelper::success($address_details,"User Address Add Successfully.",201);
+            return ResponseHelper::success(
+                new AddressResource($address_details),
+                [
+                    'en' => trans('validation.data_added'),
+                    'ar' => trans('validation.data_added'),
+                ],
+                201);
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // Funtion To Update Address
-    public function update(Request $request, int $id)
+    public function update(Request $request, Address $address)
     {
         try {
 
-            $address_details =  $this->addressService->updateAddress($request->all(), $id);
+            $address_details =  $this->addressService->updateAddress($request->all(), $address->id);
 
-            return ResponseHelper::success($address_details,"User Address Updated Successfully.",201);
+            if (!$address_details) {
+                return ResponseHelper::error(
+                    $address_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                new AddressResource($address_details),
+                [
+                    'en' => trans('validation.data_updated'),
+                    'ar' => trans('validation.data_updated'),
+                ],
+                201);
 
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // Funtion To Delete Address
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, Address $address)
     {
         try {
 
-            $this->addressService->deleteAddress($request->all(), $id);
+            $address_details = $this->addressService->deleteAddress($request->all(), $address->id);
 
-            return ResponseHelper::success(null, "User Address Deleted Successfully.", 201);
+            if (!$address_details) {
+                return ResponseHelper::error(
+                    $address_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                null,
+                [
+                    'en' => trans('validation.data_deleted'),
+                    'ar' => trans('validation.data_deleted'),
+                ],
+                200);
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 

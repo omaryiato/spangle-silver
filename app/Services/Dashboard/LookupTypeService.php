@@ -24,30 +24,53 @@ class LookupTypeService
     // getLookupTypeDetails Funtion To Get Lookup Type Details
     public function getLookupTypeDetails(int $id)
     {
-
-        $lookup_type_details =  $this->lookupTypeRepository->getLookupTypeDetails($id);
-
-        return $lookup_type_details;
+        return $this->lookupTypeRepository->getLookupTypeDetails($id);
     }
 
     // addNewLookupType Funtion To Add new Lookup Type
     public function addNewLookupType(array $lookup_type_request)
     {
-        return $this->lookupTypeRepository->addNewLookupType($lookup_type_request);
+        return $this->lookupTypeRepository->addNewLookupType($this->prepareRequestInfo($lookup_type_request));
     }
 
     // updateLookupType Funtion To Update Lookup Type info
     public function updateLookupType(array $lookup_type_request, int $id)
     {
         $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
-        return $this->lookupTypeRepository->updateLookupType( $lookup_type_details,$lookup_type_request);
+        if(!$lookup_type_details){
+            return null;
+        }
+        return $this->lookupTypeRepository->updateLookupType( $lookup_type_details,$this->prepareRequestInfo($lookup_type_request));
     }
 
     // deleteLookupType Funtion To Delete Lookup Type
     public function deleteLookupType($lookup_type_request, int $id)
     {
         $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
+        if(!$lookup_type_details){
+            return null;
+        }
         return $this->lookupTypeRepository->deleteLookupType($lookup_type_details);
+    }
+
+    public function prepareRequestInfo(array $request_info)
+    {
+        $request_data = [
+            'type_en_name' => $request_info['type_en_name'],
+            'type_ar_name' => $request_info['type_ar_name'] ?? null,
+            'type_description' => $request_info['type_description'],
+            'status' => $request_info['status'] ?? null,
+        ];
+
+        if (isset($request_info['created_by'])) {
+            $request_data['created_by'] = $request_info['created_by'];
+        }
+
+        if (isset($request_info['updated_by'])) {
+            $request_data['updated_by'] = $request_info['updated_by'];
+        }
+
+        return $request_data;
     }
 
 }

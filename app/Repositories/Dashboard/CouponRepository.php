@@ -14,13 +14,21 @@ class CouponRepository
     // getCouponsList Funtion To Get Coupons List
     public function getCouponsList()
     {
-        return Coupon::all();
+        return Coupon::with([
+            'usages',
+            'user',
+            'order'
+        ])->get();
     }
 
     // getCouponDetails Funtion To Get Coupon Details
     public function getCouponDetails(int $id)
     {
-        return Coupon::findOrFail($id);
+        return Coupon::with([
+            'usages',
+            'user',
+            'order'
+        ])->findOrFail($id);
     }
 
     // addNewCoupon Funtion To Add new Coupon

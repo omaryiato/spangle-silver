@@ -124,6 +124,18 @@ return [
     'cart_not_found' => 'عنصر السلة غير موجود.',
 
 
+
+    'data_retrieved' => 'تم جلب البيانات بنجاح.',
+
+    'data_not_found' => 'البيانات غير موجودة.',
+
+    'data_added' => 'تمت إضافة البيانات بنجاح.',
+
+    'data_updated' => 'تم تحديث البيانات بنجاح.',
+
+    'data_deleted' => 'تم حذف البيانات بنجاح.',
+
+
 // Category Validation
 
     'category_id_required' => 'رقم القسم مطلوب.',

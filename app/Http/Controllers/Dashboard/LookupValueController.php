@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\LookupValueService;
 use App\Http\Resources\LookupValueResource;
 use App\Helpers\ResponseHelper;
+use App\Models\LookupValue;
 
 class LookupValueController extends Controller
 {
@@ -24,19 +25,28 @@ class LookupValueController extends Controller
 
         $lookup_value_list = $this->lookupValueService->getLookupValueList();
 
-        return ResponseHelper::success(LookupValueResource::collection($lookup_value_list), "Lookup Value list Returned Successfully.", 200);
+        return ResponseHelper::success(
+            LookupValueResource::collection($lookup_value_list),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
 
     }
 
     // getLookupValueDetails Funtion to Get Lookup Value Details
-    public function show(int $id)
+    public function show(LookupValue $lookupValue)
     {
 
-        $lookup_value_details =  $this->lookupValueService->getLookupValueDetails($id);
+        $lookup_value_details =  $this->lookupValueService->getLookupValueDetails($lookupValue->id);
 
         return ResponseHelper::success(
                 new LookupValueResource($lookup_value_details),
-                "Lookup Value #($id) Returned Successfully.",
+                [
+                    'en' => trans('validation.data_retrieved'),
+                    'ar' => trans('validation.data_retrieved'),
+                ],
                 200);
     }
 
@@ -46,46 +56,93 @@ class LookupValueController extends Controller
 
         try {
 
-            $get_lookup_value_details = $this->lookupValueService->addNewLookupValue($request->all());
+            $lookup_value_details = $this->lookupValueService->addNewLookupValue($request->all());
 
             return ResponseHelper::success(
-                    $get_lookup_value_details,
-                    "Lookup Value Added Successfully",
+                    new LookupValueResource($lookup_value_details),
+                    [
+                        'en' => trans('validation.data_added'),
+                        'ar' => trans('validation.data_added'),
+                    ],
                     201);
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // updateLookupValue Funtion To Update Lookup Value
-    public function update(Request $request, int $id)
+    public function update(Request $request, LookupValue $lookupValue)
     {
         try {
 
-            $lookup_value_details =  $this->lookupValueService->updateLookupValue($request->all(), $id);
+            $lookup_value_details =  $this->lookupValueService->updateLookupValue($request->all(), $lookupValue->id);
+
+            if (!$lookup_value_details) {
+                return ResponseHelper::error(
+                    $lookup_value_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
 
             return ResponseHelper::success(
-                $lookup_value_details,
-                "Lookup Value Updated Successfully",
+                new LookupValueResource($lookup_value_details),
+                [
+                    'en' => trans('validation.data_updated'),
+                    'ar' => trans('validation.data_updated'),
+                ],
                 201);
 
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // deleteLookupValue Funtion To Delete Lookup Value
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, LookupValue $lookupValue)
     {
         try {
-            $this->lookupValueService->deleteLookupValue($request->all(), $id);
+            $lookup_value_details = $this->lookupValueService->deleteLookupValue($request->all(), $lookupValue->id);
+
+            if (!$lookup_value_details) {
+                return ResponseHelper::error(
+                    $lookup_value_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
 
             return ResponseHelper::success(
                 null,
-                "Lookup Value Deleted Successfully.",
+                [
+                    'en' => trans('validation.data_deleted'),
+                    'ar' => trans('validation.data_deleted'),
+                ],
                 200);
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 

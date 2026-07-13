@@ -35,6 +35,9 @@ class OrderService
         try {
 
             $order_details = $this->orderRepository->getOrderDetails($id);
+            if(!$order_details){
+                return null;
+            }
             return $this->orderRepository->confirmOrder($order_details, $order_request);
 
         } catch (\Exception $exception) {

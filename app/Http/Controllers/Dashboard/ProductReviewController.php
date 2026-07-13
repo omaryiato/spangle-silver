@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductReviewResource;
+use App\Models\ProductReview;
 use App\Services\Dashboard\ProductReviewService;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,43 +20,58 @@ class ProductReviewController extends Controller
     public function index()
     {
         $products_review_list = $this->productReviewService->getProductReviewsList();
-        return ResponseHelper::success(ProductReviewResource::collection($products_review_list), "Product list returned Successfully.", 200);
+        return ResponseHelper::success(
+            ProductReviewResource::collection($products_review_list),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
     }
 
-    public function show(int $id)
+    public function show(ProductReview $productReview)
     {
-        $products_review_details = $this->productReviewService->getProductReviewDetails($id);
-        return ResponseHelper::success($products_review_details, "Product Details returned Successfully.", 200);
+        $products_review_details = $this->productReviewService->getProductReviewDetails($productReview->id);
+        return ResponseHelper::success(
+            new ProductReviewResource($products_review_details),
+            [
+                'en' => trans('validation.data_retrieved'),
+                'ar' => trans('validation.data_retrieved'),
+            ],
+            200);
     }
 
-    public function store(Request $request)
-    {
-        try{
-            $product_details = $this->productReviewService->addNewProductReview($request->all());
-            return ResponseHelper::success($product_details,"Product Added Successfully", 201);
-        } catch(Exception $exception){
-            return ResponseHelper::error($exception->getMessage(), "There's Somthing Wrong.", 400);
-        }
-    }
-
-
-    public function update(Request $request, int $id)
-    {
-        try{
-            $product_details = $this->productReviewService->updateProductReview($request->all(), $id);
-            return ResponseHelper::success($product_details,"Product Updated Successfully.", 201);
-        } catch(Exception $exception){
-            return ResponseHelper::error($exception->getMessage(), "There's Somthing Wrong.", 400);
-        }
-    }
-
-    public function destroy(int $id)
+    public function destroy(ProductReview $productReview)
     {
         try{
-            $this->productReviewService->deleteProductReview($id);
-            return ResponseHelper::success(null,"Product Deleted Successfully.", 200);
+
+            $products_review_details = $this->productReviewService->deleteProductReview($productReview->id);
+
+            if (!$products_review_details) {
+                return ResponseHelper::error(
+                    $products_review_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                null,
+                [
+                    'en' => trans('validation.data_deleted'),
+                    'ar' => trans('validation.data_deleted'),
+                ],
+                200);
         } catch(Exception $exception){
-            return ResponseHelper::error($exception->getMessage(), "There's Somthing Wrong.", 400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 }

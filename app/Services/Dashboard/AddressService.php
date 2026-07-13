@@ -29,14 +29,17 @@ class AddressService
     // addNewAddress Funtion To Add new Address
     public function addNewAddress(array $address_request)
     {
-        return $this->addressRepository->addNewAddress($address_request);
+        return $this->addressRepository->addNewAddress($this->prepareRequestInfo($address_request));
     }
 
     // updateAddress Funtion To Update Address info
     public function updateAddress(array $address_request, int $id)
     {
         $address_details = $this->addressRepository->getAddressDetails($id);
-        return $this->addressRepository->updateAddress($address_details, $address_request);
+        if(!$address_details){
+            return null;
+        }
+        return $this->addressRepository->updateAddress($address_details, $this->prepareRequestInfo($address_request));
     }
 
     // deleteAddress Funtion To Delete Address
@@ -44,11 +47,39 @@ class AddressService
     {
         try {
             $address_details = $this->addressRepository->getAddressDetails($id);
+            if(!$address_details){
+                return null;
+            }
             return $this->addressRepository->deleteAddress($address_details);
 
         } catch (\Exception $exception) {
             throw $exception;
         }
+    }
+
+    public function prepareRequestInfo(array $request_info)
+    {
+        $request_data = [
+            'user_id' => $request_info['user_id'],
+            'label' => $request_info['label'] ?? null,
+            'full_name' => $request_info['full_name'],
+            'address_line' => $request_info['address_line'] ?? null,
+            'city' => $request_info['city'] ?? null,
+            'country' => $request_info['country'] ?? null,
+            'postal_code' => $request_info['postal_code'] ?? null,
+            'phone' => $request_info['phone'] ?? null,
+            'is_default' => $request_info['is_default'] ?? null,
+        ];
+
+        if (isset($request_info['created_by'])) {
+            $request_data['created_by'] = $request_info['created_by'];
+        }
+
+        if (isset($request_info['updated_by'])) {
+            $request_data['updated_by'] = $request_info['updated_by'];
+        }
+
+        return $request_data;
     }
 
 }

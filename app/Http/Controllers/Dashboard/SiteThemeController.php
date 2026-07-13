@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SiteThemeResource;
+use App\Models\SiteTheme;
 use Illuminate\Http\Request;
 use App\Services\Dashboard\SiteThemeService;
 
@@ -19,18 +20,27 @@ class SiteThemeController extends Controller
 
     public function index(){
         $site_theme_list = $this->siteThemeService->getSiteThemeList();
-        return ResponseHelper::success($site_theme_list);
+        return ResponseHelper::success(
+                SiteThemeResource::collection($site_theme_list),
+                [
+                    'en' => trans('validation.data_retrieved'),
+                    'ar' => trans('validation.data_retrieved'),
+                ],
+                200);
     }
 
     //  Funtion to Get User Details
-    public function show(int $id)
+    public function show(SiteTheme $siteTheme)
     {
 
-        $site_theme_details =  $this->siteThemeService->getSiteThemeDetails($id);
+        $site_theme_details =  $this->siteThemeService->getSiteThemeDetails($siteTheme->id);
 
         return ResponseHelper::success(
                 new SiteThemeResource($site_theme_details),
-                "User #($id) Returned Successfully.",
+                [
+                    'en' => trans('validation.data_retrieved'),
+                    'ar' => trans('validation.data_retrieved'),
+                ],
                 200);
 
     }
@@ -41,41 +51,94 @@ class SiteThemeController extends Controller
         try{
 
             $site_theme_details = $this->siteThemeService->addNewSiteTheme($request->all());
-            return ResponseHelper::success($site_theme_details,"SiteTheme Added Successfully.",201);
+            return ResponseHelper::success(
+                new SiteThemeResource($site_theme_details),
+                [
+                    'en' => trans('validation.data_added'),
+                    'ar' => trans('validation.data_added'),
+                ],
+                201);
 
         } catch(\Exception $exception){
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
 
     }
 
     //  Funtion To Update User
-    public function update(Request $request, int $id)
+    public function update(Request $request, SiteTheme $siteTheme)
     {
         try {
 
-            $site_theme_details =  $this->siteThemeService->updateSiteTheme($request->all(), $id);
+            $site_theme_details =  $this->siteThemeService->updateSiteTheme($request->all(), $siteTheme->id);
 
-            return ResponseHelper::success($site_theme_details,"SiteTheme Updated Successfully.",201);
+            if (!$site_theme_details) {
+                return ResponseHelper::error(
+                    new SiteThemeResource($site_theme_details),
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
+
+            return ResponseHelper::success(
+                $site_theme_details,
+                [
+                    'en' => trans('validation.data_updated'),
+                    'ar' => trans('validation.data_updated'),
+                ],
+                201);
 
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 
     // deleteUser Funtion To Delete User
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, SiteTheme $siteTheme)
     {
         try {
 
-            $this->siteThemeService->deleteSiteTheme($id);
+            $site_theme_details = $this->siteThemeService->deleteSiteTheme($siteTheme->id);
+
+            if (!$site_theme_details) {
+                return ResponseHelper::error(
+                    $site_theme_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+            }
 
             return ResponseHelper::success(
                     null,
-                    "User Deleted Successfully.",
+                    [
+                        'en' => trans('validation.data_deleted'),
+                        'ar' => trans('validation.data_deleted'),
+                    ],
                     200);
         } catch (\Exception $exception) {
-            return ResponseHelper::error($request->all(),'Error -> ' . $exception->getMessage(),400);
+            return ResponseHelper::error(
+                [
+                    'en' => trans('validation.exception_error'),
+                    'ar' => trans('validation.exception_error'),
+                ],
+                $exception->getMessage(),
+                500);
         }
     }
 }

@@ -10,11 +10,31 @@ class CategoryRepository {
 
     public function getCategoryList()
     {
-        return Category::all();
+        return Category::with([
+            'products',
+            'products.images',
+            'products.variants',
+            'products.variants.color',
+            'products.variants.size',
+            'products.reviews',
+            'products.reviews.user',
+            'products.material',
+            'products.stone'
+        ])->get();
     }
 
     public function getCategoryDetails(int $id){
-        return Category::findorfail($id);
+        return Category::with([
+            'products',
+            'products.images',
+            'products.variants',
+            'products.variants.color',
+            'products.variants.size',
+            'products.reviews',
+            'products.reviews.user',
+            'products.material',
+            'products.stone'
+        ])->findorfail($id);
     }
 
     public function addNewCategory(array $category_request){

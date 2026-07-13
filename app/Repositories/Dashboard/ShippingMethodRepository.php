@@ -14,13 +14,13 @@ class ShippingMethodRepository
     // getShippingMethodsList Funtion To Get Shipping Methods List
     public function getShippingMethodsList()
     {
-        return ShippingMethod::all();
+        return ShippingMethod::with(['orders'])->get();
     }
 
     // getShippingMethodDetails Funtion To Get Shipping Method Details
     public function getShippingMethodDetails(int $id)
     {
-        return  ShippingMethod::findOrFail($id);
+        return  ShippingMethod::with(['orders'])->findOrFail($id);
     }
 
     // addNewShippingMethod Funtion To Add new Shipping Method

@@ -101,16 +101,24 @@ class ProductService
     public function prepareProductVariants(array $product_request)
     {
         return array_map(function ($variant) use ($product_request) {
-            return [
+            $request_data = [
                 'color_id' => $variant['color_id'],
                 'size_id' => $variant['size_id'],
                 'sku' => $variant['sku'],
                 'stock' => $variant['stock'],
                 'price' => $variant['price'],
                 'status' => $variant['status'],
-                'created_by' => $product_request['created_by'],
-                'updated_by' => $product_request['created_by'],
             ];
+
+            if (isset($product_request['created_by'])) {
+                $request_data['created_by'] = $product_request['created_by'];
+            }
+
+            if (isset($product_request['updated_by'])) {
+                $request_data['updated_by'] = $product_request['updated_by'];
+            }
+
+            return $request_data;
         }, $product_request['product_variants']);
     }
 

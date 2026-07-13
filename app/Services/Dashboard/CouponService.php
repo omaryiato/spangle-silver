@@ -30,21 +30,54 @@ class CouponService
     // addNewCoupon Funtion To Add new Coupon
     public function addNewCoupon(array $coupon_request)
     {
-        return $this->couponRepository->addNewCoupon($coupon_request);
+        return $this->couponRepository->addNewCoupon($this->prepareRequestInfo($coupon_request));
     }
 
     // updateCoupon Funtion To Update Coupon info
     public function updateCoupon(array $coupon_request, int $id)
     {
         $coupon_details = $this->couponRepository->getCouponDetails($id);
-        return $this->couponRepository->updateCoupon($coupon_details, $coupon_request);
+        if(!$coupon_details){
+            return null;
+        }
+        return $this->couponRepository->updateCoupon($coupon_details, $this->prepareRequestInfo($coupon_request));
     }
 
     // deleteCoupon Funtion To Delete Coupon
     public function deleteCoupon(array $coupon_request, int $id)
     {
         $coupon_details = $this->couponRepository->getCouponDetails($id);
+        if(!$coupon_details){
+            return null;
+        }
         return $this->couponRepository->deleteCoupon($coupon_details);
+    }
+
+    public function prepareRequestInfo(array $request_info)
+    {
+
+        $request_data = [
+            'code' => $request_info['code'] ?? null,
+            'discount_amount' => $request_info['discount_amount'] ?? null,
+            'minimum_order_amount' => $request_info['minimum_order_amount'] ?? null,
+            'max_usage' => $request_info['max_usage'] ?? null,
+            'used_count' => $request_info['used_count'] ?? null,
+            'expires_at' => $request_info['expires_at'] ?? null,
+            'status' => $request_info['status'] ?? null,
+        ];
+
+
+        if (isset($request_info['created_by'])) {
+            $request_data['created_by'] = $request_info['created_by'];
+        }
+
+
+        if (isset($request_info['updated_by'])) {
+            $request_data['updated_by'] = $request_info['updated_by'];
+        }
+
+
+        return $request_data;
     }
 
 }
