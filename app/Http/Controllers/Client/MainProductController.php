@@ -104,4 +104,21 @@ class MainProductController extends Controller
         }
     }
 
+    public function stream(Product $product)
+    {
+        $product_reel = $this->mainProductService->stream($product);
+
+        if(!$product_reel){
+            return ResponseHelper::error(
+                    $product_reel,
+                    [
+                        'en' => trans('validation.no_data_found'),
+                        'ar' => trans('validation.no_data_found'),
+                    ],
+                    404);
+        }
+
+        return $product_reel;
+    }
+
 }

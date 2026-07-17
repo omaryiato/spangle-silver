@@ -38,7 +38,7 @@ class OrderController extends Controller
     // getOrderDetails Funtion to Get Order Details
     public function getOrderDetails(Order $order)
     {
-        $order_details =  $this->orderService->getOrderDetails($order->id);
+        $order_details =  $this->orderService->getOrderDetails($order);
 
         return ResponseHelper::success(
             new OrderResource($order_details),
@@ -55,7 +55,7 @@ class OrderController extends Controller
 
         try {
 
-            $order_details = $this->orderService->confirmOrder($request->all(), $order->id);
+            $order_details = $this->orderService->confirmOrder($request->validated(), $order);
 
             if (!$order_details) {
                 return ResponseHelper::error(

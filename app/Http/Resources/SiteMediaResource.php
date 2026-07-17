@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SiteImageResource extends JsonResource
+class SiteMediaResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,22 @@ class SiteImageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id ?? null,
-            'image' => asset("documents/site_images/" . $this->image) ?? null,
-            'type' => $this->type ?? null,
-            'status' => $this->status ?? null,
+            'id' => $this->id,
+
+            'file_name' => $this->file_name,
+
+            'original_name' => $this->original_name,
+
+            'file_path' => asset(str_replace('//', '/', 'api/'.$this->file_path)),
+
+            'file_type' => $this->file_type,
+
+            'file_size' => $this->file_size,
+
+            'mime_type' => $this->mime_type,
+
+            'alt_text' => $this->alt_text,
+
             'created_by' => $this->created_by ?? null,
 
             'updated_by' => $this->updated_by ?? null,
@@ -26,6 +38,7 @@ class SiteImageResource extends JsonResource
             'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
             'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
+
         ];
     }
 }

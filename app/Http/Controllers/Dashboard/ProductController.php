@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Product\AddProduct;
+use App\Http\Requests\Dashboard\Product\UpdateProduct;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\Dashboard\ProductService;
@@ -31,7 +33,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product_details = $this->productService->getProductDetails($product->id);
+        $product_details = $this->productService->getProductDetails($product);
         return ResponseHelper::success(
             new ProductResource($product_details),
             [
@@ -41,10 +43,10 @@ class ProductController extends Controller
             200);
     }
 
-    public function store(Request $request)
+    public function store(AddProduct $request)
     {
         try{
-            $product_details = $this->productService->addNewProduct($request->all());
+            $product_details = $this->productService->addNewProduct($request->validated());
             return ResponseHelper::success(
                 new ProductResource($product_details),
                 [
@@ -64,10 +66,10 @@ class ProductController extends Controller
     }
 
 
-    public function update(Request $request, Product $product)
+    public function update(UpdateProduct $request, Product $product)
     {
         try{
-            $product_details = $this->productService->updateProduct($request->all(), $product->id);
+            $product_details = $this->productService->updateProduct($request->validated(), $product);
 
             if (!$product_details) {
                 return ResponseHelper::error(
@@ -80,7 +82,7 @@ class ProductController extends Controller
             }
 
             return ResponseHelper::success(
-                $product_details,
+                new ProductResource($product_details),
                 [
                     'en' => trans('validation.data_updated'),
                     'ar' => trans('validation.data_updated'),
@@ -100,7 +102,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         try{
-            $product_details = $this->productService->deleteProduct($product->id);
+            $product_details = $this->productService->deleteProduct($product);
 
             if (!$product_details) {
                 return ResponseHelper::error(

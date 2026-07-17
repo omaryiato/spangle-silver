@@ -3,7 +3,7 @@
 namespace App\Repositories\Client;
 
 use App\Models\Category;
-use App\Models\SiteImage;
+use App\Models\SiteMedia;
 use App\Models\SiteTheme;
 
 class MainRepository
@@ -38,7 +38,7 @@ class MainRepository
 
     public function getSiteMedia()
     {
-        return SiteImage::where('status', 1)->get();
+        return SiteMedia::where('status', 1)->get();
     }
 
 }

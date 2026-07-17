@@ -21,24 +21,22 @@ class OrderService
     }
 
     // getOrderDetails Funtion To Get Order Details
-    public function getOrderDetails(int $id)
+    public function getOrderDetails(object $order)
     {
-
-        return $this->orderRepository->getOrderDetails($id);
-
+        return $this->orderRepository->getOrderDetails($order);
     }
 
     // confirmOrder Funtion To Confirm Order
-    public function confirmOrder($order_request, int $id)
+    public function confirmOrder(array $order_request, object $order)
     {
 
         try {
 
-            $order_details = $this->orderRepository->getOrderDetails($id);
-            if(!$order_details){
-                return null;
-            }
-            return $this->orderRepository->confirmOrder($order_details, $order_request);
+            // $order_details = $this->orderRepository->getOrderDetails($order);
+            // if(!$order_details){
+            //     return null;
+            // }
+            return $this->orderRepository->confirmOrder($order, $order_request);
 
         } catch (\Exception $exception) {
             throw $exception;

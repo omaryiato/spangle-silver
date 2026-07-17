@@ -23,8 +23,8 @@ class CategoryRepository {
         ])->get();
     }
 
-    public function getCategoryDetails(int $id){
-        return Category::with([
+    public function getCategoryDetails(object $category){
+        return $category->load([
             'products',
             'products.images',
             'products.variants',
@@ -34,19 +34,19 @@ class CategoryRepository {
             'products.reviews.user',
             'products.material',
             'products.stone'
-        ])->findorfail($id);
+        ]);
     }
 
     public function addNewCategory(array $category_request){
         return Category::create($category_request);
     }
 
-    public function updateCategoryDetails(Category $category, array $categroy_request){
+    public function updateCategoryDetails(object $category, array $categroy_request){
         $category->update($categroy_request);
         return $category;
     }
 
-    public function deleteCategory(Category $category){
+    public function deleteCategory(object $category){
         $category->delete();
         return $category;
     }

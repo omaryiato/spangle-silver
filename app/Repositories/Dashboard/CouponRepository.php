@@ -3,9 +3,7 @@
 namespace App\Repositories\Dashboard;
 
 use App\Models\Coupon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
+
 
 
 class CouponRepository
@@ -22,13 +20,13 @@ class CouponRepository
     }
 
     // getCouponDetails Funtion To Get Coupon Details
-    public function getCouponDetails(int $id)
+    public function getCouponDetails(object $coupon)
     {
-        return Coupon::with([
+        return $coupon->load([
             'usages',
             'user',
             'order'
-        ])->findOrFail($id);
+        ]);
     }
 
     // addNewCoupon Funtion To Add new Coupon
@@ -38,14 +36,14 @@ class CouponRepository
     }
 
     // updateCoupon Funtion To Update Coupon info
-    public function updateCoupon(Coupon $coupon, array $coupon_request)
+    public function updateCoupon(object $coupon, array $coupon_request)
     {
         $coupon->update($coupon_request);
         return $coupon;
     }
 
     // deleteCoupon Funtion To Delete Coupon
-    public function deleteCoupon(Coupon $coupon)
+    public function deleteCoupon(object $coupon)
     {
         $coupon->delete();
         return $coupon;

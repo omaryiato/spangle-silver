@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\ShippingMethodService;
 use App\Http\Resources\ShippingMethodResource;
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\Dashboard\ShippingMethod\AddShippingMethod;
+use App\Http\Requests\Dashboard\ShippingMethod\UpdateShippingMethod;
 use App\Models\ShippingMethod;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +42,7 @@ class ShippingMethodController extends Controller
     public function show(ShippingMethod $shippingMethod)
     {
 
-        $shipping_method_details =  $this->shippingMethodService->getShippingMethodDetails($shippingMethod->id);
+        $shipping_method_details =  $this->shippingMethodService->getShippingMethodDetails($shippingMethod);
 
         return ResponseHelper::success(
             new ShippingMethodResource($shipping_method_details),
@@ -53,12 +55,12 @@ class ShippingMethodController extends Controller
     }
 
     // store Funtion To Add New Shipping Method
-    public function store(Request $request)
+    public function store(AddShippingMethod $request)
     {
 
         try {
 
-            $shipping_method_details = $this->shippingMethodService->addNewShippingMethod($request->all());
+            $shipping_method_details = $this->shippingMethodService->addNewShippingMethod($request->validated());
 
             return ResponseHelper::success(
                 new ShippingMethodResource($shipping_method_details),
@@ -80,11 +82,11 @@ class ShippingMethodController extends Controller
     }
 
     // update Funtion To Update Shipping Method
-    public function update(Request $request, ShippingMethod $shippingMethod)
+    public function update(UpdateShippingMethod $request, ShippingMethod $shippingMethod)
     {
         try {
 
-            $shipping_method_details =  $this->shippingMethodService->updateShippingMethod($request->all(), $shippingMethod->id);
+            $shipping_method_details =  $this->shippingMethodService->updateShippingMethod($request->validated(), $shippingMethod);
 
             if (!$shipping_method_details) {
                 return ResponseHelper::error(
@@ -117,11 +119,11 @@ class ShippingMethodController extends Controller
     }
 
     // destroy Funtion To Delete Shipping Method
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, ShippingMethod $shippingMethod)
     {
         try {
 
-            $shipping_method_details = $this->shippingMethodService->deleteShippingMethod($id);
+            $shipping_method_details = $this->shippingMethodService->deleteShippingMethod($shippingMethod);
 
             if (!$shipping_method_details) {
                 return ResponseHelper::error(

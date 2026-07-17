@@ -12,7 +12,7 @@ use App\Models\LookupValue;
 class LookupType extends Model
 {
     // use SoftDeletes;
-    
+
     protected $table = 'lookup_types';
 
     protected $fillable = [
@@ -34,6 +34,6 @@ class LookupType extends Model
 
     public function values()
     {
-        return $this->hasMany(LookupValue::class, 'type_id');
+        return $this->hasMany(LookupValue::class, 'type_id', 'id');
     }
 }

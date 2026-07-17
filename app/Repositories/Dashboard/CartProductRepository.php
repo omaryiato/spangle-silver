@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Dashboard;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\CartProduct;
 
 
@@ -24,9 +23,9 @@ class CartProductRepository
     }
 
     // getCartProductDetails Funtion To Get CartProduct Details
-    public function getCartProductDetails(int $id)
+    public function getCartProductDetails(object $cartProduct)
     {
-        return CartProduct::with([
+        return $cartProduct->load([
             'user',
             'variant.product',
             'variant.color',
@@ -34,7 +33,7 @@ class CartProductRepository
             'variant.product.images',
             'variant.product.material',
             'variant.product.stone'
-        ])->findorfail($id);
+        ]);
     }
 }
 

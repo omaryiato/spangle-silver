@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\CouponService;
 use App\Http\Resources\CouponResource;
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\Dashboard\Coupon\AddCoupon;
+use App\Http\Requests\Dashboard\Coupon\UpdateCoupon;
 use App\Models\Coupon;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 class CouponController extends Controller
@@ -39,7 +40,7 @@ class CouponController extends Controller
     // show Funtion to Get Coupon Details
     public function show(Coupon $coupon)
     {
-        $coupon_details =  $this->couponService->getCouponDetails($coupon->id);
+        $coupon_details =  $this->couponService->getCouponDetails($coupon);
 
         return ResponseHelper::success(
             new CouponResource($coupon_details),
@@ -51,11 +52,11 @@ class CouponController extends Controller
     }
 
     // store Funtion To Add New Coupon
-    public function store(Request $request)
+    public function store(AddCoupon $request)
     {
 
         try {
-            $coupon_details = $this->couponService->addNewCoupon($request->all());
+            $coupon_details = $this->couponService->addNewCoupon($request->validated());
 
             return ResponseHelper::success(
                 new CouponResource($coupon_details),
@@ -77,15 +78,15 @@ class CouponController extends Controller
     }
 
     // update Funtion To Update Coupon
-    public function update(Request $request, Coupon $coupon)
+    public function update(UpdateCoupon $request, Coupon $coupon)
     {
         try {
 
-            $coupon_details =  $this->couponService->updateCoupon($request->all(), $coupon->id);
+            $coupon_details =  $this->couponService->updateCoupon($request->validated(), $coupon);
 
             if (!$coupon_details) {
                 return ResponseHelper::error(
-                    $coupon_details,
+                    new CouponResource($coupon_details),
                     [
                         'en' => trans('validation.data_not_found'),
                         'ar' => trans('validation.data_not_found'),
@@ -118,7 +119,7 @@ class CouponController extends Controller
     {
         try {
 
-            $coupon_details = $this->couponService->deleteCoupon($request->all(), $coupon->id);
+            $coupon_details = $this->couponService->deleteCoupon($request->all(), $coupon);
 
             if (!$coupon_details) {
                 return ResponseHelper::error(

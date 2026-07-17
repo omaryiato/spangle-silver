@@ -21,9 +21,9 @@ class CartProductService
     }
 
     // getCartProductDetails Funtion To Get Cart Product Details
-    public function getCartProductDetails(int $id)
+    public function getCartProductDetails(object $cartProduct)
     {
-        return $this->cartProductRepository->getCartProductDetails($id);
+        return $this->cartProductRepository->getCartProductDetails($cartProduct);
     }
 }
 

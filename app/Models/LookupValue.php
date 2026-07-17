@@ -32,6 +32,6 @@ class LookupValue extends Model
 
     public function type()
     {
-        return $this->belongsTo(LookupType::class, 'type_id');
+        return $this->belongsTo(LookupType::class, 'type_id', 'id');
     }
 }

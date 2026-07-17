@@ -21,9 +21,9 @@ class AddressService
     }
 
     // getAddressDetails Funtion To Get Address Details
-    public function getAddressDetails(int $id)
+    public function getAddressDetails(object $address)
     {
-        return $this->addressRepository->getAddressDetails($id);
+        return $this->addressRepository->getAddressDetails($address);
     }
 
     // addNewAddress Funtion To Add new Address
@@ -33,24 +33,24 @@ class AddressService
     }
 
     // updateAddress Funtion To Update Address info
-    public function updateAddress(array $address_request, int $id)
+    public function updateAddress(array $address_request, object $address)
     {
-        $address_details = $this->addressRepository->getAddressDetails($id);
-        if(!$address_details){
-            return null;
-        }
-        return $this->addressRepository->updateAddress($address_details, $this->prepareRequestInfo($address_request));
+        // $address_details = $this->addressRepository->getAddressDetails($id);
+        // if(!$address_details){
+        //     return null;
+        // }
+        return $this->addressRepository->updateAddress($address, $this->prepareRequestInfo($address_request));
     }
 
     // deleteAddress Funtion To Delete Address
-    public function deleteAddress($address_request, int $id)
+    public function deleteAddress($address_request, object $address)
     {
         try {
-            $address_details = $this->addressRepository->getAddressDetails($id);
-            if(!$address_details){
-                return null;
-            }
-            return $this->addressRepository->deleteAddress($address_details);
+            // $address_details = $this->addressRepository->getAddressDetails($id);
+            // if(!$address_details){
+            //     return null;
+            // }
+            return $this->addressRepository->deleteAddress($address);
 
         } catch (\Exception $exception) {
             throw $exception;

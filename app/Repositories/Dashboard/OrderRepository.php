@@ -28,9 +28,9 @@ class OrderRepository
     }
 
     // getOrderDetails Funtion To Get Order Details
-    public function getOrderDetails(int $id)
+    public function getOrderDetails(object $order)
     {
-        return Order::with([
+        return $order->load([
             'user',
             'address',
             'shipping',
@@ -40,14 +40,14 @@ class OrderRepository
             'details.variant.color',
             'details.variant.size',
             'user',
-        ])->findOrFail($id);
+        ]);
     }
 
     // confirmOrder Funtion To Add new Order
-    public function confirmOrder(Order $order_details, array $order_request)
+    public function confirmOrder(object $order, array $order_request)
     {
-        $order_details->update($order_request);
-        return $order_details;
+        $order->update($order_request);
+        return $order;
     }
 
 }

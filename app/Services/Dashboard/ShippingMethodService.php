@@ -21,51 +21,39 @@ class ShippingMethodService
     }
 
     // getShippingMethodDetails Funtion To Get Shipping Method Details
-    public function getShippingMethodDetails(int $id)
+    public function getShippingMethodDetails(object $shippingMethod)
     {
-        return $this->shippingMethodRepository->getShippingMethodDetails($id);
+        return $this->shippingMethodRepository->getShippingMethodDetails($shippingMethod);
     }
 
     // addNewShippingMethod Funtion To Add new Shipping Method
     public function addNewShippingMethod(array $shipping_method_request)
     {
-
-        try {
-            return $this->shippingMethodRepository->addNewShippingMethod(
-                $this->prepareRequestInfo($shipping_method_request));
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return $this->shippingMethodRepository->addNewShippingMethod(
+            $this->prepareRequestInfo($shipping_method_request));
     }
 
     // updateShippingMethod Funtion To Update Shipping Method info
-    public function updateShippingMethod(array $shipping_method_request, int $id)
+    public function updateShippingMethod(array $shipping_method_request, object $shippingMethod)
     {
 
-        try {
-            $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($id);
-            if(!$shipping_method_details){
-                return null;
-            }
-            return $this->shippingMethodRepository->updateShippingMethod($shipping_method_details, $this->prepareRequestInfo($shipping_method_request));
-
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        // $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($id);
+        // if(!$shipping_method_details){
+        //     return null;
+        // }
+        return $this->shippingMethodRepository->updateShippingMethod($shippingMethod, $this->prepareRequestInfo($shipping_method_request));
     }
 
     // deleteShippingMethod Funtion To Delete Shipping Method
-    public function deleteShippingMethod(int $id)
+    public function deleteShippingMethod(object $shippingMethod)
     {
-        try {
-            $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($id);
-            if(!$shipping_method_details){
-                return null;
-            }
-            return $this->shippingMethodRepository->deleteShippingMethod($shipping_method_details);
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+
+        // $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($shippingMethod);
+        // if(!$shipping_method_details){
+        //     return null;
+        // }
+        return $this->shippingMethodRepository->deleteShippingMethod($shippingMethod);
+
     }
 
     public function prepareRequestInfo(array $request_info)

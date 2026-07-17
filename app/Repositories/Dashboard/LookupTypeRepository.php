@@ -3,7 +3,6 @@
 namespace App\Repositories\Dashboard;
 
 use App\Models\LookupType;
-use Illuminate\Support\Facades\DB;
 
 class LookupTypeRepository
 {
@@ -12,23 +11,23 @@ class LookupTypeRepository
         return LookupType::with('values')->get();
     }
 
-    public function getLookupTypeDetails($id)
+    public function getLookupTypeDetails(object $lookupType)
     {
-        return LookupType::with('values')->findOrFail($id);
+        return $lookupType->load('values');
     }
 
-    public function addNewLookupType($lookup_type_request)
+    public function addNewLookupType(array $lookup_type_request)
     {
         return LookupType::create($lookup_type_request);
     }
 
-    public function updateLookupType(LookupType $lookupType, $lookup_type_request)
+    public function updateLookupType(object $lookupType, array $lookup_type_request)
     {
         $lookupType->update($lookup_type_request);
         return $lookupType;
     }
 
-    public function deleteLookupType(LookupType $lookupType)
+    public function deleteLookupType(object $lookupType)
     {
         $lookupType->delete();
         return $lookupType;

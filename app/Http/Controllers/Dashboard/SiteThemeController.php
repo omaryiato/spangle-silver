@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Theme\AddTheme;
+use App\Http\Requests\Dashboard\Theme\UpdateTheme;
 use App\Http\Resources\SiteThemeResource;
 use App\Models\SiteTheme;
 use Illuminate\Http\Request;
@@ -33,7 +35,7 @@ class SiteThemeController extends Controller
     public function show(SiteTheme $siteTheme)
     {
 
-        $site_theme_details =  $this->siteThemeService->getSiteThemeDetails($siteTheme->id);
+        $site_theme_details =  $this->siteThemeService->getSiteThemeDetails($siteTheme);
 
         return ResponseHelper::success(
                 new SiteThemeResource($site_theme_details),
@@ -46,11 +48,11 @@ class SiteThemeController extends Controller
     }
 
     //  Funtion To Add New User
-    public function store(Request $request)
+    public function store(AddTheme $request)
     {
         try{
 
-            $site_theme_details = $this->siteThemeService->addNewSiteTheme($request->all());
+            $site_theme_details = $this->siteThemeService->addNewSiteTheme($request->validated());
             return ResponseHelper::success(
                 new SiteThemeResource($site_theme_details),
                 [
@@ -72,11 +74,11 @@ class SiteThemeController extends Controller
     }
 
     //  Funtion To Update User
-    public function update(Request $request, SiteTheme $siteTheme)
+    public function update(UpdateTheme $request, SiteTheme $siteTheme)
     {
         try {
 
-            $site_theme_details =  $this->siteThemeService->updateSiteTheme($request->all(), $siteTheme->id);
+            $site_theme_details =  $this->siteThemeService->updateSiteTheme($request->validated(), $siteTheme);
 
             if (!$site_theme_details) {
                 return ResponseHelper::error(
@@ -112,7 +114,7 @@ class SiteThemeController extends Controller
     {
         try {
 
-            $site_theme_details = $this->siteThemeService->deleteSiteTheme($siteTheme->id);
+            $site_theme_details = $this->siteThemeService->deleteSiteTheme($siteTheme);
 
             if (!$site_theme_details) {
                 return ResponseHelper::error(

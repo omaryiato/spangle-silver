@@ -22,10 +22,10 @@ class UserService
     }
 
     // getUserDetails Funtion To Get User Details
-    public function getUserDetails(int $id)
+    public function getUserDetails(object  $user)
     {
 
-        return  $this->userRepository->getUserDetails($id);
+        return  $this->userRepository->getUserDetails($user);
     }
 
     // addNewUser Funtion To Add new User
@@ -35,23 +35,23 @@ class UserService
     }
 
     // updateUser Funtion To Update User info
-    public function updateUser(array $user_request, int $id)
+    public function updateUser(array $user_request, object $user)
     {
-        $user_details = $this->userRepository->getUserDetails($id);
-        if(!$user_details){
-            return null;
-        }
-        return $this->userRepository->updateUser($user_details, $user_request);
+        // $user_details = $this->userRepository->getUserDetails($id);
+        // if(!$user_details){
+        //     return null;
+        // }
+        return $this->userRepository->updateUser($user, $user_request);
     }
 
     // deleteUser Funtion To Delete User
-    public function deleteUser($user_request, int $id)
+    public function deleteUser($user_request, object $user)
     {
-        $user_details = $this->userRepository->getUserDetails($id);
-        if(!$user_details){
-            return null;
-        }
-        return $this->userRepository->deleteUser($user_details);
+        // $user_details = $this->userRepository->getUserDetails($user);
+        // if(!$user_details){
+        //     return null;
+        // }
+        return $this->userRepository->deleteUser($user);
     }
 
     public function prepareRequestInfo(array $request_info)

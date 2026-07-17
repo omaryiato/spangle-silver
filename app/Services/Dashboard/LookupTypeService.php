@@ -22,9 +22,9 @@ class LookupTypeService
     }
 
     // getLookupTypeDetails Funtion To Get Lookup Type Details
-    public function getLookupTypeDetails(int $id)
+    public function getLookupTypeDetails(object $lookupType)
     {
-        return $this->lookupTypeRepository->getLookupTypeDetails($id);
+        return $this->lookupTypeRepository->getLookupTypeDetails($lookupType);
     }
 
     // addNewLookupType Funtion To Add new Lookup Type
@@ -34,29 +34,29 @@ class LookupTypeService
     }
 
     // updateLookupType Funtion To Update Lookup Type info
-    public function updateLookupType(array $lookup_type_request, int $id)
+    public function updateLookupType(array $lookup_type_request, object $lookupType)
     {
-        $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
-        if(!$lookup_type_details){
-            return null;
-        }
-        return $this->lookupTypeRepository->updateLookupType( $lookup_type_details,$this->prepareRequestInfo($lookup_type_request));
+        // $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
+        // if(!$lookup_type_details){
+        //     return null;
+        // }
+        return $this->lookupTypeRepository->updateLookupType( $lookupType,$this->prepareRequestInfo($lookup_type_request));
     }
 
     // deleteLookupType Funtion To Delete Lookup Type
-    public function deleteLookupType($lookup_type_request, int $id)
+    public function deleteLookupType($lookup_type_request, object $lookupType)
     {
-        $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
-        if(!$lookup_type_details){
-            return null;
-        }
-        return $this->lookupTypeRepository->deleteLookupType($lookup_type_details);
+        // $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
+        // if(!$lookup_type_details){
+        //     return null;
+        // }
+        return $this->lookupTypeRepository->deleteLookupType($lookupType);
     }
 
     public function prepareRequestInfo(array $request_info)
     {
         $request_data = [
-            'type_en_name' => $request_info['type_en_name'],
+            'type_en_name' => $request_info['type_en_name'] ?? null,
             'type_ar_name' => $request_info['type_ar_name'] ?? null,
             'type_description' => $request_info['type_description'],
             'status' => $request_info['status'] ?? null,

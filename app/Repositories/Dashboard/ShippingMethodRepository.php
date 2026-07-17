@@ -3,9 +3,7 @@
 namespace App\Repositories\Dashboard;
 
 use App\Models\ShippingMethod;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
+
 
 
 class ShippingMethodRepository
@@ -18,9 +16,9 @@ class ShippingMethodRepository
     }
 
     // getShippingMethodDetails Funtion To Get Shipping Method Details
-    public function getShippingMethodDetails(int $id)
+    public function getShippingMethodDetails(object $shippingMethod)
     {
-        return  ShippingMethod::with(['orders'])->findOrFail($id);
+        return  $shippingMethod;
     }
 
     // addNewShippingMethod Funtion To Add new Shipping Method
@@ -30,14 +28,14 @@ class ShippingMethodRepository
     }
 
     // updateShippingMethod Funtion To Update Shipping Method info
-    public function updateShippingMethod(ShippingMethod $shipping_method, array $shipping_method_request)
+    public function updateShippingMethod(object $shipping_method, array $shipping_method_request)
     {
         $shipping_method->update($shipping_method_request);
         return $shipping_method;
     }
 
     // deleteShippingMethod Funtion To Delete Shipping Method
-    public function deleteShippingMethod(ShippingMethod $shipping_method)
+    public function deleteShippingMethod(object $shipping_method)
     {
         $shipping_method->delete();
         return $shipping_method;

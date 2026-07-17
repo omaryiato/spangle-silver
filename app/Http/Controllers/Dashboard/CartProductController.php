@@ -38,7 +38,7 @@ class CartProductController extends Controller
     public function show(CartProduct $cartProduct)
     {
 
-        $cart_product_details =  $this->cartProductService->getCartProductDetails($cartProduct->id);
+        $cart_product_details =  $this->cartProductService->getCartProductDetails($cartProduct);
 
         return ResponseHelper::success(
             new CartProductResource($cart_product_details),

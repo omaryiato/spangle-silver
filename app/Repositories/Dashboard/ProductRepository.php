@@ -2,9 +2,7 @@
 
 namespace App\Repositories\Dashboard;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
+
 use App\Models\Product;
 
 
@@ -28,9 +26,9 @@ class ProductRepository
     }
 
     // getProductDetails Funtion To Get Product Details
-    public function getProductDetails(int $id)
+    public function getProductDetails(object $product)
     {
-        return Product::with([
+        return $product->load([
             'variants',
             'variants.color',
             'variants.size',
@@ -40,7 +38,7 @@ class ProductRepository
             'material',
             'stone',
             'category'
-        ])->findorfail($id);
+        ]);
     }
 
     public function addNewProduct(array $product_request)
@@ -58,7 +56,7 @@ class ProductRepository
         return $product->images()->createMany($images);
     }
 
-    public function updateProduct(Product $product, array $product_request)
+    public function updateProduct(object $product, array $product_request)
     {
         $product->update($product_request);
         return $product;
@@ -77,7 +75,7 @@ class ProductRepository
     }
 
     // deleteProduct Funtion To Delete Category
-    public function deleteProduct(Product $product)
+    public function deleteProduct(object $product)
     {
         $product->update(['product_status' => 0]);
         return $product;

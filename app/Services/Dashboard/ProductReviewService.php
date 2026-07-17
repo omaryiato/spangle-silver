@@ -24,19 +24,19 @@ class ProductReviewService
     }
 
     // getProductReviewDetails Funtion To Get ProductReview Details
-    public function getProductReviewDetails(int $product_review_id)
+    public function getProductReviewDetails(object $productReview)
     {
-        return $this->productReviewRepository->getProductReviewDetails($product_review_id);
+        return $this->productReviewRepository->getProductReviewDetails($productReview);
     }
 
     // deleteProductReview Funtion To Delete ProductReview
-    public function deleteProductReview(int $id)
+    public function deleteProductReview(object $productReview)
     {
-        $product_review_details =  $this->productReviewRepository->getProductReviewDetails($id);
-        if(!$product_review_details){
-            return null;
-        }
-        return $this->productReviewRepository->deleteProductReview($product_review_details);
+        // $product_review_details =  $this->productReviewRepository->getProductReviewDetails($productReview);
+        // if(!$product_review_details){
+        //     return null;
+        // }
+        return $this->productReviewRepository->deleteProductReview($productReview);
     }
 
 }

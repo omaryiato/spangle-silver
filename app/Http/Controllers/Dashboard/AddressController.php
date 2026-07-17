@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\AddressService;
 use App\Http\Resources\AddressResource;
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\Dashboard\Address\AddAddress;
+use App\Http\Requests\Dashboard\Address\UpdateAddress;
 use App\Models\Address;
 
 class AddressController extends Controller
@@ -39,7 +41,7 @@ class AddressController extends Controller
     public function show(Address $address)
     {
 
-        $address_details =  $this->addressService->getAddressDetails($address->id);
+        $address_details =  $this->addressService->getAddressDetails($address);
 
         return ResponseHelper::success(
             new AddressResource($address_details),
@@ -52,12 +54,12 @@ class AddressController extends Controller
     }
 
     // Funtion To Add New Address
-    public function store(Request $request)
+    public function store(AddAddress $request)
     {
 
         try {
 
-            $address_details = $this->addressService->addNewAddress($request->all());
+            $address_details = $this->addressService->addNewAddress($request->validated());
 
             return ResponseHelper::success(
                 new AddressResource($address_details),
@@ -78,15 +80,15 @@ class AddressController extends Controller
     }
 
     // Funtion To Update Address
-    public function update(Request $request, Address $address)
+    public function update(UpdateAddress $request, Address $address)
     {
         try {
 
-            $address_details =  $this->addressService->updateAddress($request->all(), $address->id);
+            $address_details =  $this->addressService->updateAddress($request->validated(), $address);
 
             if (!$address_details) {
                 return ResponseHelper::error(
-                    $address_details,
+                    new AddressResource($address_details),
                     [
                         'en' => trans('validation.data_not_found'),
                         'ar' => trans('validation.data_not_found'),
@@ -118,7 +120,7 @@ class AddressController extends Controller
     {
         try {
 
-            $address_details = $this->addressService->deleteAddress($request->all(), $address->id);
+            $address_details = $this->addressService->deleteAddress($request->all(), $address);
 
             if (!$address_details) {
                 return ResponseHelper::error(

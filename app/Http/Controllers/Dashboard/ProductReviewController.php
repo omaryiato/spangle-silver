@@ -31,7 +31,7 @@ class ProductReviewController extends Controller
 
     public function show(ProductReview $productReview)
     {
-        $products_review_details = $this->productReviewService->getProductReviewDetails($productReview->id);
+        $products_review_details = $this->productReviewService->getProductReviewDetails($productReview);
         return ResponseHelper::success(
             new ProductReviewResource($products_review_details),
             [
@@ -45,7 +45,7 @@ class ProductReviewController extends Controller
     {
         try{
 
-            $products_review_details = $this->productReviewService->deleteProductReview($productReview->id);
+            $products_review_details = $this->productReviewService->deleteProductReview($productReview);
 
             if (!$products_review_details) {
                 return ResponseHelper::error(

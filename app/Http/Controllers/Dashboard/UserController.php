@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Services\Dashboard\UserService;
 use App\Http\Resources\UserResource;
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\Dashboard\User\AddUser;
+use App\Http\Requests\Dashboard\User\UpdateUser;
 use App\Models\User;
 
 class UserController extends Controller
@@ -36,7 +38,7 @@ class UserController extends Controller
     public function show(User $user)
     {
 
-        $user_details =  $this->userService->getUserDetails($user->id);
+        $user_details =  $this->userService->getUserDetails($user);
 
         if (!$user_details) {
             return ResponseHelper::error(
@@ -59,11 +61,11 @@ class UserController extends Controller
     }
 
     //  Funtion To Add New User
-    public function store(Request $request)
+    public function store(AddUser $request)
     {
         try{
 
-            $user_details = $this->userService->addNewUser($request->all());
+            $user_details = $this->userService->addNewUser($request->validated());
             return ResponseHelper::success(
                 new UserResource($user_details),
                 [
@@ -85,11 +87,11 @@ class UserController extends Controller
     }
 
     //  Funtion To Update User
-    public function update(Request $request, User $user)
+    public function update(UpdateUser $request, User $user)
     {
         try {
 
-            $user_details =  $this->userService->updateUser($request->all(), $user->id);
+            $user_details =  $this->userService->updateUser($request->validated(), $user);
 
             if (!$user_details) {
                 return ResponseHelper::error(
@@ -102,7 +104,7 @@ class UserController extends Controller
             }
 
             return ResponseHelper::success(
-                $user_details,
+                new UserResource($user_details),
                 [
                     'en' => trans('validation.data_updated'),
                     'ar' => trans('validation.data_updated'),
@@ -125,7 +127,7 @@ class UserController extends Controller
     {
         try {
 
-            $user_details = $this->userService->deleteUser($request->all(), $user->id);
+            $user_details = $this->userService->deleteUser($request->all(), $user);
 
             if (!$user_details) {
                 return ResponseHelper::error(

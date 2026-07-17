@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\LookupType\UpdateLookupType;
 use Illuminate\Http\Request;
 use App\Http\Resources\LookupTypeResource;
 use App\Services\Dashboard\LookupTypeService;
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\Dashboard\LookupType\AddLookupType;
 use App\Models\LookupType;
 
 class LookupTypeController extends Controller
@@ -21,10 +23,10 @@ class LookupTypeController extends Controller
     // GET /lookup-types
     public function index()
     {
-        $lookupTypes = $this->lookupTypeService->getLookupTypeList();
+        $lookup_type_list = $this->lookupTypeService->getLookupTypeList();
 
         return ResponseHelper::success(
-            LookupTypeResource::collection($lookupTypes),
+            LookupTypeResource::collection($lookup_type_list),
             [
                 'en' => trans('validation.data_retrieved'),
                 'ar' => trans('validation.data_retrieved'),
@@ -36,7 +38,7 @@ class LookupTypeController extends Controller
     // GET /lookup-types/{id}
     public function show(LookupType $lookupType)
     {
-        $lookup_type = $this->lookupTypeService->getLookupTypeDetails($lookupType->id);
+        $lookup_type = $this->lookupTypeService->getLookupTypeDetails($lookupType);
 
         if (!$lookup_type) {
             return ResponseHelper::error(
@@ -59,10 +61,10 @@ class LookupTypeController extends Controller
     }
 
     // POST /lookup-types
-    public function store(Request $request)
+    public function store(AddLookupType $request)
     {
         try {
-            $lookup_type = $this->lookupTypeService->addNewLookupType($request->all());
+            $lookup_type = $this->lookupTypeService->addNewLookupType($request->validated());
 
             return ResponseHelper::success(
                 new LookupTypeResource($lookup_type),
@@ -84,10 +86,10 @@ class LookupTypeController extends Controller
     }
 
     // PUT /lookup-types/{id}
-    public function update(Request $request, LookupType $lookupType)
+    public function update(UpdateLookupType $request, LookupType $lookupType)
     {
         try {
-            $lookup_type = $this->lookupTypeService->updateLookupType($request->all(), $lookupType->id);
+            $lookup_type = $this->lookupTypeService->updateLookupType($request->validated(), $lookupType);
 
             if (!$lookup_type) {
                 return ResponseHelper::error(
@@ -122,7 +124,7 @@ class LookupTypeController extends Controller
     public function destroy(Request $request, LookupType $lookupType)
     {
         try {
-            $lookup_type = $this->lookupTypeService->deleteLookupType($request->all(), $lookupType->id);
+            $lookup_type = $this->lookupTypeService->deleteLookupType($request->all(), $lookupType);
 
             if (!$lookup_type) {
                 return ResponseHelper::error(

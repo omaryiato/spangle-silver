@@ -4,24 +4,26 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SiteImageResource;
-use App\Models\SiteImage;
+use App\Http\Requests\Dashboard\SiteMedia\AddMedia;
+use App\Http\Requests\Dashboard\SiteMedia\UpdateMedia;
+use App\Http\Resources\SiteMediaResource;
+use App\Models\SiteMedia;
 use Illuminate\Http\Request;
-use App\Services\Dashboard\SiteImageService;
+use App\Services\Dashboard\SiteMediaService;
 
-class SiteImageController extends Controller
+class SiteMediaController extends Controller
 {
-    protected $siteImageService;
+    protected $siteMediaService;
 
-    public function __construct(SiteImageService $siteImageService)
+    public function __construct(SiteMediaService $siteMediaService)
     {
-        $this->siteImageService = $siteImageService;
+        $this->siteMediaService = $siteMediaService;
     }
 
     public function index(){
-        $site_image_list = $this->siteImageService->getSiteImageList();
+        $site_media_list = $this->siteMediaService->getSiteMediaList();
         return ResponseHelper::success(
-                SiteImageResource::collection($site_image_list),
+                SiteMediaResource::collection($site_media_list),
                 [
                     'en' => trans('validation.data_retrieved'),
                     'ar' => trans('validation.data_retrieved'),
@@ -30,13 +32,13 @@ class SiteImageController extends Controller
     }
 
     //  Funtion to Get User Details
-    public function show(SiteImage $siteImage)
+    public function show(SiteMedia $siteMedia)
     {
 
-        $site_image_details =  $this->siteImageService->getSiteImageDetails($siteImage->id);
+        $site_media_details =  $this->siteMediaService->getSiteMediaDetails($siteMedia);
 
         return ResponseHelper::success(
-                new SiteImageResource($site_image_details),
+                new SiteMediaResource($site_media_details),
                 [
                     'en' => trans('validation.data_retrieved'),
                     'ar' => trans('validation.data_retrieved'),
@@ -46,13 +48,13 @@ class SiteImageController extends Controller
     }
 
     //  Funtion To Add New User
-    public function store(Request $request)
+    public function store(AddMedia $request)
     {
         try{
 
-            $site_image_details = $this->siteImageService->addNewSiteImage($request);
+            $site_media_details = $this->siteMediaService->addNewSiteMedia($request);
             return ResponseHelper::success(
-                new SiteImageResource($site_image_details),
+                new SiteMediaResource($site_media_details),
                 [
                     'en' => trans('validation.data_added'),
                     'ar' => trans('validation.data_added'),
@@ -72,15 +74,15 @@ class SiteImageController extends Controller
     }
 
     //  Funtion To Update User
-    public function update(Request $request, SiteImage $siteImage)
+    public function update(UpdateMedia $request, SiteMedia $siteMedia)
     {
         try {
 
-            $site_image_details =  $this->siteImageService->updateSiteImage($request, $siteImage->id);
+            $site_media_details =  $this->siteMediaService->updateSiteMedia($request, $siteMedia);
 
-            if (!$site_image_details) {
+            if (!$site_media_details) {
                 return ResponseHelper::error(
-                    new SiteImageResource($site_image_details),
+                    new SiteMediaResource($site_media_details),
                     [
                         'en' => trans('validation.data_not_found'),
                         'ar' => trans('validation.data_not_found'),
@@ -89,7 +91,7 @@ class SiteImageController extends Controller
             }
 
             return ResponseHelper::success(
-                $site_image_details,
+                $site_media_details,
                 [
                     'en' => trans('validation.data_updated'),
                     'ar' => trans('validation.data_updated'),
@@ -108,15 +110,15 @@ class SiteImageController extends Controller
     }
 
     // deleteUser Funtion To Delete User
-    public function destroy(Request $request, SiteImage $siteImage)
+    public function destroy(Request $request, SiteMedia $siteMedia)
     {
         try {
 
-            $site_image_details = $this->siteImageService->deleteSiteImage($siteImage->id);
+            $site_media_details = $this->siteMediaService->deleteSiteMedia($siteMedia);
 
-            if (!$site_image_details) {
+            if (!$site_media_details) {
                 return ResponseHelper::error(
-                    $site_image_details,
+                    $site_media_details,
                     [
                         'en' => trans('validation.data_not_found'),
                         'ar' => trans('validation.data_not_found'),
@@ -140,5 +142,22 @@ class SiteImageController extends Controller
                 $exception->getMessage(),
                 500);
         }
+    }
+
+    public function stream(int $id)
+    {
+        $media_details = $this->siteMediaService->stream($id);
+
+        if(!$media_details){
+            return ResponseHelper::error(
+                    $media_details,
+                    [
+                        'en' => trans('validation.media_not_found'),
+                        'ar' => trans('validation.media_not_found'),
+                    ],
+                    404);
+        }
+
+        return $media_details;
     }
 }

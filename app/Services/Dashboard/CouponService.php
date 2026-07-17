@@ -22,9 +22,9 @@ class CouponService
     }
 
     // getCouponDetails Funtion To Get Coupon Details
-    public function getCouponDetails(int $id)
+    public function getCouponDetails(object $coupon)
     {
-        return $this->couponRepository->getCouponDetails($id);
+        return $this->couponRepository->getCouponDetails($coupon);
     }
 
     // addNewCoupon Funtion To Add new Coupon
@@ -34,23 +34,23 @@ class CouponService
     }
 
     // updateCoupon Funtion To Update Coupon info
-    public function updateCoupon(array $coupon_request, int $id)
+    public function updateCoupon(array $coupon_request, object $coupon)
     {
-        $coupon_details = $this->couponRepository->getCouponDetails($id);
-        if(!$coupon_details){
-            return null;
-        }
-        return $this->couponRepository->updateCoupon($coupon_details, $this->prepareRequestInfo($coupon_request));
+        // $coupon_details = $this->couponRepository->getCouponDetails($coupon);
+        // if(!$coupon_details){
+        //     return null;
+        // }
+        return $this->couponRepository->updateCoupon($coupon, $this->prepareRequestInfo($coupon_request));
     }
 
     // deleteCoupon Funtion To Delete Coupon
-    public function deleteCoupon(array $coupon_request, int $id)
+    public function deleteCoupon(array $coupon_request, object $coupon)
     {
-        $coupon_details = $this->couponRepository->getCouponDetails($id);
-        if(!$coupon_details){
-            return null;
-        }
-        return $this->couponRepository->deleteCoupon($coupon_details);
+        // $coupon_details = $this->couponRepository->getCouponDetails($coupon);
+        // if(!$coupon_details){
+        //     return null;
+        // }
+        return $this->couponRepository->deleteCoupon($coupon);
     }
 
     public function prepareRequestInfo(array $request_info)

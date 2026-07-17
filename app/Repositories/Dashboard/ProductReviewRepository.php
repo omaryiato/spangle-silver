@@ -2,9 +2,7 @@
 
 namespace App\Repositories\Dashboard;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
+
 use App\Models\ProductReview;
 
 
@@ -18,13 +16,13 @@ class ProductReviewRepository
     }
 
     // getProductReviewDetails Funtion To Get Product Details
-    public function getProductReviewDetails(int $id)
+    public function getProductReviewDetails(object $productReview)
     {
-        return ProductReview::with(['user', 'product'])->findorfail($id);
+        return $productReview->load(['user', 'product']);
     }
 
     // deleteProductReview Funtion To Delete Category
-    public function deleteProductReview(ProductReview $productReview)
+    public function deleteProductReview(object $productReview)
     {
         $productReview->delete();
         return $productReview;

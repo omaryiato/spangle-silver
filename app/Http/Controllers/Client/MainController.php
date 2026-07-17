@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\SiteImageResource;
+use App\Http\Resources\SiteMediaResource;
 use App\Http\Resources\SiteThemeResource;
 use App\Services\Client\MainService;
 use Exception;
@@ -49,7 +49,7 @@ class MainController extends Controller
         $site_media = $this->mainService->getSiteMedia();
 
         return ResponseHelper::success(
-            SiteImageResource::collection($site_media),
+            SiteMediaResource::collection($site_media),
             [
                 'en' => trans('validation.get_site_media'),
                 'ar' => trans('validation.get_site_media'),

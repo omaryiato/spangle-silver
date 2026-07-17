@@ -21,9 +21,9 @@ class SiteThemeService
     }
 
     // getSiteThemeDetails Funtion To Get Shipping Method Details
-    public function getSiteThemeDetails(int $id)
+    public function getSiteThemeDetails(object $siteTheme)
     {
-        return $this->siteThemeRepository->getSiteThemeDetails($id);
+        return $this->siteThemeRepository->getSiteThemeDetails($siteTheme);
     }
 
     // addNewSiteTheme Funtion To Add new Shipping Method
@@ -33,24 +33,24 @@ class SiteThemeService
     }
 
     // updateSiteTheme Funtion To Update Shipping Method info
-    public function updateSiteTheme(array $site_theme_request, int $id)
+    public function updateSiteTheme(array $site_theme_request, object $siteTheme)
     {
-        $site_theme_details = $this->siteThemeRepository->getSiteThemeDetails($id);
-        if(!$site_theme_details){
-            return null;
-        }
-        return $this->siteThemeRepository->updateSiteTheme($site_theme_details, $this->prepareRequestInfo($site_theme_request));
+        // $site_theme_details = $this->siteThemeRepository->getSiteThemeDetails($siteTheme);
+        // if(!$site_theme_details){
+        //     return null;
+        // }
+        return $this->siteThemeRepository->updateSiteTheme($siteTheme, $this->prepareRequestInfo($site_theme_request));
     }
 
     // deleteSiteTheme Funtion To Delete Shipping Method
-    public function deleteSiteTheme(int $id)
+    public function deleteSiteTheme(object $siteTheme)
     {
 
-        $site_theme_details = $this->siteThemeRepository->getSiteThemeDetails($id);
-        if(!$site_theme_details){
-            return null;
-        }
-        return $this->siteThemeRepository->deleteSiteTheme($site_theme_details);
+        // $site_theme_details = $this->siteThemeRepository->getSiteThemeDetails($siteTheme);
+        // if(!$site_theme_details){
+        //     return null;
+        // }
+        return $this->siteThemeRepository->deleteSiteTheme($siteTheme);
     }
 
     public function prepareRequestInfo(array $request_info)

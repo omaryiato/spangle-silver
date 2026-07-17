@@ -37,7 +37,7 @@ class UserWishListController extends Controller
     public function show(UserWishlist $userWishlist)
     {
 
-        $user_wish_list_details =  $this->userWishListService->getUserWishListDetails($userWishlist->id);
+        $user_wish_list_details =  $this->userWishListService->getUserWishListDetails($userWishlist);
 
         return ResponseHelper::success(
             new UserWishListResource($user_wish_list_details),

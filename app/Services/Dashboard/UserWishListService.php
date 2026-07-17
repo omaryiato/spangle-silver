@@ -21,9 +21,9 @@ class UserWishListService
     }
 
     // getUserWishListDetails Funtion To Get User Wish List Details
-    public function getUserWishListDetails(int $id)
+    public function getUserWishListDetails(object $userWishlist)
     {
-        return $this->userWishListRepository->getUserWishListDetails($id);
+        return $this->userWishListRepository->getUserWishListDetails($userWishlist);
     }
 
 }

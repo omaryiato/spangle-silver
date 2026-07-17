@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Service\Dashboard\CategoryService;
 use App\Http\Resources\CategoryResource;
 use App\Helpers\ResponseHelper;
+use App\Http\Requests\Dashboard\Category\AddCategory;
+use App\Http\Requests\Dashboard\Category\UpdateCategory;
 use App\Models\Category;
 use Exception;
 
@@ -33,7 +35,7 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        $category_details = $this->categoryService->getCategoryDetails($category->id);
+        $category_details = $this->categoryService->getCategoryDetails($category);
 
         return ResponseHelper::success(
             new CategoryResource($category_details),
@@ -44,7 +46,7 @@ class CategoryController extends Controller
             200);
     }
 
-    public function store(Request $request)
+    public function store(AddCategory $request)
     {
         try{
             $category_details = $this->categoryService->addNewCategory($request);
@@ -66,10 +68,10 @@ class CategoryController extends Controller
                 500);
         }
     }
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategory $request, Category $category)
     {
         try{
-            $category_details = $this->categoryService->updateCategoryDetails($request, $category->id);
+            $category_details = $this->categoryService->updateCategoryDetails($request, $category);
 
             if (!$category_details) {
                 return ResponseHelper::error(
@@ -103,7 +105,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         try{
-            $category_details = $this->categoryService->deleteCategory($category->id);
+            $category_details = $this->categoryService->deleteCategory($category);
 
             if (!$category_details) {
                 return ResponseHelper::error(

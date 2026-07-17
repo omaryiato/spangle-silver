@@ -2,10 +2,13 @@
 
 namespace App\Services\Dashboard;
 
+use App\Helpers\ResponseHelper;
 use App\Repositories\Dashboard\ProductRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
-
+use Intervention\Image\Format;
+use Intervention\Image\Laravel\Facades\Image;
 
 
 class ProductService
@@ -24,9 +27,9 @@ class ProductService
     }
 
     // getProductDetails Funtion To Get Product Details
-    public function getProductDetails(int $product_id)
+    public function getProductDetails(object $product)
     {
-        return $this->productRepository->getProductDetails($product_id);
+        return $this->productRepository->getProductDetails($product);
     }
 
     // addNewProduct Funtion To Add new Product
@@ -34,14 +37,19 @@ class ProductService
     {
         return DB::transaction(function () use ($product_request) {
 
+            if (!empty($product_request['product_reels'])) {
+                $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name']);
+                $product_request['product_reels'] = $reels;
+            }
+
             $product = $this->productRepository->addNewProduct($this->prepareProductRequest($product_request));
 
-            if (!empty($data['product_images'])) {
-                $images = $this->uploadProductImages($product_request, $product['id']);
+            if (!empty($product_request['product_images'])) {
+                $images = $this->uploadProductImages($product_request, $product['product_en_name']);
                 $this->productRepository->addProductImages($product, $images);
             }
 
-            if (!empty($data['product_variants'])) {
+            if (!empty($product_request['product_variants'])) {
                 $variants = $this->prepareProductVariants($product_request);
                 $this->productRepository->addProductVariants($product, $variants);
             }
@@ -49,6 +57,45 @@ class ProductService
             return $product;
         });
     }
+
+    public function updateProduct(array $product_request, object $product)
+    {
+        return DB::transaction(function () use ($product_request, $product) {
+
+            // $product = $this->productRepository->getProductDetails($id);
+
+            if (!empty($product_request['product_reels'])) {
+                $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name']);
+                $product_request['product_reels'] = $reels;
+            }
+
+            $this->productRepository->updateProduct(
+                $product,
+                $this->prepareProductRequest($product_request)
+            );
+
+            if (isset($product_request['product_images'])) {
+
+                $this->productRepository->deleteProductImages($product);
+
+                $images = $this->uploadProductImages($product_request, $product->product_en_name);
+
+                $this->productRepository->addProductImages($product, $images);
+            }
+
+            if (isset($product_request['product_variants'])) {
+
+                $this->productRepository->deleteProductVariants($product);
+
+                $variants = $this->prepareProductVariants($product_request);
+
+                $this->productRepository->addProductVariants($product, $variants);
+            }
+
+            return $product;
+        });
+    }
+
 
     public function prepareProductRequest(array $product_request)
     {
@@ -68,28 +115,41 @@ class ProductService
         ];
     }
 
-    public function uploadProductImages(array $product_request, int $product_id)
+    public function uploadProductImages(array $product_request, string $product_en_name)
     {
         $product_images = [];
 
-        foreach ($product_request['product_images'] as $image) {
+        foreach ($product_request['product_images'] as $product_image) {
 
             $product_name = str_replace(' ', '_', $product_request['product_en_name']);
-            $extension = $image['file']->getClientOriginalExtension();
+            $extension = $product_image['image']->getClientOriginalExtension();
             $file_name = "{$product_name}_" . uniqid() . ".{$extension}";
 
-            $path = public_path("documents/product_{$product_id}");
+            $path = public_path("documents/{$product_en_name}_product");
 
             if (!File::exists($path)) {
                 File::makeDirectory($path, 0755, true);
             }
 
-            $image['file']->move($path, $file_name);
+            $webp_name = pathinfo($file_name, PATHINFO_FILENAME) . '.webp';
+
+            $image = Image::decode($product_image['image']);
+
+            // encode to webp
+            $encoded = $image->encodeUsingFormat(
+                Format::WEBP,
+                quality: 85
+            );
+
+            // save encoded image
+            $encoded->save("{$path}/{$webp_name}");
+
+            // $image['file']->move($path, $file_name);
 
             $product_images[] = [
-                'image' => $file_name,
-                'is_primary' => $image['is_primary'] ?? 0,
-                'sort_order' => $image['sort_order'] ?? 0,
+                'image' => "{$path}/{$webp_name}",
+                'is_primary' => $product_image['is_primary'] ?? 0,
+                'sort_order' => $product_image['sort_order'] ?? 0,
                 'created_by' => $product_request['created_by'],
                 'updated_by' => $product_request['created_by'],
             ];
@@ -122,44 +182,44 @@ class ProductService
         }, $product_request['product_variants']);
     }
 
-    public function updateProduct(array $product_request, int $id)
+    // deleteProduct Funtion To Delete Product
+    public function deleteProduct(object $product)
     {
-        return DB::transaction(function () use ($product_request, $id) {
-
-            $product = $this->productRepository->getProductDetails($id);
-
-            $this->productRepository->updateProduct(
-                $product,
-                $this->prepareProductRequest($product_request)
-            );
-
-            if (isset($product_request['product_images'])) {
-
-                $this->productRepository->deleteProductImages($product);
-
-                $images = $this->uploadProductImages($product_request, $id);
-
-                $this->productRepository->addProductImages($product, $images);
-            }
-
-            if (isset($product_request['product_variants'])) {
-
-                $this->productRepository->deleteProductVariants($product);
-
-                $variants = $this->prepareProductVariants($product_request);
-
-                $this->productRepository->addProductVariants($product, $variants);
-            }
-
-            return $product;
-        });
+        // $product_details =  $this->productRepository->getProductDetails($id);
+        return $this->productRepository->deleteProduct($product);
     }
 
-    // deleteProduct Funtion To Delete Product
-    public function deleteProduct(int $id)
+    protected function uploadProductReels(UploadedFile $file, string $product_en_name): string
     {
-        $product_details =  $this->productRepository->getProductDetails($id);
-        return $this->productRepository->deleteProduct($product_details);
+
+        $destination_path = public_path("documents/{$product_en_name}_product/");
+
+        if (!File::exists($destination_path)) {
+            File::makeDirectory(
+                $destination_path,
+                0755,
+                true
+            );
+        }
+
+        // $video_name = pathinfo(
+        //     $media_name,
+        //     PATHINFO_FILENAME
+        // ) . '.mp4';
+
+        $extension = $file->getClientOriginalExtension();
+
+        $file_name = str_replace(' ','_',$product_en_name)
+            .'_'.uniqid()
+            .'.'.$extension;
+
+        $file->move(
+            $destination_path,
+            $file_name
+        );
+
+
+        return "documents/{$product_en_name}_product/{$file_name}";
     }
 
 }

@@ -23,6 +23,7 @@ class ProductResource extends JsonResource
             'produst_en_description' => $this->produst_en_description ?? null,
             'produst_ar_description' => $this->produst_ar_description ?? null,
             'status' => $this->product_status ?? null,
+            'product_reels' => $this->product_reels ?? null,
             'created_by' => $this->created_by ?? null,
 
             'updated_by' => $this->updated_by ?? null,
@@ -46,6 +47,8 @@ class ProductResource extends JsonResource
             'produst_images' => ProductImageResource::collection($this->whenLoaded('images')),
             'product_variants' => ProductVariantResource::collection($this->whenLoaded('variants')),
             'product_reviews' => ProductReviewResource::collection($this->whenLoaded('reviews')),
+
+            'stream_url' =>preg_replace('#(?<!:)//\+#', '/', route('reel.stream', $this->id)) ?? null,
         ];
     }
 }

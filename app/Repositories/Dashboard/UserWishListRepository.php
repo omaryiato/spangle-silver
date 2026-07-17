@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Dashboard;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\UserWishlist;
 
 
@@ -16,9 +15,9 @@ class UserWishListRepository
     }
 
     // getUserWishlistDetails Funtion To Get UserWishlist Details
-    public function getUserWishlistDetails(int $id)
+    public function getUserWishlistDetails(object $userWishlist)
     {
-        return UserWishlist::with(['user','product'])->findorfail($id);
+        return $userWishlist->load(['user','product']);
     }
 }
 

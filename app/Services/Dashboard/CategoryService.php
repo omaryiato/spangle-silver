@@ -18,13 +18,13 @@ class CategoryService {
         return $this->categoryRepository->getCategoryList();
     }
 
-    public function getCategoryDetails(int $id){
-        return $this->categoryRepository->getCategoryDetails($id);
+    public function getCategoryDetails(object $category){
+        return $this->categoryRepository->getCategoryDetails($category);
     }
 
     public function addNewCategory($request)
     {
-        $category_request = $request->all();
+        $category_request = $request->validated();
 
         if ($request->hasFile('category_image')) {
             $category_image = $this->uploadCategoryImage(
@@ -40,23 +40,23 @@ class CategoryService {
         );
     }
 
-    public function updateCategoryDetails($request, int $id)
+    public function updateCategoryDetails(object $request, object $category)
     {
-        $category_request = $request->all();
+        $category_request = $request->validated();
 
-        $category_details = $this->categoryRepository->getCategoryDetails($id);
+        // $category_details = $this->categoryRepository->getCategoryDetails($id);
 
-        if(!$category_details){
-            return null;
-        }
+        // if(!$category_details){
+        //     return null;
+        // }
 
 
         if ($request->hasFile('category_image')) {
 
             // Delete old image
-            if ($category_details->category_image) {
+            if ($category->category_image) {
 
-                $old_path = public_path($category_details->category_image);
+                $old_path = public_path($category->category_image);
 
                 if (File::exists($old_path)) {
                     File::delete($old_path);
@@ -72,22 +72,22 @@ class CategoryService {
 
         } else {
             // keep old image
-            $category_request['category_image'] = $category_details->category_image;
+            $category_request['category_image'] = $category->category_image;
         }
 
 
         return $this->categoryRepository->updateCategoryDetails(
-            $category_details,
+            $category,
             $this->prepareRequestInfo($category_request)
         );
     }
 
-    public function deleteCategory(int $id){
-        $category_details = $this->categoryRepository->getCategoryDetails($id);
-        if(!$category_details){
-            return null;
-        }
-        return $this->categoryRepository->deleteCategory($category_details);
+    public function deleteCategory(object $category){
+        // $category_details = $this->categoryRepository->getCategoryDetails($category);
+        // if(!$category_details){
+        //     return null;
+        // }
+        return $this->categoryRepository->deleteCategory($category);
     }
 
     public function uploadCategoryImage($file, string $category_en_name)

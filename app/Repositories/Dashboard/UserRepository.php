@@ -45,9 +45,9 @@ class UserRepository
     }
 
     // getUserDetails Funtion To Get User Details
-    public function getUserDetails(int $id)
+    public function getUserDetails(object $user)
     {
-        return User::with([
+        return $user->load([
             // User Addresses
             'addresses',
 
@@ -76,7 +76,7 @@ class UserRepository
             'wishlist.product.material',
             'wishlist.product.stone',
 
-        ])->findOrFail($id);
+        ]);
     }
 
     // addNewUser Funtion To Add new User
@@ -86,14 +86,14 @@ class UserRepository
     }
 
     // updateUser Funtion To Update User info
-    public function updateUser(User $user, array $user_request)
+    public function updateUser(object $user, array $user_request)
     {
         $user->update($user_request);
         return $user;
     }
 
     // deleteUser Funtion To Delete User
-    public function deleteUser(User $user)
+    public function deleteUser(object $user)
     {
         $user->delete();
         return $user;
