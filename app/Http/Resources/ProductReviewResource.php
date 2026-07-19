@@ -16,12 +16,17 @@ class ProductReviewResource extends JsonResource
     {
         return [
             'id' => $this->id ?? null,
+
             'user_id' => $this->user_id ?? null,
+            'full_name' => $this->user?->full_name ?? null,
+            'user_name' => $this->user?->user_name ?? null,
+
             'product_id' => $this->product_id ?? null,
+
             'comment' => $this->comment ?? null,
             'rating' => $this->rating ?? null,
-            'created_by' => $this->created_by ?? null,
 
+            'created_by' => $this->created_by ?? null,
             'updated_by' => $this->updated_by ?? null,
 
             'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,

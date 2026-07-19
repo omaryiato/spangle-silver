@@ -14,6 +14,7 @@ class CouponResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id ?? null,
             'code' => $this->code ?? null,
@@ -23,8 +24,8 @@ class CouponResource extends JsonResource
             'used_count' => $this->used_count ?? null,
             'expires_at' => $this->expires_at?->format('Y-m-d H:i:s') ?? null,
             'status' => $this->status ?? null,
-            'created_by' => $this->created_by ?? null,
 
+            'created_by' => $this->created_by ?? null,
             'updated_by' => $this->updated_by ?? null,
 
             'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,

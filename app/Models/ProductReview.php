@@ -11,7 +11,14 @@ class ProductReview extends Model
 
     protected $table = 'product_review';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'comment',
+        'rating',
+        'created_by',
+        'updated_by',
+    ];
 
     protected $casts = [
         'created_at' => 'datetime',
@@ -21,11 +28,11 @@ class ProductReview extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SiteMedia extends Model
 {
     protected $table = "site_media";
-
+ 
     protected $fillable = [
         'file_name',
         'original_name',

@@ -10,6 +10,7 @@ class Category extends Model
     // use SoftDeletes;
 
     protected $table = 'category';
+
     protected $fillable = [
         'category_en_name',
         'category_ar_name',
@@ -26,10 +27,8 @@ class Category extends Model
         'deleted_at' => 'datetime',
     ];
 
-    protected $guarded = [];
-
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'category_id', 'id');
     }
 }

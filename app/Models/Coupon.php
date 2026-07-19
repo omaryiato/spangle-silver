@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Coupon extends Model
 {
     protected $table = "coupons";
+
     protected $fillable = [
         "code",
         "discount_amount",
@@ -28,6 +29,6 @@ class Coupon extends Model
 
     public function usages()
     {
-        return $this->hasMany(CouponUsage::class);
+        return $this->hasMany(CouponUsage::class, 'coupon_id', 'id');
     }
 }

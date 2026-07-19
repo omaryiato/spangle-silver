@@ -11,6 +11,7 @@ class User extends Model
     // use SoftDeletes;
 
     protected $table = 'users';
+
     protected $fillable = [
         'full_name',
         'user_name',
@@ -33,31 +34,30 @@ class User extends Model
         'password',
     ];
 
-    protected $guarded = [];
 
     public function addresses()
     {
-        return $this->hasMany(Address::class);
+        return $this->hasMany(Address::class, 'user_id', 'id');
     }
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'user_id', 'id');
     }
 
     public function cart()
     {
-        return $this->hasMany(CartProduct::class);
+        return $this->hasMany(CartProduct::class, 'user_id', 'id');
     }
 
     public function wishlist()
     {
-        return $this->hasMany(UserWishlist::class);
+        return $this->hasMany(UserWishlist::class, 'user_id', 'id');
     }
 
     public function reviews()
     {
-        return $this->hasMany(ProductReview::class);
+        return $this->hasMany(ProductReview::class, 'user_id', 'id');
     }
 }
 

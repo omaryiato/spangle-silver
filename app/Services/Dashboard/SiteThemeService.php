@@ -3,6 +3,11 @@
 namespace App\Services\Dashboard;
 
 use App\Repositories\Dashboard\SiteThemeRepository;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Format;
+use Intervention\Image\Laravel\Facades\Image;
+
 
 class SiteThemeService
 {
@@ -27,19 +32,56 @@ class SiteThemeService
     }
 
     // addNewSiteTheme Funtion To Add new Shipping Method
-    public function addNewSiteTheme(array $site_theme_request)
+    public function addNewSiteTheme(object $request)
     {
+        $site_theme_request = $request->validated();
+
+        if ($request->hasFile('background_image')) {
+            $background_image = $this->uploadThemeImage(
+                $request->file('background_image'),
+                $site_theme_request['theme_name']
+            );
+
+            $site_theme_request['background_image'] = $background_image;
+        }
         return $this->siteThemeRepository->addNewSiteTheme($this->prepareRequestInfo($site_theme_request));
     }
 
     // updateSiteTheme Funtion To Update Shipping Method info
-    public function updateSiteTheme(array $site_theme_request, object $siteTheme)
+    public function updateSiteTheme(object $request, object $siteTheme)
     {
         // $site_theme_details = $this->siteThemeRepository->getSiteThemeDetails($siteTheme);
         // if(!$site_theme_details){
         //     return null;
         // }
-        return $this->siteThemeRepository->updateSiteTheme($siteTheme, $this->prepareRequestInfo($site_theme_request));
+        $site_theme_request = $request->validated();
+
+        if ($request->hasFile('background_image')) {
+
+            // Delete old image
+            if ($siteTheme->background_image) {
+
+                $old_path = public_path($siteTheme->background_image);
+
+                if (File::exists($old_path)) {
+                    File::delete($old_path);
+                }
+            }
+
+
+            // Upload new image
+            $site_theme_request['background_image'] = $this->uploadThemeImage(
+                $request->file('background_image'),
+                $site_theme_request['theme_name']
+            );
+
+        } else {
+            // keep old image
+            $site_theme_request['background_image'] = $siteTheme->background_image;
+        }
+
+        return $this->siteThemeRepository->updateSiteTheme($siteTheme,
+        $this->prepareRequestInfo($site_theme_request));
     }
 
     // deleteSiteTheme Funtion To Delete Shipping Method
@@ -77,6 +119,39 @@ class SiteThemeService
 
 
         return $request_data;
+    }
+
+    public function uploadThemeImage(UploadedFile $file, string $theme_name)
+    {
+        $extension = $file->getClientOriginalExtension();
+
+        $file_name = str_replace(' ', '_', $theme_name) . '.' . $extension;
+
+        $folder_path = public_path("documents/themes");
+
+
+        if (!File::exists($folder_path)) {
+            File::makeDirectory($folder_path, 0755, true);
+        }
+
+        $webp_name = pathinfo($file_name, PATHINFO_FILENAME) . '.webp';
+
+        $image = Image::decode($file);
+
+        // encode to webp
+        $encoded = $image->encodeUsingFormat(
+            Format::WEBP,
+            quality: 85
+        );
+
+        // save encoded image
+        $encoded->save("{$folder_path}/{$webp_name}");
+
+
+        // $file->move($folder_path, $file_name);
+
+
+        return "documents/themes/{$webp_name}";
     }
 
 }

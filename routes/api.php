@@ -164,6 +164,8 @@ Route::group(['prefix' => 'client'], function () {
 
     /***************************************** Site Images *******************************************/
 
+        Route::get('/media/{media_id}/stream', [MainController::class, 'stream'])->name('media.stream');
+
         Route::GET('get-site-media', [MainController::class, 'getSiteMedia']);
 
     /***************************************** Product By Category *******************************************/

@@ -3,9 +3,10 @@
 namespace App\Service\Dashboard;
 
 use App\Repositories\Dashboard\CategoryRepository;
-use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
-
+use Intervention\Image\Format;
+use Intervention\Image\Laravel\Facades\Image;
 
 class CategoryService {
 
@@ -90,7 +91,7 @@ class CategoryService {
         return $this->categoryRepository->deleteCategory($category);
     }
 
-    public function uploadCategoryImage($file, string $category_en_name)
+    public function uploadCategoryImage(UploadedFile $file, string $category_en_name)
     {
         $extension = $file->getClientOriginalExtension();
 
@@ -103,21 +104,35 @@ class CategoryService {
             File::makeDirectory($folder_path, 0755, true);
         }
 
+        $webp_name = pathinfo($file_name, PATHINFO_FILENAME) . '.webp';
 
-        $file->move($folder_path, $file_name);
+        $image = Image::decode($file);
+
+        // encode to webp
+        $encoded = $image->encodeUsingFormat(
+            Format::WEBP,
+            quality: 85
+        );
+
+        // save encoded image
+        $encoded->save("{$folder_path}/{$webp_name}");
 
 
-        return "documents/categories/{$file_name}";
+        // $file->move($folder_path, $file_name);
+
+
+        return "documents/categories/{$webp_name}";
     }
 
     public function prepareRequestInfo(array $request_info)
     {
+
         $request_data = [
             'category_en_name' => $request_info['category_en_name'] ?? null,
             'category_ar_name' => $request_info['category_ar_name'] ?? null,
             'category_description' => $request_info['category_description'] ?? null,
             'category_image' => $request_info['category_image'] ?? null,
-            'status' => $request_info['status'] ?? null,
+            'status' => $request_info['status'] ?? 1,
         ];
 
 

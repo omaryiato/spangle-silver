@@ -17,7 +17,9 @@ class OrderDetailResource extends JsonResource
     {
         return [
             'id' => $this->id ?? null,
+
             'order_id' => $this->order_id ?? null,
+            
             'variant_id' => $this->variant_id ?? null,
             'sku' => $this->variant?->sku ?? null,
 
@@ -32,8 +34,8 @@ class OrderDetailResource extends JsonResource
             'quantity' => $this->quantity ?? null,
             'unit_price' => $this->unit_price ?? null,
             'total_price' => $this->total_price ?? null,
-            'created_by' => $this->created_by ?? null,
 
+            'created_by' => $this->created_by ?? null,
             'updated_by' => $this->updated_by ?? null,
 
             'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,

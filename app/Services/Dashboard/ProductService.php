@@ -99,20 +99,32 @@ class ProductService
 
     public function prepareProductRequest(array $product_request)
     {
-        return [
-            'product_en_name' => $product_request['product_en_name'],
-            'product_ar_name' => $product_request['product_ar_name'],
-            'product_en_description' => $product_request['product_en_description'],
-            'product_ar_description' => $product_request['product_ar_description'],
-            'status' => $product_request['product_status'],
-            'product_price' => $product_request['product_price'],
-            'product_material' => $product_request['product_material'],
-            'product_stone' => $product_request['product_stone'],
-            'product_reels' => $product_request['product_reels'],
-            'category_id' => $product_request['category_id'],
-            'created_by' => $product_request['created_by'],
-            'updated_by' => $product_request['created_by'],
+        $request_data = [
+            'product_en_name' => $product_request['product_en_name'] ?? null,
+            'product_ar_name' => $product_request['product_ar_name'] ?? null,
+            'product_en_description' => $product_request['product_en_description'] ?? null,
+            'product_ar_description' => $product_request['product_ar_description'] ?? null,
+            'product_status' => $product_request['product_status'] ?? null,
+            'product_price' => $product_request['product_price'] ?? null,
+            'product_material' => $product_request['product_material'] ?? null,
+            'product_stone' => $product_request['product_stone'] ?? null,
+            'product_reels' => $product_request['product_reels'] ?? null,
+            'category_id' => $product_request['category_id'] ?? null,
+            'created_by' => $product_request['created_by'] ?? null,
+            'updated_by' => $product_request['created_by'] ?? null,
         ];
+
+        if (isset($product_request['created_by'])) {
+            $request_data['created_by'] = $product_request['created_by'];
+        }
+
+
+        if (isset($product_request['updated_by'])) {
+            $request_data['updated_by'] = $product_request['updated_by'];
+        }
+
+
+        return $request_data;
     }
 
     public function uploadProductImages(array $product_request, string $product_en_name)
@@ -150,8 +162,8 @@ class ProductService
                 'image' => "{$path}/{$webp_name}",
                 'is_primary' => $product_image['is_primary'] ?? 0,
                 'sort_order' => $product_image['sort_order'] ?? 0,
-                'created_by' => $product_request['created_by'],
-                'updated_by' => $product_request['created_by'],
+                'created_by' => $product_request['updated_by'],
+                'updated_by' => $product_request['updated_by'],
             ];
         }
 
@@ -160,14 +172,15 @@ class ProductService
 
     public function prepareProductVariants(array $product_request)
     {
+
         return array_map(function ($variant) use ($product_request) {
             $request_data = [
-                'color_id' => $variant['color_id'],
-                'size_id' => $variant['size_id'],
-                'sku' => $variant['sku'],
-                'stock' => $variant['stock'],
-                'price' => $variant['price'],
-                'status' => $variant['status'],
+                'color_id' => $variant['color_id'] ?? null,
+                'size_id' => $variant['size_id'] ?? null,
+                'sku' => $variant['sku'] ?? null,
+                'stock' => $variant['stock'] ?? null,
+                'price' => $variant['price'] ?? null,
+                'status' => $variant['status'] ?? null,
             ];
 
             if (isset($product_request['created_by'])) {

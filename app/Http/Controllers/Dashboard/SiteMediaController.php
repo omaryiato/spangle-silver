@@ -152,8 +152,8 @@ class SiteMediaController extends Controller
             return ResponseHelper::error(
                     $media_details,
                     [
-                        'en' => trans('validation.media_not_found'),
-                        'ar' => trans('validation.media_not_found'),
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
                     ],
                     404);
         }

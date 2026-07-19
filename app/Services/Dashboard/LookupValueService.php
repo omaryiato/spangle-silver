@@ -46,7 +46,8 @@ class LookupValueService
         // if(!$lookup_value_details){
         //     return null;
         // }
-        return $this->lookupValueRepository->updateLookupValue($lookupValue, $this->prepareRequestInfo($lookup_value_request));
+        return $this->lookupValueRepository->updateLookupValue($lookupValue,
+        $this->prepareRequestInfo($lookup_value_request));
 
     }
 
@@ -62,10 +63,13 @@ class LookupValueService
 
     public function prepareRequestInfo(array $request_info)
     {
+
         $request_data = [
             'type_id' => $request_info['type_id'] ?? null,
             'code' => $request_info['code'] ?? null,
-            'meaning' => $request_info['meaning'] ?? null,
+            'color' => $request_info['color'] ?? null,
+            'en_meaning' => $request_info['en_meaning'] ?? null,
+            'ar_meaning' => $request_info['ar_meaning'] ?? null,
             'description' => $request_info['description'] ?? null,
             'status' => $request_info['status'] ?? 1,
         ];

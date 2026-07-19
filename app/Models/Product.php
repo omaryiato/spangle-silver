@@ -10,6 +10,7 @@ class Product extends Model
     // use SoftDeletes;
 
     protected $table = 'products';
+
     protected $fillable = [
         'product_en_name',
         'product_ar_name',
@@ -55,11 +56,11 @@ class Product extends Model
 
     public function material()
     {
-        return $this->belongsTo(LookupValue::class, 'product_material');
+        return $this->belongsTo(LookupValue::class, 'product_material', 'id');
     }
 
     public function stone()
     {
-        return $this->belongsTo(LookupValue::class, 'product_stone');
+        return $this->belongsTo(LookupValue::class, 'product_stone', 'id');
     }
 }

@@ -15,17 +15,18 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id ?? null,
             'full_name' => $this->full_name ?? null,
             'user_name' => $this->user_name ?? null,
             'phone_number' => $this->phone_number ?? null,
-            // 'password' => $this->password ?? null,
+            'email_address' => $this->email_address ?? null,
             'user_status' => $this->status ?? null,
             'user_type' => $this->user_type ?? null,
             'user_addresses' => AddressResource::collection($this->whenLoad('addresses')),
-            'created_by' => $this->created_by ?? null,
 
+            'created_by' => $this->created_by ?? null,
             'updated_by' => $this->updated_by ?? null,
 
             'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,

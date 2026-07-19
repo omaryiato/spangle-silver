@@ -52,7 +52,7 @@ class SiteThemeController extends Controller
     {
         try{
 
-            $site_theme_details = $this->siteThemeService->addNewSiteTheme($request->validated());
+            $site_theme_details = $this->siteThemeService->addNewSiteTheme($request);
             return ResponseHelper::success(
                 new SiteThemeResource($site_theme_details),
                 [
@@ -78,7 +78,7 @@ class SiteThemeController extends Controller
     {
         try {
 
-            $site_theme_details =  $this->siteThemeService->updateSiteTheme($request->validated(), $siteTheme);
+            $site_theme_details =  $this->siteThemeService->updateSiteTheme($request, $siteTheme);
 
             if (!$site_theme_details) {
                 return ResponseHelper::error(

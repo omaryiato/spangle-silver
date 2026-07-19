@@ -11,6 +11,7 @@ class Order extends Model
 
     protected $table = 'orders';
 
+
     protected $fillable = [
         'user_id',
         'address_id',
@@ -42,17 +43,17 @@ class Order extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function address()
     {
-        return $this->belongsTo(Address::class);
+        return $this->belongsTo(Address::class, 'address_id', 'id');
     }
 
     public function shipping()
     {
-        return $this->belongsTo(ShippingMethod::class, 'shipping_id');
+        return $this->belongsTo(ShippingMethod::class, 'shipping_id', 'id');
     }
 
     public function payment()
@@ -62,6 +63,6 @@ class Order extends Model
 
     public function details()
     {
-        return $this->hasMany(OrderDetail::class);
+        return $this->hasMany(OrderDetail::class, 'order_id', 'id');
     }
 }

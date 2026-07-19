@@ -40,7 +40,8 @@ class LookupTypeService
         // if(!$lookup_type_details){
         //     return null;
         // }
-        return $this->lookupTypeRepository->updateLookupType( $lookupType,$this->prepareRequestInfo($lookup_type_request));
+        return $this->lookupTypeRepository->updateLookupType( $lookupType,
+                                    $this->prepareRequestInfo($lookup_type_request));
     }
 
     // deleteLookupType Funtion To Delete Lookup Type

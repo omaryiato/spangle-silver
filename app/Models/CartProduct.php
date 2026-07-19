@@ -11,7 +11,11 @@ class CartProduct extends Model
 
     protected $table = 'cart_products';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'variant_id',
+        'quantity',
+    ];
 
     protected $casts = [
         'created_at' => 'datetime',
@@ -21,11 +25,11 @@ class CartProduct extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function variant()
     {
-        return $this->belongsTo(ProductVariant::class);
+        return $this->belongsTo(ProductVariant::class, 'variant_id', 'id');
     }
 }

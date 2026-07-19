@@ -21,8 +21,6 @@ class OrderDetail extends Model
         'updated_by'
     ];
 
-    protected $guarded = [];
-
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -31,11 +29,11 @@ class OrderDetail extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
     public function variant()
     {
-        return $this->belongsTo(ProductVariant::class);
+        return $this->belongsTo(ProductVariant::class, 'variant_id', 'id');
     }
 }

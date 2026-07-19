@@ -13,12 +13,13 @@ class LookupType extends Model
 {
     // use SoftDeletes;
 
+
     protected $table = 'lookup_types';
 
     protected $fillable = [
         'type_en_name',
         'type_ar_name',
-        'type_desc',
+        'type_description',
         'status',
         'created_by',
         'updated_by',
@@ -29,8 +30,6 @@ class LookupType extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
-
-    public $timestamps = false; // cus we already do it postgre
 
     public function values()
     {

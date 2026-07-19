@@ -11,9 +11,20 @@ class PaymentTransaction extends Model
 
     protected $table = 'payment_transactions';
 
-    protected $guarded = [];
+
+    protected $fillable = [
+        'order_id',
+        'payment_method',
+        'amount',
+        'status',
+        'transaction_ref',
+        'paid_at',
+        'created_by',
+        'updated_by',
+    ];
 
     protected $casts = [
+        'paid_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -21,6 +32,6 @@ class PaymentTransaction extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 }

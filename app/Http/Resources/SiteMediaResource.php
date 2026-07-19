@@ -31,8 +31,10 @@ class SiteMediaResource extends JsonResource
 
             'alt_text' => $this->alt_text,
 
-            'created_by' => $this->created_by ?? null,
+            'type' => $this->type,
+            'status' => $this->status,
 
+            'created_by' => $this->created_by ?? null,
             'updated_by' => $this->updated_by ?? null,
 
             'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,

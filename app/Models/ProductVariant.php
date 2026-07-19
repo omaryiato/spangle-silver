@@ -27,17 +27,17 @@ class ProductVariant extends Model
     ];
 
     public function product(){
-        return $this->belongsTo(Product::class, "product_id");
+        return $this->belongsTo(Product::class, "product_id", 'id');
     }
 
     public function color()
     {
-        return $this->belongsTo(LookupValue::class, 'color_id');
+        return $this->belongsTo(LookupValue::class, 'color_id', 'id');
     }
 
     public function size()
     {
-        return $this->belongsTo(LookupValue::class, 'size_id');
+        return $this->belongsTo(LookupValue::class, 'size_id', 'id');
     }
 
     public function stockMovements()

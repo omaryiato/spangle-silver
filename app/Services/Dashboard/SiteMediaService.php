@@ -35,121 +35,63 @@ class SiteMediaService
     // addNewSiteMedia Funtion To Add new Shipping Method
     public function addNewSiteMedia($request)
     {
-        $site_media_request = $request->validated();
+        $site_media_request = $request->all();
 
-        if ($request->hasFile('image')) {
-            $site_image = $this->uploadSiteMedia(
-                $request->file('image'),
+        if ($request->hasFile('media')) {
+
+            $media_details = $this->prepareMedia(
+                $request->file('media'),
                 $site_media_request['type']
             );
 
-            $site_media_request['image'] = $site_image;
+            $media_details['alt_text'] = $site_media_request['alt_text'] ?? null;
+            $media_details['type'] = $site_media_request['type'] ?? null;
+            $media_details['status'] = $site_media_request['status'] ?? null;
+            $media_details['created_by'] = $site_media_request['created_by'] ?? null;
+            $media_details['updated_by'] = $site_media_request['updated_by'] ?? null;
+
+            return $this->siteMediaRepository->addNewSiteMedia($media_details);
+
         }
-        return $this->siteMediaRepository->addNewSiteMedia($this->prepareRequestInfo($site_media_request));
+
+        // if ($request->hasFile('image')) {
+        //     $site_image = $this->uploadSiteMedia(
+        //         $request->file('image'),
+        //         $site_media_request['type']
+        //     );
+
+        //     $site_media_request['image'] = $site_image;
+        // }
+        // return $this->siteMediaRepository->addNewSiteMedia($this->prepareRequestInfo($site_media_request));
     }
 
     // updateSiteMedia Funtion To Update Shipping Method info
     public function updateSiteMedia($request, object $siteMedia)
     {
-        $site_media_request = $request->validated();
+        $site_media_request = $request->all();
 
-        // $site_media_details = $this->siteMediaRepository->getSiteMediaDetails($siteMedia);
+        if ($request->hasFile('media')) {
 
-        // if(!$site_media_details){
-        //     return null;
-        // }
-
-        if ($request->hasFile('image')) {
-
-            // Delete old image
-            if ($siteMedia->image) {
-
-                $old_path = public_path($siteMedia->image);
-
-                if (File::exists($old_path)) {
-                    File::delete($old_path);
-                }
-            }
+            $this->deleteSiteMedia($siteMedia);
 
 
-            // Upload new Media
-            $site_media_request['image'] = $this->uploadSiteMedia(
-                $request->file('image'),
+            $media_details = $this->prepareMedia(
+                $request->file('media'),
                 $site_media_request['type']
             );
 
-        } else {
-            // keep old Media
-            $site_media_request['image'] = $siteMedia->image;
-        }
-        return $this->siteMediaRepository->updateSiteMedia($siteMedia, $this->prepareRequestInfo($site_media_request));
-    }
+            $media_details['alt_text'] = $site_media_request['alt_text'] ?? null;
+            $media_details['type'] = $site_media_request['type'] ?? null;
+            $media_details['status'] = $site_media_request['status'] ?? null;
+            $media_details['created_by'] = $site_media_request['created_by'] ?? null;
+            $media_details['updated_by'] = $site_media_request['updated_by'] ?? null;
 
-    // deleteSiteMedia Funtion To Delete Shipping Method
-    public function deleteSiteMedia(object $siteMedia)
-    {
+            return $this->siteMediaRepository->addNewSiteMedia($media_details);
 
-        // $site_media_details = $this->siteMediaRepository->getSiteMediaDetails($siteMedia);
-        // if(!$site_media_details){
-        //     return null;
-        // }
-        return $this->siteMediaRepository->deleteSiteMedia($siteMedia);
-    }
-
-    public function uploadSiteMedia(UploadedFile $file, string $type)
-    {
-        $extension = $file->getClientOriginalExtension();
-
-        $file_name = str_replace(' ', '_', $type) . '_' . date('dmYHis') . '.' . $extension;
-
-        $folder_path = public_path("documents/site_media/{$type}/");
-
-
-        if (!File::exists($folder_path)) {
-            File::makeDirectory($folder_path, 0755, true);
         }
 
-        $webp_name = pathinfo($file_name, PATHINFO_FILENAME) . '.webp';
-
-        $image = Image::decode($file);
-
-        // encode to webp
-        $encoded = $image->encodeUsingFormat(
-            Format::WEBP,
-            quality: 85
-        );
-
-        // save encoded image
-        $encoded->save("{$folder_path}/{$webp_name}");
-
-
-        $file->move($folder_path, $file_name);
-
-
-        return "documents/site_media/{$type}/{$webp_name}";
+        return null;
     }
-
-    public function prepareRequestInfo(array $request_info)
-    {
-        $request_data = [
-            'type' => $request_info['type'] ?? null,
-            'status' => $request_info['status'] ?? null,
-        ];
-
-
-        if (isset($request_info['created_by'])) {
-            $request_data['created_by'] = $request_info['created_by'];
-        }
-
-
-        if (isset($request_info['updated_by'])) {
-            $request_data['updated_by'] = $request_info['updated_by'];
-        }
-
-
-        return $request_data;
-    }
-
 
     public function prepareMedia(UploadedFile $file, string $folder = 'website_media')
     {
@@ -189,15 +131,6 @@ class SiteMediaService
             );
         }
 
-        // $media_details = $this->siteMediaRepository->addNewMedia([
-        //     'file_name'     => $media_name,
-        //     'original_name' => $original_name,
-        //     'file_path'     => $media_path,
-        //     'file_type'     => $file_type,
-        //     'mime_type'     => $mime_type,
-        //     'file_size'     => $file_size,
-        // ]);
-
         return [
                 'file_name'     => $media_name,
                 'original_name' => $original_name,
@@ -217,7 +150,7 @@ class SiteMediaService
 
         $original_name = str_replace(' ', '_', $original_name);
 
-        $date = now()->format('d-M-Y');
+        $date = now()->format('Ymd');
 
         $extension = $file->getClientOriginalExtension();
 
@@ -307,20 +240,20 @@ class SiteMediaService
         return 'file';
     }
 
-    public function deleteMedia($media)
+    public function deleteSiteMedia(object $siteMedia)
     {
-        if (!$media) {
+        if (!$siteMedia) {
             return false;
         }
 
         if (
-            $media->file_path &&
-            File::exists(public_path($media->file_path))
+            $siteMedia->file_path &&
+            File::exists(public_path($siteMedia->file_path))
         ) {
-            File::delete(public_path($media->file_path));
+            File::delete(public_path($siteMedia->file_path));
         }
 
-        return $this->siteMediaRepository->deleteMedia($media);
+        return $this->siteMediaRepository->deleteSiteMedia($siteMedia);
     }
 
     public function stream(int $id)

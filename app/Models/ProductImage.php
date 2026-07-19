@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProductImage extends Model
 {
     protected $table = "product_images";
+    
     protected $fillable = [
         "product_id",
         "image",
@@ -16,6 +17,7 @@ class ProductImage extends Model
         "updated_by",
     ];
 
+
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -23,7 +25,7 @@ class ProductImage extends Model
     ];
 
     public function product(){
-        return $this->belongsTo(Product::class, "product_id");
+        return $this->belongsTo(Product::class, "product_id", 'id');
     }
 
 }

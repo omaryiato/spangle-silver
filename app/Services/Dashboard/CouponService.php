@@ -40,7 +40,8 @@ class CouponService
         // if(!$coupon_details){
         //     return null;
         // }
-        return $this->couponRepository->updateCoupon($coupon, $this->prepareRequestInfo($coupon_request));
+        return $this->couponRepository->updateCoupon($coupon,
+                                        $this->prepareRequestInfo($coupon_request));
     }
 
     // deleteCoupon Funtion To Delete Coupon
@@ -55,7 +56,6 @@ class CouponService
 
     public function prepareRequestInfo(array $request_info)
     {
-
         $request_data = [
             'code' => $request_info['code'] ?? null,
             'discount_amount' => $request_info['discount_amount'] ?? null,

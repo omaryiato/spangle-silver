@@ -55,7 +55,8 @@ class UserService
     }
 
     public function prepareRequestInfo(array $request_info)
-    {    -
+    {
+
         $request_data = [
             'full_name' => $request_info['full_name'] ?? null,
             'user_name' => $request_info['user_name'] ?? null,

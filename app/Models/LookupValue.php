@@ -11,11 +11,13 @@ class LookupValue extends Model
 
     protected $table = 'lookup_values';
 
+
     protected $fillable = [
         'type_id',
         'en_meaning',
         'ar_meaning',
         'code',
+        'color',
         'description',
         'status',
         'created_by',
@@ -27,8 +29,6 @@ class LookupValue extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
-
-    protected $guarded = [];
 
     public function type()
     {

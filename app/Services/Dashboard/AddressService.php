@@ -39,7 +39,8 @@ class AddressService
         // if(!$address_details){
         //     return null;
         // }
-        return $this->addressRepository->updateAddress($address, $this->prepareRequestInfo($address_request));
+        return $this->addressRepository->updateAddress($address,
+                                            $this->prepareRequestInfo($address_request));
     }
 
     // deleteAddress Funtion To Delete Address
@@ -59,6 +60,7 @@ class AddressService
 
     public function prepareRequestInfo(array $request_info)
     {
+
         $request_data = [
             'user_id' => $request_info['user_id'],
             'label' => $request_info['label'] ?? null,
@@ -68,16 +70,8 @@ class AddressService
             'country' => $request_info['country'] ?? null,
             'postal_code' => $request_info['postal_code'] ?? null,
             'phone' => $request_info['phone'] ?? null,
-            'is_default' => $request_info['is_default'] ?? null,
+            'is_default' => $request_info['is_default'] ?? 0,
         ];
-
-        if (isset($request_info['created_by'])) {
-            $request_data['created_by'] = $request_info['created_by'];
-        }
-
-        if (isset($request_info['updated_by'])) {
-            $request_data['updated_by'] = $request_info['updated_by'];
-        }
 
         return $request_data;
     }
