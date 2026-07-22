@@ -256,17 +256,17 @@ class SiteMediaService
         return $this->siteMediaRepository->deleteSiteMedia($siteMedia);
     }
 
-    public function stream(int $id)
+    public function stream(object $siteMedia)
     {
-        $media_details = $this->siteMediaRepository->findById($id);
+        // $media_details = $this->siteMediaRepository->findById($id);
 
-        if(!$media_details){
-            return false;
-        }
+        // if(!$media_details){
+        //     return false;
+        // }
 
-        if (!str_starts_with($media_details->mime_type, 'video/')) {
+        if (!str_starts_with($siteMedia->mime_type, 'video/')) {
             return ResponseHelper::error(
-                $media_details,
+                $siteMedia,
                 [
                     'en' => "This file is not a video",
                     'ar' => "This file is not a video",
@@ -274,7 +274,7 @@ class SiteMediaService
                 400);
         }
 
-        $relativePath = ltrim('api/'.$media_details?->file_path, '/');
+        $relativePath = ltrim('api/'.$siteMedia?->file_path, '/');
         $path = public_path($relativePath);
 
         if (!file_exists($path)) {
@@ -288,7 +288,7 @@ class SiteMediaService
         }
 
         $size     = filesize($path);
-        $mimeType = $media_details->mime_type;
+        $mimeType = $siteMedia->mime_type;
 
         if (request()->hasHeader('Range')) {
             return $this->handleRangeRequest($path, $size, $mimeType);

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\SiteMediaResource;
 use App\Http\Resources\SiteThemeResource;
+use App\Models\SiteMedia;
 use App\Services\Client\MainService;
 use Exception;
 use Illuminate\Http\Request;
@@ -56,6 +57,23 @@ class MainController extends Controller
             ],
             200
         );
+    }
+
+    public function stream(SiteMedia $siteMedia)
+    {
+        $media_details = $this->mainService->stream($siteMedia);
+
+        if(!$media_details){
+            return ResponseHelper::error(
+                    $media_details,
+                    [
+                        'en' => trans('validation.data_not_found'),
+                        'ar' => trans('validation.data_not_found'),
+                    ],
+                    404);
+        }
+
+        return $media_details;
     }
 
 }

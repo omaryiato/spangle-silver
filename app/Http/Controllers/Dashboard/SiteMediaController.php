@@ -144,9 +144,9 @@ class SiteMediaController extends Controller
         }
     }
 
-    public function stream(int $id)
+    public function stream(SiteMedia $siteMedia)
     {
-        $media_details = $this->siteMediaService->stream($id);
+        $media_details = $this->siteMediaService->stream($siteMedia);
 
         if(!$media_details){
             return ResponseHelper::error(

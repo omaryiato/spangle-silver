@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Client;
 
+use App\Models\Coupon;
+use App\Models\CouponUsage;
 use App\Models\Order;
 use App\Models\OrderDetail;
 
@@ -25,6 +27,31 @@ class MainOrderRepository
     public function addNewOrder($order_request)
     {
         return Order::create($order_request);
+    }
+
+    public function addNewCouponUsage($use_coupon)
+    {
+        return CouponUsage::create($use_coupon);
+    }
+    public function checkCouponUsageValidity($coupon_id, $user_id)
+    {
+        $coupon = Coupon::where('id', $coupon_id)->get();
+
+        $totalUsed = CouponUsage::where('coupon_id', $coupon_id)->count();
+
+        $userUsed = CouponUsage::where('coupon_id', $coupon_id)
+            ->where('user_id', $user_id)
+            ->count();
+
+        if ($totalUsed >= $coupon->max_usage) {
+            return true;
+        }
+
+        if ($userUsed >= 1) {
+            return true;
+        }
+
+        return false;
     }
 
     // addRequestDetail Funtion To Add new Request

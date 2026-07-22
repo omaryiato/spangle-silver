@@ -41,4 +41,10 @@ class MainRepository
         return SiteMedia::where('status', 1)->get();
     }
 
+    public function findById(int $media_id)
+    {
+        return SiteMedia::findOrFail($media_id);
+    }
+
+
 }

@@ -36,8 +36,20 @@ class MainProductService
 
     public function reviewProduct($review_request)
     {
-        return $this->mainProductRepository->reviewProduct($review_request);
+        return $this->mainProductRepository->reviewProduct($this->prepareReviewRequest($review_request));
 
+    }
+
+    public function prepareReviewRequest(array $review_request)
+    {
+        $request_data = [
+            'user_id' => $review_request['user_id'] ?? null,
+            'product_id' => $review_request['product_id'] ?? null,
+            'comment' => $review_request['comment'] ?? null,
+            'rating' => $review_request['rating'] ?? 1,
+        ];
+
+        return $request_data;
     }
 
     public function stream(object $product)

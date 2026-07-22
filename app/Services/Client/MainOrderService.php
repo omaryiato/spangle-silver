@@ -5,13 +5,15 @@ namespace App\Services\Client;
 use App\Helpers\ContactMessageHelper;
 use App\Repositories\Client\MainOrderRepository;
 use Illuminate\Support\Facades\DB;
-
+use App\Repositories\Dashboard\UserRepository;
+use Exception;
 
 class MainOrderService
 {
     public function __construct(
         protected MainOrderRepository $mainOrderRepository,
-        protected ContactMessageHelper $contactMessageHelper
+        protected ContactMessageHelper $contactMessageHelper,
+        protected UserRepository $userRepository,
     ) {}
 
     public function getUserOrders(int $user_id)
@@ -24,6 +26,32 @@ class MainOrderService
 
         return DB::transaction(function () use ($order_request) {
 
+            if($order_request['coupon_id'] || $order_request['user_id']){
+
+                $usage_validity = $this->mainOrderRepository->checkCouponUsageValidity($order_request['coupon_id'], $order_request['user_id']);
+                if($usage_validity){
+                    throw new Exception('Coupon Usage Limit Reached');
+                }
+            }
+
+            if(!isset($order_request['user_id'])){
+                $create_guest_user = [
+
+                    'full_name' => $order_request['snap_user_name'] ?? null,
+                    'user_name' => $order_request['snap_user_name'] ?? null,
+                    'phone_number' => $order_request['snap_phone'] ?? null,
+                    'email_address' => $order_request['snap_email'] ?? null,
+                    'password' =>  null,
+                    'status' => 1,
+                    'user_type' => 3,
+
+                ];
+
+                $user_info = $this->userRepository->addNewUser($create_guest_user);
+                $order_request['user_id'] = $user_info->id;
+
+            }
+
             // 1. Create Order
             $add_new_order = $this->mainOrderRepository->addNewOrder($this->prepareOrderInfo($order_request));
 
@@ -33,6 +61,19 @@ class MainOrderService
                 $details = $this->prepareOrderDetail($order_request);
 
                 $this->mainOrderRepository->addOrderDetails($add_new_order, $details);
+            }
+
+
+            if(!isset($order_request['coupon_id'])){
+
+                $use_coupon = [
+                    'coupon_id' => $order_request['coupon_id'] ?? null,
+                    'user_id' => $order_request['user_id'] ?? null,
+                    'order_id' => $add_new_order->id ?? null,
+                ];
+
+                $user_info = $this->mainOrderRepository->addNewCouponUsage($use_coupon);
+
             }
 
             // $this->mainOrderRepository->prepareNotificationDetails($add_new_order->id, 'technical_office', $add_new_request->updated_by, 'Approver', $add_new_request->notes);

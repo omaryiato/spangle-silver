@@ -19,7 +19,7 @@ class MainCartService
 
     public function addToCart($cart_request)
     {
-        return $this->mainCartRepository->addToCart($cart_request);
+        return $this->mainCartRepository->addToCart($this->prepareCartRequest($cart_request));
     }
 
     public function updateCartDetails($cart_request, int $id)
@@ -29,8 +29,8 @@ class MainCartService
         if(!$cart_details){
             return null;
         }
-        
-        return $this->mainCartRepository->updateCartDetails($cart_details, $cart_request);
+
+        return $this->mainCartRepository->updateCartDetails($cart_details, $this->prepareCartRequest($cart_request));
     }
 
     public function deleteCartList($cart_request)
@@ -41,6 +41,18 @@ class MainCartService
         $cart_details = $this->mainCartRepository->getCartDetails($cart_request['cart_id']);
         return $this->mainCartRepository->deleteCartDetails($cart_details);
 
+    }
+
+    public function prepareCartRequest(array $cart_request)
+    {
+
+        $request_data = [
+            'user_id' => $cart_request['user_id'] ?? null,
+            'variant_id' => $cart_request['variant_id'] ?? null,
+            'quantity' => $cart_request['quantity'] ?? 1,
+        ];
+
+        return $request_data;
     }
 
 

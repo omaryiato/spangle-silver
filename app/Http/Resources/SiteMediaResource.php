@@ -41,6 +41,10 @@ class SiteMediaResource extends JsonResource
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
             'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
 
+            'stream_url' => str_starts_with($this->mime_type, 'video/')
+                ? preg_replace('#(?<!:)//\+#', '/', route('media.stream', $this->id))
+                : null,
+
         ];
     }
 }

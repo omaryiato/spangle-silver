@@ -31,14 +31,21 @@ class AddNewOrder extends BaseRequest
                 'bail',
                 'required',
                 'integer',
-                'exists:users,id'
+                // 'exists:users,id'
             ],
 
             'address_id' => [
                 'bail',
                 'required',
                 'integer',
-                'exists:addresses,id'
+                // 'exists:addresses,id'
+            ],
+
+            'coupon_id' => [
+                'bail',
+                'required',
+                'integer',
+                'exists:coupons,id'
             ],
 
             'shipping_id' => [
