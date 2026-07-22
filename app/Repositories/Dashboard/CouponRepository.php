@@ -14,18 +14,18 @@ class CouponRepository
     {
         return Coupon::with([
             'usages',
-            'user',
-            'order'
+            'usages.user',
+            'usages.order'
         ])->get();
     }
 
     // getCouponDetails Funtion To Get Coupon Details
-    public function getCouponDetails(object $coupon)
+    public function getCouponDetails(Coupon $coupon)
     {
         return $coupon->load([
             'usages',
-            'user',
-            'order'
+            'usages.user',
+            'usages.order'
         ]);
     }
 
@@ -36,14 +36,14 @@ class CouponRepository
     }
 
     // updateCoupon Funtion To Update Coupon info
-    public function updateCoupon(object $coupon, array $coupon_request)
+    public function updateCoupon(Coupon $coupon, array $coupon_request)
     {
         $coupon->update($coupon_request);
         return $coupon;
     }
 
     // deleteCoupon Funtion To Delete Coupon
-    public function deleteCoupon(object $coupon)
+    public function deleteCoupon(Coupon $coupon)
     {
         $coupon->delete();
         return $coupon;

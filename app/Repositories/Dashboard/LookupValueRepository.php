@@ -11,7 +11,7 @@ class LookupValueRepository
         return LookupValue::with('type')->get();
     }
 
-    public function getLookupValueDetails(object $lookupValue)
+    public function getLookupValueDetails(LookupValue $lookupValue)
     {
         return $lookupValue->load('type');
     }
@@ -21,13 +21,13 @@ class LookupValueRepository
         return LookupValue::create($lookup_value_request);
     }
 
-    public function updateLookupValue(object $lookupValue, array $lookup_value_request)
+    public function updateLookupValue(LookupValue $lookupValue, array $lookup_value_request)
     {
         $lookupValue->update($lookup_value_request);
         return $lookupValue;
     }
 
-    public function deleteLookupValue(object $lookupValue)
+    public function deleteLookupValue(LookupValue $lookupValue)
     {
         return $lookupValue->delete();
     }

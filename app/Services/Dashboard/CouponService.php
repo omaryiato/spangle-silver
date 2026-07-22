@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\Coupon;
 use App\Repositories\Dashboard\CouponRepository;
 
 
@@ -22,7 +23,7 @@ class CouponService
     }
 
     // getCouponDetails Funtion To Get Coupon Details
-    public function getCouponDetails(object $coupon)
+    public function getCouponDetails(Coupon $coupon)
     {
         return $this->couponRepository->getCouponDetails($coupon);
     }
@@ -34,7 +35,7 @@ class CouponService
     }
 
     // updateCoupon Funtion To Update Coupon info
-    public function updateCoupon(array $coupon_request, object $coupon)
+    public function updateCoupon(array $coupon_request, Coupon $coupon)
     {
         // $coupon_details = $this->couponRepository->getCouponDetails($coupon);
         // if(!$coupon_details){
@@ -45,7 +46,7 @@ class CouponService
     }
 
     // deleteCoupon Funtion To Delete Coupon
-    public function deleteCoupon(array $coupon_request, object $coupon)
+    public function deleteCoupon(array $coupon_request, Coupon $coupon)
     {
         // $coupon_details = $this->couponRepository->getCouponDetails($coupon);
         // if(!$coupon_details){

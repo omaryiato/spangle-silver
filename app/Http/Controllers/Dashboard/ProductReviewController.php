@@ -23,8 +23,8 @@ class ProductReviewController extends Controller
         return ResponseHelper::success(
             ProductReviewResource::collection($products_review_list),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
     }
@@ -35,8 +35,8 @@ class ProductReviewController extends Controller
         return ResponseHelper::success(
             new ProductReviewResource($products_review_details),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
     }
@@ -51,8 +51,8 @@ class ProductReviewController extends Controller
                 return ResponseHelper::error(
                     $products_review_details,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -60,15 +60,15 @@ class ProductReviewController extends Controller
             return ResponseHelper::success(
                 null,
                 [
-                    'en' => trans('validation.data_deleted'),
-                    'ar' => trans('validation.data_deleted'),
+                    'en' => trans('validation.data_deleted', [], 'en'),
+                    'ar' => trans('validation.data_deleted', [], 'ar'),
                 ],
                 200);
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);

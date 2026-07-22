@@ -29,8 +29,8 @@ class MainProductController extends Controller
         return ResponseHelper::success(
             ProductResource::collection($products_list),
             [
-                'en' => trans('validation.get_products_list'),
-                'ar' => trans('validation.get_products_list'),
+                'en' => trans('validation.get_products_list', [], 'en'),
+                'ar' => trans('validation.get_products_list', [], 'ar'),
             ],
             200
         );
@@ -44,8 +44,8 @@ class MainProductController extends Controller
         return ResponseHelper::success(
             new ProductResource($product_details),
             [
-                'en' => trans('validation.get_product_details'),
-                'ar' => trans('validation.get_product_details'),
+                'en' => trans('validation.get_product_details', [], 'en'),
+                'ar' => trans('validation.get_product_details', [], 'ar'),
             ],
             200
         );
@@ -58,8 +58,8 @@ class MainProductController extends Controller
         return ResponseHelper::success(
             ShippingMethodResource::collection($shipping_method_list),
             [
-                'en' => trans('validation.get_shipping_methods_list'),
-                'ar' => trans('validation.get_shipping_methods_list'),
+                'en' => trans('validation.get_shipping_methods_list', [], 'en'),
+                'ar' => trans('validation.get_shipping_methods_list', [], 'ar'),
             ],
             200
         );
@@ -72,8 +72,8 @@ class MainProductController extends Controller
         return ResponseHelper::success(
             CouponResource::collection($coupons_list),
             [
-                'en' => trans('validation.get_coupons_list'),
-                'ar' => trans('validation.get_coupons_list'),
+                'en' => trans('validation.get_coupons_list', [], 'en'),
+                'ar' => trans('validation.get_coupons_list', [], 'ar'),
             ],
             200
         );
@@ -88,16 +88,16 @@ class MainProductController extends Controller
             return ResponseHelper::success(
                 new ProductReviewResource($review_details),
                 [
-                    'en' => trans('validation.review_product'),
-                    'ar' => trans('validation.review_product'),
+                    'en' => trans('validation.review_product', [], 'en'),
+                    'ar' => trans('validation.review_product', [], 'ar'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -112,8 +112,8 @@ class MainProductController extends Controller
             return ResponseHelper::error(
                     $product_reel,
                     [
-                        'en' => trans('validation.no_data_found'),
-                        'ar' => trans('validation.no_data_found'),
+                        'en' => trans('validation.no_data_found', [], 'en'),
+                        'ar' => trans('validation.no_data_found', [], 'ar'),
                     ],
                     404);
         }

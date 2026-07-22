@@ -30,8 +30,8 @@ class LookupValueController extends Controller
         return ResponseHelper::success(
             LookupValueResource::collection($lookup_value_list),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
 
@@ -46,8 +46,8 @@ class LookupValueController extends Controller
         return ResponseHelper::success(
                 new LookupValueResource($lookup_value_details),
                 [
-                    'en' => trans('validation.data_retrieved'),
-                    'ar' => trans('validation.data_retrieved'),
+                    'en' => trans('validation.data_retrieved', [], 'en'),
+                    'ar' => trans('validation.data_retrieved', [], 'ar'),
                 ],
                 200);
     }
@@ -63,15 +63,15 @@ class LookupValueController extends Controller
             return ResponseHelper::success(
                     new LookupValueResource($lookup_value_details),
                     [
-                        'en' => trans('validation.data_added'),
-                        'ar' => trans('validation.data_added'),
+                        'en' => trans('validation.data_added', [], 'en'),
+                        'ar' => trans('validation.data_added', [], 'ar'),
                     ],
                     201);
         } catch (\Exception $exception) {
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -89,8 +89,8 @@ class LookupValueController extends Controller
                 return ResponseHelper::error(
                     $lookup_value_details,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -98,16 +98,16 @@ class LookupValueController extends Controller
             return ResponseHelper::success(
                 new LookupValueResource($lookup_value_details),
                 [
-                    'en' => trans('validation.data_updated'),
-                    'ar' => trans('validation.data_updated'),
+                    'en' => trans('validation.data_updated', [], 'en'),
+                    'ar' => trans('validation.data_updated', [], 'ar'),
                 ],
                 201);
 
         } catch (\Exception $exception) {
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -124,8 +124,8 @@ class LookupValueController extends Controller
                 return ResponseHelper::error(
                     $lookup_value_details,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -133,15 +133,15 @@ class LookupValueController extends Controller
             return ResponseHelper::success(
                 null,
                 [
-                    'en' => trans('validation.data_deleted'),
-                    'ar' => trans('validation.data_deleted'),
+                    'en' => trans('validation.data_deleted', [], 'en'),
+                    'ar' => trans('validation.data_deleted', [], 'ar'),
                 ],
                 200);
         } catch (\Exception $exception) {
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);

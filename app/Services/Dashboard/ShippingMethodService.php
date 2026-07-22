@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\ShippingMethod;
 use App\Repositories\Dashboard\ShippingMethodRepository;
 
 class ShippingMethodService
@@ -21,7 +22,7 @@ class ShippingMethodService
     }
 
     // getShippingMethodDetails Funtion To Get Shipping Method Details
-    public function getShippingMethodDetails(object $shippingMethod)
+    public function getShippingMethodDetails(ShippingMethod $shippingMethod)
     {
         return $this->shippingMethodRepository->getShippingMethodDetails($shippingMethod);
     }
@@ -34,7 +35,7 @@ class ShippingMethodService
     }
 
     // updateShippingMethod Funtion To Update Shipping Method info
-    public function updateShippingMethod(array $shipping_method_request, object $shippingMethod)
+    public function updateShippingMethod(array $shipping_method_request, ShippingMethod $shippingMethod)
     {
 
         // $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($id);
@@ -45,7 +46,7 @@ class ShippingMethodService
     }
 
     // deleteShippingMethod Funtion To Delete Shipping Method
-    public function deleteShippingMethod(object $shippingMethod)
+    public function deleteShippingMethod(ShippingMethod $shippingMethod)
     {
 
         // $shipping_method_details = $this->shippingMethodRepository->getShippingMethodDetails($shippingMethod);

@@ -40,7 +40,19 @@ class AddLookupValue extends BaseRequest
                     ->where(fn ($query) => $query->where('type_id', $this->type_id)),
             ],
 
-            'meaning' => [
+            'en_meaning' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'ar_meaning' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'color' => [
                 'required',
                 'string',
                 'max:255',
@@ -56,6 +68,18 @@ class AddLookupValue extends BaseRequest
                 'nullable',
                 'integer',
                 'in:0,1',
+            ],
+
+            'created_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
+            ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
             ],
         ];
     }

@@ -94,25 +94,25 @@ class AddProduct extends BaseRequest
 
 
             // Images
-            'images' => [
+            'product_images' => [
                 'nullable',
                 'array',
             ],
 
-            'images.*.image' => [
+            'product_images.*.image' => [
                 'required',
                 'file',
                 'mimes:jpg,jpeg,png,webp',
                 'max:5120',
             ],
 
-            'images.*.is_primary' => [
+            'product_images.*.is_primary' => [
                 'nullable',
                 'integer',
                 'in:0,1',
             ],
 
-            'images.*.sort_order' => [
+            'product_images.*.sort_order' => [
                 'nullable',
                 'integer',
                 'min:0',
@@ -120,24 +120,24 @@ class AddProduct extends BaseRequest
 
 
             // Variants
-            'variants' => [
+            'product_variants' => [
                 'nullable',
                 'array',
             ],
 
-            'variants.*.color_id' => [
+            'product_variants.*.color_id' => [
                 'nullable',
                 'integer',
                 'exists:lookup_values,id',
             ],
 
-            'variants.*.size_id' => [
+            'product_variants.*.size_id' => [
                 'nullable',
                 'integer',
                 'exists:lookup_values,id',
             ],
 
-            'variants.*.sku' => [
+            'product_variants.*.sku' => [
                 'nullable',
                 'string',
                 'max:100',
@@ -145,22 +145,34 @@ class AddProduct extends BaseRequest
                 'unique:product_variants,sku',
             ],
 
-            'variants.*.stock' => [
+            'product_variants.*.stock' => [
                 'required',
                 'integer',
                 'min:0',
             ],
 
-            'variants.*.price' => [
+            'product_variants.*.price' => [
                 'nullable',
                 'numeric',
                 'min:0',
             ],
 
-            'variants.*.status' => [
+            'product_variants.*.status' => [
                 'nullable',
                 'integer',
                 'in:0,1',
+            ],
+
+            'created_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
+            ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
             ],
         ];
     }

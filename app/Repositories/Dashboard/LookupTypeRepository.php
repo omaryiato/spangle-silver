@@ -11,7 +11,7 @@ class LookupTypeRepository
         return LookupType::with('values')->get();
     }
 
-    public function getLookupTypeDetails(object $lookupType)
+    public function getLookupTypeDetails(LookupType $lookupType)
     {
         return $lookupType->load('values');
     }
@@ -21,13 +21,13 @@ class LookupTypeRepository
         return LookupType::create($lookup_type_request);
     }
 
-    public function updateLookupType(object $lookupType, array $lookup_type_request)
+    public function updateLookupType(LookupType $lookupType, array $lookup_type_request)
     {
         $lookupType->update($lookup_type_request);
         return $lookupType;
     }
 
-    public function deleteLookupType(object $lookupType)
+    public function deleteLookupType(LookupType $lookupType)
     {
         $lookupType->delete();
         return $lookupType;

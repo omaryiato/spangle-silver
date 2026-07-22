@@ -314,8 +314,10 @@ return [
     ],
 
     'category_image' => [
-        'string' => 'Category image path must be a string.',
-        'max'    => 'Category image path may not be greater than 500 characters.',
+        'required' => 'Category image is required.',
+        'file'   => 'Category image must be a file.',
+        'mimes'      => 'Category image must be of type (jpg,jpeg,png,webp).',
+        'max'      => 'Category image path may not be greater than 5120 MB.',
     ],
 
     /*

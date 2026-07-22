@@ -29,8 +29,8 @@ class OrderController extends Controller
         return ResponseHelper::success(
             OrderResource::collection($order_list),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
     }
@@ -43,8 +43,8 @@ class OrderController extends Controller
         return ResponseHelper::success(
             new OrderResource($order_details),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
     }
@@ -55,14 +55,14 @@ class OrderController extends Controller
 
         try {
 
-            $order_details = $this->orderService->confirmOrder($request->validated(), $order);
+            $order_details = $this->orderService->confirmOrder($request->all(), $order);
 
             if (!$order_details) {
                 return ResponseHelper::error(
                     $order_details,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -70,16 +70,16 @@ class OrderController extends Controller
             return ResponseHelper::success(
                 new OrderResource($order_details),
                 [
-                    'en' => trans('validation.data_updated'),
-                    'ar' => trans('validation.data_updated'),
+                    'en' => trans('validation.data_updated', [], 'en'),
+                    'ar' => trans('validation.data_updated', [], 'ar'),
                 ],
                 201);
         } catch (\Exception $exception) {
             DB::rollBack();
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);

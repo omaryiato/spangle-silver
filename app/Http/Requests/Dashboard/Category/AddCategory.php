@@ -45,15 +45,28 @@ class AddCategory extends BaseRequest
             ],
 
             'category_image' => [
-                'nullable',
-                'string',
-                'max:500',
+                'required',
+                'file',
+                'mimes:jpg,jpeg,png,webp',
+                'max:5120',
             ],
 
             'status' => [
                 'nullable',
                 'integer',
                 'in:0,1',
+            ],
+
+            'created_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
+            ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
             ],
         ];
     }

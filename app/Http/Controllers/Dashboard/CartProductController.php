@@ -27,8 +27,8 @@ class CartProductController extends Controller
         return ResponseHelper::success(
             CartProductResource::collection($cart_products_list),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
 
@@ -43,8 +43,8 @@ class CartProductController extends Controller
         return ResponseHelper::success(
             new CartProductResource($cart_product_details),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
 

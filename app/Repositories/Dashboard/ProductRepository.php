@@ -26,7 +26,7 @@ class ProductRepository
     }
 
     // getProductDetails Funtion To Get Product Details
-    public function getProductDetails(object $product)
+    public function getProductDetails(Product $product)
     {
         return $product->load([
             'variants',
@@ -56,7 +56,7 @@ class ProductRepository
         return $product->images()->createMany($images);
     }
 
-    public function updateProduct(object $product, array $product_request)
+    public function updateProduct(Product $product, array $product_request)
     {
         $product->update($product_request);
         return $product;
@@ -75,12 +75,12 @@ class ProductRepository
     }
 
     // deleteProduct Funtion To Delete Category
-    public function deleteProduct(object $product)
+    public function deleteProduct(Product $product)
     {
-        $product->update(['product_status' => 0]);
-        return $product;
-        // $product->delete();
+        // $product->update(['product_status' => 0]);
         // return $product;
+        $product->delete();
+        return $product;
     }
 }
 

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\Theme\AddTheme;
-use App\Http\Requests\Dashboard\Theme\UpdateTheme;
+use App\Http\Requests\Dashboard\SiteTheme\AddTheme;
+use App\Http\Requests\Dashboard\SiteTheme\UpdateTheme;
 use App\Http\Resources\SiteThemeResource;
 use App\Models\SiteTheme;
 use Illuminate\Http\Request;
@@ -25,8 +25,8 @@ class SiteThemeController extends Controller
         return ResponseHelper::success(
                 SiteThemeResource::collection($site_theme_list),
                 [
-                    'en' => trans('validation.data_retrieved'),
-                    'ar' => trans('validation.data_retrieved'),
+                    'en' => trans('validation.data_retrieved', [], 'en'),
+                    'ar' => trans('validation.data_retrieved', [], 'ar'),
                 ],
                 200);
     }
@@ -40,8 +40,8 @@ class SiteThemeController extends Controller
         return ResponseHelper::success(
                 new SiteThemeResource($site_theme_details),
                 [
-                    'en' => trans('validation.data_retrieved'),
-                    'ar' => trans('validation.data_retrieved'),
+                    'en' => trans('validation.data_retrieved', [], 'en'),
+                    'ar' => trans('validation.data_retrieved', [], 'ar'),
                 ],
                 200);
 
@@ -56,16 +56,16 @@ class SiteThemeController extends Controller
             return ResponseHelper::success(
                 new SiteThemeResource($site_theme_details),
                 [
-                    'en' => trans('validation.data_added'),
-                    'ar' => trans('validation.data_added'),
+                    'en' => trans('validation.data_added', [], 'en'),
+                    'ar' => trans('validation.data_added', [], 'ar'),
                 ],
                 201);
 
         } catch(\Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -84,8 +84,8 @@ class SiteThemeController extends Controller
                 return ResponseHelper::error(
                     new SiteThemeResource($site_theme_details),
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -93,16 +93,16 @@ class SiteThemeController extends Controller
             return ResponseHelper::success(
                 $site_theme_details,
                 [
-                    'en' => trans('validation.data_updated'),
-                    'ar' => trans('validation.data_updated'),
+                    'en' => trans('validation.data_updated', [], 'en'),
+                    'ar' => trans('validation.data_updated', [], 'ar'),
                 ],
                 201);
 
         } catch (\Exception $exception) {
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -120,8 +120,8 @@ class SiteThemeController extends Controller
                 return ResponseHelper::error(
                     $site_theme_details,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -129,15 +129,15 @@ class SiteThemeController extends Controller
             return ResponseHelper::success(
                     null,
                     [
-                        'en' => trans('validation.data_deleted'),
-                        'ar' => trans('validation.data_deleted'),
+                        'en' => trans('validation.data_deleted', [], 'en'),
+                        'ar' => trans('validation.data_deleted', [], 'ar'),
                     ],
                     200);
         } catch (\Exception $exception) {
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);

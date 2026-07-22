@@ -16,7 +16,7 @@ class ShippingMethodRepository
     }
 
     // getShippingMethodDetails Funtion To Get Shipping Method Details
-    public function getShippingMethodDetails(object $shippingMethod)
+    public function getShippingMethodDetails(ShippingMethod $shippingMethod)
     {
         return  $shippingMethod;
     }
@@ -28,14 +28,14 @@ class ShippingMethodRepository
     }
 
     // updateShippingMethod Funtion To Update Shipping Method info
-    public function updateShippingMethod(object $shipping_method, array $shipping_method_request)
+    public function updateShippingMethod(ShippingMethod $shipping_method, array $shipping_method_request)
     {
         $shipping_method->update($shipping_method_request);
         return $shipping_method;
     }
 
     // deleteShippingMethod Funtion To Delete Shipping Method
-    public function deleteShippingMethod(object $shipping_method)
+    public function deleteShippingMethod(ShippingMethod $shipping_method)
     {
         $shipping_method->delete();
         return $shipping_method;

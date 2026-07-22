@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Service\Dashboard;
+namespace App\Services\Dashboard;
 
+use App\Models\Category;
 use App\Repositories\Dashboard\CategoryRepository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Format;
 use Intervention\Image\Laravel\Facades\Image;
 
-class CategoryService {
+class CategoryService
+{
 
     protected $categoryRepository;
     public function __construct(CategoryRepository $categoryRepository) {
@@ -19,7 +21,7 @@ class CategoryService {
         return $this->categoryRepository->getCategoryList();
     }
 
-    public function getCategoryDetails(object $category){
+    public function getCategoryDetails(Category $category){
         return $this->categoryRepository->getCategoryDetails($category);
     }
 
@@ -41,7 +43,7 @@ class CategoryService {
         );
     }
 
-    public function updateCategoryDetails(object $request, object $category)
+    public function updateCategoryDetails(object $request, Category $category)
     {
         $category_request = $request->validated();
 
@@ -83,7 +85,7 @@ class CategoryService {
         );
     }
 
-    public function deleteCategory(object $category){
+    public function deleteCategory(Category $category){
         // $category_details = $this->categoryRepository->getCategoryDetails($category);
         // if(!$category_details){
         //     return null;

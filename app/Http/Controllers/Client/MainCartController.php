@@ -26,8 +26,8 @@ class MainCartController extends Controller
         return ResponseHelper::success(
             CartProductResource::collection($user_cart),
             [
-                'en' => trans('validation.get_user_cart_list'),
-                'ar' => trans('validation.get_user_cart_list'),
+                'en' => trans('validation.get_user_cart_list', [], 'en'),
+                'ar' => trans('validation.get_user_cart_list', [], 'ar'),
             ],
             200
         );
@@ -42,16 +42,16 @@ class MainCartController extends Controller
             return ResponseHelper::success(
                 new CartProductResource($cart_details),
                 [
-                    'en' => trans('validation.add_to_cart'),
-                    'ar' => trans('validation.add_to_cart'),
+                    'en' => trans('validation.add_to_cart', [], 'en'),
+                    'ar' => trans('validation.add_to_cart', [], 'ar'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -69,8 +69,8 @@ class MainCartController extends Controller
                 return ResponseHelper::error(
                     $cart_details,
                     [
-                        'en' => trans('validation.cart_not_found'),
-                        'ar' => trans('validation.cart_not_found'),
+                        'en' => trans('validation.cart_not_found', [], 'en'),
+                        'ar' => trans('validation.cart_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -78,16 +78,16 @@ class MainCartController extends Controller
             return ResponseHelper::success(
                 new CartProductResource($cart_details),
                 [
-                    'en' => trans('validation.update_cart_details'),
-                    'ar' => trans('validation.update_cart_details'),
+                    'en' => trans('validation.update_cart_details', [], 'en'),
+                    'ar' => trans('validation.update_cart_details', [], 'ar'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -104,16 +104,16 @@ class MainCartController extends Controller
             return ResponseHelper::success(
                 null,
                 [
-                    'en' => trans('validation.delete_cart_list'),
-                    'ar' => trans('validation.delete_cart_list'),
+                    'en' => trans('validation.delete_cart_list', [], 'en'),
+                    'ar' => trans('validation.delete_cart_list', [], 'ar'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);

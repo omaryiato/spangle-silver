@@ -36,8 +36,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 return ResponseHelper::error(
                     null,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     Response::HTTP_NOT_FOUND
                 );

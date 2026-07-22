@@ -16,7 +16,7 @@ class SiteThemeRepository
     }
 
     // getSiteThemeDetails Funtion To Get Shipping Method Details
-    public function getSiteThemeDetails(object $siteTheme)
+    public function getSiteThemeDetails(SiteTheme $siteTheme)
     {
         return  $siteTheme;
     }
@@ -28,14 +28,14 @@ class SiteThemeRepository
     }
 
     // updateSiteTheme Funtion To Update Shipping Method info
-    public function updateSiteTheme(object $siteTheme, array $site_theme_request)
+    public function updateSiteTheme(SiteTheme $siteTheme, array $site_theme_request)
     {
         $siteTheme->update($site_theme_request);
         return $siteTheme;
     }
 
     // deleteSiteTheme Funtion To Delete Shipping Method
-    public function deleteSiteTheme(object $siteTheme)
+    public function deleteSiteTheme(SiteTheme $siteTheme)
     {
         $siteTheme->delete();
         return $siteTheme;

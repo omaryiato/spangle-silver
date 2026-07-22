@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SiteTheme extends Model
 {
-    protected $table = "site_theme";
+    protected $table = "site_themes";
 
     protected $fillable = [
         'theme_name',
@@ -25,5 +25,5 @@ class SiteTheme extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
-    
+
 }

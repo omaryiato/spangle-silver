@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\Address;
 use App\Repositories\Dashboard\AddressRepository;
 
 class AddressService
@@ -21,7 +22,7 @@ class AddressService
     }
 
     // getAddressDetails Funtion To Get Address Details
-    public function getAddressDetails(object $address)
+    public function getAddressDetails(Address $address)
     {
         return $this->addressRepository->getAddressDetails($address);
     }
@@ -33,7 +34,7 @@ class AddressService
     }
 
     // updateAddress Funtion To Update Address info
-    public function updateAddress(array $address_request, object $address)
+    public function updateAddress(array $address_request, Address $address)
     {
         // $address_details = $this->addressRepository->getAddressDetails($id);
         // if(!$address_details){
@@ -44,7 +45,7 @@ class AddressService
     }
 
     // deleteAddress Funtion To Delete Address
-    public function deleteAddress($address_request, object $address)
+    public function deleteAddress($address_request, Address $address)
     {
         try {
             // $address_details = $this->addressRepository->getAddressDetails($id);

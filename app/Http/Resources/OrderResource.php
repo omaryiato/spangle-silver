@@ -49,7 +49,7 @@ class OrderResource extends JsonResource
             'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
             'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
             'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
-            
+
             'order_details' => OrderDetailResource::collection($this->whenLoaded('details')),
         ];
     }

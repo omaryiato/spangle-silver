@@ -24,9 +24,14 @@ class UpdateLookupValue extends BaseRequest
      */
     public function rules(): array
     {
-        $id = $this->route("value_id");
+        $id = $this->route("lookupValue");
 
         return [
+            'type_id' => [
+                'required',
+                'integer',
+                'exists:lookup_types,id',
+            ],
 
             'code' => [
                 'required',
@@ -37,7 +42,19 @@ class UpdateLookupValue extends BaseRequest
                 ->where(fn ($query) => $query->where('type_id', $this->type_id)),
             ],
 
-            'meaning' => [
+            'en_meaning' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'ar_meaning' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'color' => [
                 'required',
                 'string',
                 'max:255',
@@ -53,6 +70,12 @@ class UpdateLookupValue extends BaseRequest
                 'nullable',
                 'integer',
                 'in:0,1',
+            ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
             ],
         ];
     }

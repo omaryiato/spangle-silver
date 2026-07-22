@@ -23,7 +23,7 @@ class CartProductRepository
     }
 
     // getCartProductDetails Funtion To Get CartProduct Details
-    public function getCartProductDetails(object $cartProduct)
+    public function getCartProductDetails(CartProduct $cartProduct)
     {
         return $cartProduct->load([
             'user',

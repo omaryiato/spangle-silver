@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\LookupValue;
 use App\Repositories\Dashboard\LookupValueRepository;
 
 
@@ -22,7 +23,7 @@ class LookupValueService
     }
 
     // getLookupValueDetails Funtion To Get Lookup Value Details
-    public function getLookupValueDetails(object $lookupValue)
+    public function getLookupValueDetails(LookupValue $lookupValue)
     {
         $lookup_value_details =  $this->lookupValueRepository->getLookupValueDetails($lookupValue);
         if(!$lookup_value_details){
@@ -40,7 +41,7 @@ class LookupValueService
     }
 
     // updateLookupValue Funtion To Update Lookup Value info
-    public function updateLookupValue(array $lookup_value_request, object $lookupValue)
+    public function updateLookupValue(array $lookup_value_request, LookupValue $lookupValue)
     {
         // $lookup_value_details = $this->lookupValueRepository->getLookupValueDetails($id);
         // if(!$lookup_value_details){
@@ -52,7 +53,7 @@ class LookupValueService
     }
 
     // deleteLookupValue Funtion To Delete Lookup Value
-    public function deleteLookupValue($lookup_type_request, object $lookupValue)
+    public function deleteLookupValue($lookup_type_request, LookupValue $lookupValue)
     {
         // $lookup_value_details = $this->lookupValueRepository->getLookupValueDetails($id);
         // if(!$lookup_value_details){

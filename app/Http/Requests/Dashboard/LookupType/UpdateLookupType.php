@@ -24,7 +24,7 @@ class UpdateLookupType extends BaseRequest
      */
     public function rules(): array
     {
-        $id = $this->route("type_id");
+        $id = $this->route("lookupValue");
         return [
             'type_en_name' => [
                 'required',
@@ -54,6 +54,12 @@ class UpdateLookupType extends BaseRequest
                 'nullable',
                 'integer',
                 'in:0,1',
+            ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
             ],
         ];
     }

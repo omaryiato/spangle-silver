@@ -31,8 +31,8 @@ class ShippingMethodController extends Controller
         return ResponseHelper::success(
             ShippingMethodResource::collection($shipping_methods_list),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
 
@@ -47,8 +47,8 @@ class ShippingMethodController extends Controller
         return ResponseHelper::success(
             new ShippingMethodResource($shipping_method_details),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
 
@@ -65,16 +65,16 @@ class ShippingMethodController extends Controller
             return ResponseHelper::success(
                 new ShippingMethodResource($shipping_method_details),
                 [
-                    'en' => trans('validation.data_added'),
-                    'ar' => trans('validation.data_added'),
+                    'en' => trans('validation.data_added', [], 'en'),
+                    'ar' => trans('validation.data_added', [], 'ar'),
                 ],
                 201);
 
         } catch (\Exception $exception) {
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -92,8 +92,8 @@ class ShippingMethodController extends Controller
                 return ResponseHelper::error(
                     $shipping_method_details,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -101,8 +101,8 @@ class ShippingMethodController extends Controller
             return ResponseHelper::success(
                 new ShippingMethodResource($shipping_method_details),
                 [
-                    'en' => trans('validation.data_updated'),
-                    'ar' => trans('validation.data_updated'),
+                    'en' => trans('validation.data_updated', [], 'en'),
+                    'ar' => trans('validation.data_updated', [], 'ar'),
                 ],
                 201);
 
@@ -110,8 +110,8 @@ class ShippingMethodController extends Controller
             DB::rollBack();
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -129,8 +129,8 @@ class ShippingMethodController extends Controller
                 return ResponseHelper::error(
                     $shipping_method_details,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
             }
@@ -138,16 +138,16 @@ class ShippingMethodController extends Controller
             return ResponseHelper::success(
                 null,
                 [
-                    'en' => trans('validation.data_deleted'),
-                    'ar' => trans('validation.data_deleted'),
+                    'en' => trans('validation.data_deleted', [], 'en'),
+                    'ar' => trans('validation.data_deleted', [], 'ar'),
                 ],
                 200);
         } catch (\Exception $exception) {
             DB::rollBack();
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);

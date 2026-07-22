@@ -15,7 +15,7 @@ class AddressRepository
     }
 
     // getAddressDetails Funtion To Get Address Details
-    public function getAddressDetails(object $address)
+    public function getAddressDetails(Address $address)
     {
         return $address->load('user');
     }
@@ -27,14 +27,14 @@ class AddressRepository
     }
 
     // updateAddress Funtion To Update Address info
-    public function updateAddress(object $address, array $address_request)
+    public function updateAddress(Address $address, array $address_request)
     {
         $address->update($address_request);
         return $address;
     }
 
     // deleteAddress Funtion To Delete Address
-    public function deleteAddress(object $address)
+    public function deleteAddress(Address $address)
     {
         $address->delete();
         return $address;

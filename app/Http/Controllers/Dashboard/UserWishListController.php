@@ -26,8 +26,8 @@ class UserWishListController extends Controller
         return ResponseHelper::success(
             UserWishListResource::collection($cart_products_list),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
 
@@ -42,8 +42,8 @@ class UserWishListController extends Controller
         return ResponseHelper::success(
             new UserWishListResource($user_wish_list_details),
             [
-                'en' => trans('validation.data_retrieved'),
-                'ar' => trans('validation.data_retrieved'),
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
             ],
             200);
 

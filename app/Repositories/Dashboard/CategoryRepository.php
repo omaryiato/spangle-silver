@@ -23,7 +23,7 @@ class CategoryRepository {
         ])->get();
     }
 
-    public function getCategoryDetails(object $category){
+    public function getCategoryDetails(Category $category){
         return $category->load([
             'products',
             'products.images',
@@ -41,12 +41,12 @@ class CategoryRepository {
         return Category::create($category_request);
     }
 
-    public function updateCategoryDetails(object $category, array $categroy_request){
+    public function updateCategoryDetails(Category $category, array $categroy_request){
         $category->update($categroy_request);
         return $category;
     }
 
-    public function deleteCategory(object $category){
+    public function deleteCategory(Category $category){
         $category->delete();
         return $category;
     }

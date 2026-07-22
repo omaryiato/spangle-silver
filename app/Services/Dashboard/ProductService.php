@@ -3,6 +3,7 @@
 namespace App\Services\Dashboard;
 
 use App\Helpers\ResponseHelper;
+use App\Models\Product;
 use App\Repositories\Dashboard\ProductRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
@@ -27,7 +28,7 @@ class ProductService
     }
 
     // getProductDetails Funtion To Get Product Details
-    public function getProductDetails(object $product)
+    public function getProductDetails(Product $product)
     {
         return $this->productRepository->getProductDetails($product);
     }
@@ -58,7 +59,7 @@ class ProductService
         });
     }
 
-    public function updateProduct(array $product_request, object $product)
+    public function updateProduct(array $product_request, Product $product)
     {
         return DB::transaction(function () use ($product_request, $product) {
 
@@ -196,7 +197,7 @@ class ProductService
     }
 
     // deleteProduct Funtion To Delete Product
-    public function deleteProduct(object $product)
+    public function deleteProduct(Product $product)
     {
         // $product_details =  $this->productRepository->getProductDetails($id);
         return $this->productRepository->deleteProduct($product);

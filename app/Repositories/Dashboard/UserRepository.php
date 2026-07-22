@@ -15,6 +15,7 @@ class UserRepository
         return User::with([
             // User Addresses
             'addresses',
+            'reviews',
 
             // Orders
             'orders.shipping',
@@ -45,11 +46,12 @@ class UserRepository
     }
 
     // getUserDetails Funtion To Get User Details
-    public function getUserDetails(object $user)
+    public function getUserDetails(User $user)
     {
         return $user->load([
             // User Addresses
             'addresses',
+            'reviews',
 
             // Orders
             'orders.shipping',
@@ -86,14 +88,14 @@ class UserRepository
     }
 
     // updateUser Funtion To Update User info
-    public function updateUser(object $user, array $user_request)
+    public function updateUser(User $user, array $user_request)
     {
         $user->update($user_request);
         return $user;
     }
 
     // deleteUser Funtion To Delete User
-    public function deleteUser(object $user)
+    public function deleteUser(User $user)
     {
         $user->delete();
         return $user;

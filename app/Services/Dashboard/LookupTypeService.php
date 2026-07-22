@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\LookupType;
 use App\Repositories\Dashboard\LookupTypeRepository;
 
 
@@ -22,7 +23,7 @@ class LookupTypeService
     }
 
     // getLookupTypeDetails Funtion To Get Lookup Type Details
-    public function getLookupTypeDetails(object $lookupType)
+    public function getLookupTypeDetails(LookupType $lookupType)
     {
         return $this->lookupTypeRepository->getLookupTypeDetails($lookupType);
     }
@@ -34,7 +35,7 @@ class LookupTypeService
     }
 
     // updateLookupType Funtion To Update Lookup Type info
-    public function updateLookupType(array $lookup_type_request, object $lookupType)
+    public function updateLookupType(array $lookup_type_request, LookupType $lookupType)
     {
         // $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
         // if(!$lookup_type_details){
@@ -45,7 +46,7 @@ class LookupTypeService
     }
 
     // deleteLookupType Funtion To Delete Lookup Type
-    public function deleteLookupType($lookup_type_request, object $lookupType)
+    public function deleteLookupType($lookup_type_request, LookupType $lookupType)
     {
         // $lookup_type_details = $this->lookupTypeRepository->getLookupTypeDetails($id);
         // if(!$lookup_type_details){

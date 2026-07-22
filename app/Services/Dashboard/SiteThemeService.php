@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\SiteTheme;
 use App\Repositories\Dashboard\SiteThemeRepository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -26,7 +27,7 @@ class SiteThemeService
     }
 
     // getSiteThemeDetails Funtion To Get Shipping Method Details
-    public function getSiteThemeDetails(object $siteTheme)
+    public function getSiteThemeDetails(SiteTheme $siteTheme)
     {
         return $this->siteThemeRepository->getSiteThemeDetails($siteTheme);
     }
@@ -48,7 +49,7 @@ class SiteThemeService
     }
 
     // updateSiteTheme Funtion To Update Shipping Method info
-    public function updateSiteTheme(object $request, object $siteTheme)
+    public function updateSiteTheme(object $request, SiteTheme $siteTheme)
     {
         // $site_theme_details = $this->siteThemeRepository->getSiteThemeDetails($siteTheme);
         // if(!$site_theme_details){
@@ -85,7 +86,7 @@ class SiteThemeService
     }
 
     // deleteSiteTheme Funtion To Delete Shipping Method
-    public function deleteSiteTheme(object $siteTheme)
+    public function deleteSiteTheme(SiteTheme $siteTheme)
     {
 
         // $site_theme_details = $this->siteThemeRepository->getSiteThemeDetails($siteTheme);

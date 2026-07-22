@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\User;
 use App\Repositories\Dashboard\UserRepository;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,7 +23,7 @@ class UserService
     }
 
     // getUserDetails Funtion To Get User Details
-    public function getUserDetails(object  $user)
+    public function getUserDetails(User  $user)
     {
 
         return  $this->userRepository->getUserDetails($user);
@@ -35,7 +36,7 @@ class UserService
     }
 
     // updateUser Funtion To Update User info
-    public function updateUser(array $user_request, object $user)
+    public function updateUser(array $user_request, User $user)
     {
         // $user_details = $this->userRepository->getUserDetails($id);
         // if(!$user_details){
@@ -45,7 +46,7 @@ class UserService
     }
 
     // deleteUser Funtion To Delete User
-    public function deleteUser($user_request, object $user)
+    public function deleteUser($user_request, User $user)
     {
         // $user_details = $this->userRepository->getUserDetails($user);
         // if(!$user_details){

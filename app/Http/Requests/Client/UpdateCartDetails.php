@@ -38,7 +38,7 @@ class UpdateCartDetails extends BaseRequest
                     }
 
                     if ($value > $variant->stock) {
-                        $fail(trans('validation.exceeded_quantity'));
+                        $fail(trans('validation.exceeded_quantity', [], 'en'));
                     }
                 },
             ],

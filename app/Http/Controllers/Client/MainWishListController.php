@@ -25,8 +25,8 @@ class MainWishListController extends Controller
         return ResponseHelper::success(
             UserWishListResource::collection($user_wishlist),
             [
-                'en' => trans('validation.get_user_wishlist'),
-                'ar' => trans('validation.get_user_wishlist'),
+                'en' => trans('validation.get_user_wishlist', [], 'en'),
+                'ar' => trans('validation.get_user_wishlist', [], 'ar'),
             ],
             200
         );
@@ -41,16 +41,16 @@ class MainWishListController extends Controller
             return ResponseHelper::success(
                 new UserWishListResource($wishlist_details),
                 [
-                    'en' => trans('validation.add_to_wishlist'),
-                    'ar' => trans('validation.add_to_wishlist'),
+                    'en' => trans('validation.add_to_wishlist', [], 'en'),
+                    'ar' => trans('validation.add_to_wishlist', [], 'ar'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);
@@ -67,16 +67,16 @@ class MainWishListController extends Controller
             return ResponseHelper::success(
                 null,
                 [
-                    'en' => trans('validation.delete_wishlist'),
-                    'ar' => trans('validation.delete_wishlist'),
+                    'en' => trans('validation.delete_wishlist', [], 'en'),
+                    'ar' => trans('validation.delete_wishlist', [], 'ar'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);

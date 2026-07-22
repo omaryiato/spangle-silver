@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Dashboard\Theme;
+namespace App\Http\Requests\Dashboard\SiteTheme;
 
 use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -44,9 +44,10 @@ class UpdateTheme extends BaseRequest
             ],
 
             'background_image' => [
-                'nullable',
-                'string',
-                'max:500',
+                'required',
+                'file',
+                'mimes:jpg,jpeg,png,webp',
+                'max:5120',
             ],
 
             'borders' => [
@@ -59,6 +60,12 @@ class UpdateTheme extends BaseRequest
                 'nullable',
                 'integer',
                 'in:0,1',
+            ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
             ],
         ];
     }

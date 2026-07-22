@@ -25,8 +25,8 @@ class MainController extends Controller
         return ResponseHelper::success(
             CategoryResource::collection($all_data),
             [
-                'en' => trans('validation.home_page'),
-                'ar' => trans('validation.home_page'),
+                'en' => trans('validation.home_page', [], 'en'),
+                'ar' => trans('validation.home_page', [], 'ar'),
             ],
             200
         );
@@ -39,8 +39,8 @@ class MainController extends Controller
         return ResponseHelper::success(
             SiteThemeResource::collection($site_theme),
             [
-                'en' => trans('validation.get_site_theme'),
-                'ar' => trans('validation.get_site_theme'),
+                'en' => trans('validation.get_site_theme', [], 'en'),
+                'ar' => trans('validation.get_site_theme', [], 'ar'),
             ],
             200
         );
@@ -52,8 +52,8 @@ class MainController extends Controller
         return ResponseHelper::success(
             SiteMediaResource::collection($site_media),
             [
-                'en' => trans('validation.get_site_media'),
-                'ar' => trans('validation.get_site_media'),
+                'en' => trans('validation.get_site_media', [], 'en'),
+                'ar' => trans('validation.get_site_media', [], 'ar'),
             ],
             200
         );
@@ -67,8 +67,8 @@ class MainController extends Controller
             return ResponseHelper::error(
                     $media_details,
                     [
-                        'en' => trans('validation.data_not_found'),
-                        'ar' => trans('validation.data_not_found'),
+                        'en' => trans('validation.data_not_found', [], 'en'),
+                        'ar' => trans('validation.data_not_found', [], 'ar'),
                     ],
                     404);
         }

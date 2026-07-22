@@ -2,6 +2,7 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\UserWishlist;
 use App\Repositories\Dashboard\UserWishListRepository;
 
 class UserWishListService
@@ -21,7 +22,7 @@ class UserWishListService
     }
 
     // getUserWishListDetails Funtion To Get User Wish List Details
-    public function getUserWishListDetails(object $userWishlist)
+    public function getUserWishListDetails(UserWishlist $userWishlist)
     {
         return $this->userWishListRepository->getUserWishListDetails($userWishlist);
     }

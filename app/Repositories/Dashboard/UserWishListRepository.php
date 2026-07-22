@@ -15,7 +15,7 @@ class UserWishListRepository
     }
 
     // getUserWishlistDetails Funtion To Get UserWishlist Details
-    public function getUserWishlistDetails(object $userWishlist)
+    public function getUserWishlistDetails(userWishlist $userWishlist)
     {
         return $userWishlist->load(['user','product']);
     }

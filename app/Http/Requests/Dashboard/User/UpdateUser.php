@@ -24,7 +24,7 @@ class UpdateUser extends BaseRequest
      */
     public function rules(): array
     {
-        $id = $this->route("user_id");
+        $id = $this->route("user");
 
         return [
             'full_name' => [
@@ -74,6 +74,12 @@ class UpdateUser extends BaseRequest
                 'nullable',
                 'integer',
                 'in:0,1,2',
+            ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
             ],
         ];
     }

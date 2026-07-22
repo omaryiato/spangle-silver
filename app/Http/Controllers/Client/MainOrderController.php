@@ -24,8 +24,8 @@ class MainOrderController extends Controller
         return ResponseHelper::success(
             OrderResource::collection($orders_list),
             [
-                'en' => trans('validation.get_user_orders'),
-                'ar' => trans('validation.get_user_orders'),
+                'en' => trans('validation.get_user_orders', [], 'en'),
+                'ar' => trans('validation.get_user_orders', [], 'ar'),
             ],
             200
         );
@@ -40,16 +40,16 @@ class MainOrderController extends Controller
             return ResponseHelper::success(
                 new OrderResource($order_details),
                 [
-                    'en' => trans('validation.add_new_order'),
-                    'ar' => trans('validation.add_new_order'),
+                    'en' => trans('validation.add_new_order', [], 'en'),
+                    'ar' => trans('validation.add_new_order', [], 'ar'),
                 ],
                 200
             );
         } catch(Exception $exception){
             return ResponseHelper::error(
                 [
-                    'en' => trans('validation.exception_error'),
-                    'ar' => trans('validation.exception_error'),
+                    'en' => trans('validation.exception_error', [], 'en'),
+                    'ar' => trans('validation.exception_error', [], 'ar'),
                 ],
                 $exception->getMessage(),
                 500);

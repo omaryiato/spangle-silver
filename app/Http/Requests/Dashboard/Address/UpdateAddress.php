@@ -27,6 +27,12 @@ class UpdateAddress extends BaseRequest
 
         return [
 
+            'user_id' => [
+                'required',
+                'integer',
+                'exists:users,id',
+            ],
+
             'label' => [
                 'nullable',
                 'string',

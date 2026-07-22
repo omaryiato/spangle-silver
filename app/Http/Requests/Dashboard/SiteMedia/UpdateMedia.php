@@ -36,6 +36,12 @@ class UpdateMedia extends BaseRequest
                 'integer',
                 'in:0,1',
             ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
+            ],
         ];
     }
 }

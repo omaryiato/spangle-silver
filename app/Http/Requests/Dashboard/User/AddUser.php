@@ -68,6 +68,18 @@ class AddUser extends BaseRequest
                 'integer',
                 'in:0,1,2',
             ],
+
+            'created_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
+            ],
+
+            'updated_by' => [
+                'required',
+                'integer',
+                'exists:users,id'
+            ],
         ];
     }
 }

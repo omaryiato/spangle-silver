@@ -24,7 +24,11 @@ class UserResource extends JsonResource
             'email_address' => $this->email_address ?? null,
             'user_status' => $this->status ?? null,
             'user_type' => $this->user_type ?? null,
-            'user_addresses' => AddressResource::collection($this->whenLoad('addresses')),
+            'user_addresses' => AddressResource::collection($this->whenLoaded('addresses')),
+            'user_orders' => OrderResource::collection($this->whenLoaded('orders')),
+            'user_carts' => CartProductResource::collection($this->whenLoaded('cart')),
+            'user_wishlists' => UserWishListResource::collection($this->whenLoaded('wishlist')),
+            'user_reviews' => ProductReviewResource::collection($this->whenLoaded('reviews')),
 
             'created_by' => $this->created_by ?? null,
             'updated_by' => $this->updated_by ?? null,
