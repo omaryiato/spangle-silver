@@ -63,7 +63,7 @@ class MainCartController extends Controller
     {
         try{
 
-            $cart_details = $this->mainCartService->updateCartDetails($request->validated(), $cartProduct->id);
+            $cart_details = $this->mainCartService->updateCartDetails($request->validated(), $cartProduct);
 
             if (!$cart_details) {
                 return ResponseHelper::error(

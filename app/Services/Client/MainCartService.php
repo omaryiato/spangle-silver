@@ -3,6 +3,7 @@
 namespace App\Services\Client;
 
 use App\Helpers\ContactMessageHelper;
+use App\Models\CartProduct;
 use App\Repositories\Client\MainCartRepository;
 
 class MainCartService
@@ -22,15 +23,15 @@ class MainCartService
         return $this->mainCartRepository->addToCart($this->prepareCartRequest($cart_request));
     }
 
-    public function updateCartDetails($cart_request, int $id)
+    public function updateCartDetails(array $cart_request, CartProduct $cartProduct)
     {
-        $cart_details = $this->mainCartRepository->getCartDetails($id);
+        // $cart_details = $this->mainCartRepository->getCartDetails($id);
 
-        if(!$cart_details){
-            return null;
-        }
+        // if(!$cart_details){
+        //     return null;
+        // }
 
-        return $this->mainCartRepository->updateCartDetails($cart_details, $this->prepareCartRequest($cart_request));
+        return $this->mainCartRepository->updateCartDetails($cartProduct, $cart_request);
     }
 
     public function deleteCartList($cart_request)

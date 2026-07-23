@@ -9,11 +9,27 @@ class MainCartRepository
 
     public function getCartDetails(int $id)
     {
-        return CartProduct::findOrFail($id);
+        return CartProduct::with([
+            'user',
+            'variant.product',
+            'variant.color',
+            'variant.size',
+            'variant.product.images',
+            'variant.product.material',
+            'variant.product.stone'
+        ])->findOrFail($id);
     }
     public function getUserCartList(int $user_id)
     {
-        return CartProduct::where('user_id', $user_id)->get();
+        return CartProduct::with([
+            'user',
+            'variant.product',
+            'variant.color',
+            'variant.size',
+            'variant.product.images',
+            'variant.product.material',
+            'variant.product.stone'
+        ])->where('user_id', $user_id)->get();
     }
 
     public function addToCart($cart_request)

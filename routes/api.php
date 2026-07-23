@@ -164,7 +164,7 @@ Route::group(['prefix' => 'client'], function () {
 
     /***************************************** Site Images *******************************************/
 
-        Route::get('/media/{media_id}/stream', [MainController::class, 'stream'])->name('media.stream');
+        Route::get('/media/{siteMedia}/stream', [MainController::class, 'stream'])->name('media.stream');
 
         Route::GET('get-site-media', [MainController::class, 'getSiteMedia']);
 
@@ -173,10 +173,10 @@ Route::group(['prefix' => 'client'], function () {
         Route::get('/reel/{product}/stream', [MainProductController::class, 'stream'])->name('reel.stream');
 
         // Define a route to Get Products List
-        Route::GET('/get-products-list/{category_id}', [MainProductController::class, 'getProductsList']);
+        Route::GET('/get-products-list/{category}', [MainProductController::class, 'getProductsList']);
 
         // Define a route to Get Product Details
-        Route::GET('/get-product-details/{product_id}', [MainProductController::class, 'getProductDetails']);
+        Route::GET('/get-product-details/{product}', [MainProductController::class, 'getProductDetails']);
 
         // Define a route to Get Orders List Orders
         Route::POST('/review-product', [MainProductController::class, 'reviewProduct']);
@@ -194,7 +194,7 @@ Route::group(['prefix' => 'client'], function () {
     /***************************************** User Wishlist *******************************************/
 
         // Define a route to Get Orders List Orders
-        Route::GET('/get-user-wish-list/{user_id}', [MainWishListController::class, 'getUserWishList']);
+        Route::GET('/get-user-wish-list/{user}', [MainWishListController::class, 'getUserWishList']);
 
         // Define a route to Get Orders List Orders
         Route::POST('/add-to-wish-list', [MainWishListController::class, 'addToWishList']);
@@ -205,13 +205,13 @@ Route::group(['prefix' => 'client'], function () {
     /***************************************** User Cart *******************************************/
 
         // Define a route to Orders Details
-        Route::GET('/get-user-cart-list/{user_id}', [MainCartController::class, 'getUserCartList']);
+        Route::GET('/get-user-cart-list/{user}', [MainCartController::class, 'getUserCartList']);
 
         // Define a route to Get Orders List Orders
         Route::POST('/add-to-cart', [MainCartController::class, 'addToCart']);
 
         // Define a route to Get Orders List Orders
-        Route::POST('/update-cart-details/{cart_id}', [MainCartController::class, 'updateCartDetails']);
+        Route::POST('/update-cart-details/{cartProduct}', [MainCartController::class, 'updateCartDetails']);
 
         // Define a route to Orders Details
         Route::POST('/delete-cart-list', [MainCartController::class, 'deleteCartList']);
@@ -222,7 +222,7 @@ Route::group(['prefix' => 'client'], function () {
         Route::POST('/place-new-order', [MainOrderController::class, 'addNewOrder']);
 
         // Define a route to Confirm Order
-        Route::GET('/get-user-orders/{user_id}', [MainOrderController::class, 'getUserOrders']);
+        Route::GET('/get-user-orders/{user}', [MainOrderController::class, 'getUserOrders']);
 
 });
 

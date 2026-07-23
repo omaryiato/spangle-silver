@@ -8,6 +8,7 @@ use App\Http\Requests\Client\AddToWishList;
 use App\Http\Requests\Client\DeleteWishList;
 use App\Http\Resources\UserWishListResource;
 use App\Models\User;
+use App\Models\UserWishlist;
 use App\Services\Client\MainWishListService;
 use Exception;
 use Illuminate\Http\Request;

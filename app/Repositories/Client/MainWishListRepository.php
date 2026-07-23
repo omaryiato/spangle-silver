@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Client;
 
+use App\Models\User;
 use App\Models\UserWishlist;
 
 class MainWishListRepository
@@ -13,7 +14,7 @@ class MainWishListRepository
     }
     public function getUserWishList(int $user_id)
     {
-        return UserWishlist::where('user_id', $user_id)->with(['user','product'])->get();
+        return UserWishlist::with(['user','product'])->where('user_id', $user_id)->get();
     }
 
     public function addToWishList($wishlist_request)

@@ -30,9 +30,9 @@ class MainProductRepository
                         ->get();
     }
 
-    public function getProductDetails(int $product_id)
+    public function getProductDetails(Product $product)
     {
-        return Product::with([
+        return $product->load([
                             'category',
                             'images',
                             'variants' => fn($q) => $q->where('status', 1),
@@ -42,8 +42,7 @@ class MainProductRepository
                             'reviews.user' => fn($q) => $q->where('status', 1),
                             'material',
                             'stone',
-                        ])
-                        ->findOrFail($product_id);
+                        ]);
     }
 
     public function getShippingMethodsList()

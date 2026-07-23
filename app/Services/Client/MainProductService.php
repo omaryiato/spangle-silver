@@ -4,6 +4,7 @@ namespace App\Services\Client;
 
 use App\Helpers\ContactMessageHelper;
 use App\Helpers\ResponseHelper;
+use App\Models\Product;
 use App\Repositories\Client\MainProductRepository;
 
 class MainProductService
@@ -18,9 +19,9 @@ class MainProductService
         return $this->mainProductRepository->getProductsList($category_id);
     }
 
-    public function getProductDetails(int $product_id)
+    public function getProductDetails(Product $product)
     {
-        return $this->mainProductRepository->getProductDetails($product_id);
+        return $this->mainProductRepository->getProductDetails($product);
     }
 
     public function getShippingMethodsList()

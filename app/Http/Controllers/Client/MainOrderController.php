@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\AddNewOrder;
 use App\Http\Resources\OrderResource;
 use App\Models\User;
 use App\Services\Client\MainOrderService;
@@ -31,7 +32,7 @@ class MainOrderController extends Controller
         );
     }
 
-    public function addNewOrder(Request $request)
+    public function addNewOrder(AddNewOrder $request)
     {
         try{
 

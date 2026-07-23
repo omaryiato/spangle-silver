@@ -39,7 +39,7 @@ class MainProductController extends Controller
 
     public function getProductDetails(Product $product)
     {
-        $product_details = $this->mainProductService->getProductDetails($product->id);
+        $product_details = $this->mainProductService->getProductDetails($product);
 
         return ResponseHelper::success(
             new ProductResource($product_details),

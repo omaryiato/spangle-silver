@@ -3,6 +3,8 @@
 namespace App\Services\Client;
 
 use App\Helpers\ContactMessageHelper;
+use App\Models\User;
+use App\Models\UserWishlist;
 use App\Repositories\Client\MainWishListRepository;
 
 class MainWishListService

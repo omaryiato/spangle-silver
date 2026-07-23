@@ -26,7 +26,7 @@ class MainOrderService
 
         return DB::transaction(function () use ($order_request) {
 
-            if($order_request['coupon_id'] || $order_request['user_id']){
+            if(isset($order_request['coupon_id']) && isset($order_request['user_id'])){
 
                 $usage_validity = $this->mainOrderRepository->checkCouponUsageValidity($order_request['coupon_id'], $order_request['user_id']);
                 if($usage_validity){
@@ -64,7 +64,7 @@ class MainOrderService
             }
 
 
-            if(!isset($order_request['coupon_id'])){
+            if(isset($order_request['coupon_id'])){
 
                 $use_coupon = [
                     'coupon_id' => $order_request['coupon_id'] ?? null,

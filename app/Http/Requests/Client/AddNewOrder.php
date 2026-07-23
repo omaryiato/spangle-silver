@@ -29,21 +29,21 @@ class AddNewOrder extends BaseRequest
         return [
             'user_id' => [
                 'bail',
-                'required',
+                'nullable',
                 'integer',
                 // 'exists:users,id'
             ],
 
             'address_id' => [
                 'bail',
-                'required',
+                'nullable',
                 'integer',
                 // 'exists:addresses,id'
             ],
 
             'coupon_id' => [
                 'bail',
-                'required',
+                'nullable',
                 'integer',
                 'exists:coupons,id'
             ],
@@ -108,6 +108,31 @@ class AddNewOrder extends BaseRequest
             ],
 
             'order_details.*.total_price' => [
+                'bail',
+                'required',
+                'numeric',
+                'min:0'
+            ],
+
+            'subtotal' => [
+                'bail',
+                'required',
+                'numeric',
+                'min:0'
+            ],
+            'shipping_cost' => [
+                'bail',
+                'required',
+                'numeric',
+                'min:0'
+            ],
+            'discount' => [
+                'bail',
+                'required',
+                'numeric',
+                'min:0'
+            ],
+            'total_price' => [
                 'bail',
                 'required',
                 'numeric',
