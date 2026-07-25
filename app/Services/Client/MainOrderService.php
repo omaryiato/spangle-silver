@@ -117,34 +117,34 @@ class MainOrderService
 
     public function prepareOrderDetail($order_info)
     {
-        $details = $order_info['order_details'];
+        $order_details = $order_info['order_details'];
 
-        // if (is_array($details) && isset($details[0]) && is_string($details[0])) {
-        //     $details = json_decode($details[0], true);
+        // if (is_array($order_details) && isset($order_details[0]) && is_string($order_details[0])) {
+        //     $order_details = json_decode($order_details[0], true);
         // }
 
-        if (is_string($details)) {
-            $details = json_decode($details, true);
+        if (is_string($order_details)) {
+            $order_details = json_decode($order_details, true);
         }
 
-        return array_map(function ($detail) use($order_info) {
+        return array_map(function ($order_detail) use($order_info) {
             $order_data = [
-                'variant_id' => $detail['variant_id'] ?? null,
-                'quantity' => $detail['quantity'] ?? null,
-                'unit_price' => $detail['unit_price'] ?? null,
-                'total_price' => $detail['unit_price'] ?? null,
+                'variant_id' => $order_detail['variant_id'] ?? null,
+                'quantity' => $order_detail['quantity'] ?? null,
+                'unit_price' => $order_detail['unit_price'] ?? null,
+                'total_price' => $order_detail['unit_price'] ?? null,
             ];
 
-            if (isset($detail['created_by'])) {
+            if (isset($order_detail['created_by'])) {
                 $order_data['created_by'] = $order_info['user_id'];
             }
 
-            if (isset($detail['updated_by'])) {
+            if (isset($order_detail['updated_by'])) {
                 $order_data['updated_by'] = $order_info['user_id'];
             }
 
             return $order_data;
-        }, $details);
+        }, $order_details);
     }
 
 }

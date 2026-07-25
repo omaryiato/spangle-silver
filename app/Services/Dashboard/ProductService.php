@@ -175,8 +175,8 @@ class ProductService
     {
         $product_variants = $product_request['product_variants'];
 
-        // if (is_array($details) && isset($details[0]) && is_string($details[0])) {
-        //     $details = json_decode($details[0], true);
+        // if (is_array($product_variants) && isset($product_variants[0]) && is_string($product_variants[0])) {
+        //     $product_variants = json_decode($product_variants[0], true);
         // }
 
         if (is_string($product_variants)) {
@@ -202,7 +202,7 @@ class ProductService
             }
 
             return $request_data;
-        }, $product_request['product_variants']);
+        }, $product_variants);
     }
 
     // deleteProduct Funtion To Delete Product
