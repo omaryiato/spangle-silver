@@ -173,15 +173,24 @@ class ProductService
 
     public function prepareProductVariants(array $product_request)
     {
+        $product_variants = $product_request['product_variants'];
 
-        return array_map(function ($variant) use ($product_request) {
+        // if (is_array($details) && isset($details[0]) && is_string($details[0])) {
+        //     $details = json_decode($details[0], true);
+        // }
+
+        if (is_string($product_variants)) {
+            $product_variants = json_decode($product_variants, true);
+        }
+
+        return array_map(function ($product_variant) use ($product_request) {
             $request_data = [
-                'color_id' => $variant['color_id'] ?? null,
-                'size_id' => $variant['size_id'] ?? null,
-                'sku' => $variant['sku'] ?? null,
-                'stock' => $variant['stock'] ?? null,
-                'price' => $variant['price'] ?? null,
-                'status' => $variant['status'] ?? null,
+                'color_id' => $product_variant['color_id'] ?? null,
+                'size_id' => $product_variant['size_id'] ?? null,
+                'sku' => $product_variant['sku'] ?? null,
+                'stock' => $product_variant['stock'] ?? null,
+                'price' => $product_variant['price'] ?? null,
+                'status' => $product_variant['status'] ?? null,
             ];
 
             if (isset($product_request['created_by'])) {
