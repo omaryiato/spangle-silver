@@ -20,7 +20,6 @@ class MainOrderRepository
             'details.variant',
             'details.variant.color',
             'details.variant.size',
-            'user',
         ])->get();
     }
 

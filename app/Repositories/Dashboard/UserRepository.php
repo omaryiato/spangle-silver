@@ -19,7 +19,7 @@ class UserRepository
 
             // Orders
             'orders.shipping',
-            'orders.payment',
+            // 'orders.payment',
             'orders.details.variant.product',
             'orders.details.variant.color',
             'orders.details.variant.size',
