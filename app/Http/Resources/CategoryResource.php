@@ -20,7 +20,7 @@ class CategoryResource extends JsonResource
             'category_en_name' => $this->category_en_name ?? null,
             'category_ar_name' => $this->category_ar_name ?? null,
             'category_description' => $this->category_description ?? null,
-            'category_image' =>  asset(str_replace('//', '/', 'api/'. $this->category_image)) ?? null,
+            'category_image' =>  asset(str_replace('//', '/', $this->category_image)) ?? null,
             'status' => $this->status ?? null,
 
             'created_by' => $this->created_by ?? null,

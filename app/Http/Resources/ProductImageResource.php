@@ -17,7 +17,7 @@ class ProductImageResource extends JsonResource
 
         return [
             'id' => $this->id ?? null,
-            'image' => asset(str_replace('//', '/', 'api/'.  $this->image)) ?? null,
+            'image' => asset(str_replace('//', '/', $this->image)) ?? null,
             'is_primary' => $this->is_primary ?? null,
             'sort_order' => $this->sort_order ?? null,
 
