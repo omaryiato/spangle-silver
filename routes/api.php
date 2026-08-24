@@ -21,136 +21,154 @@ use App\Http\Controllers\Client\MainWishListController;
 use App\Http\Controllers\Client\MainCartController;
 use App\Http\Controllers\Client\MainOrderController;
 
+use App\Http\Controllers\API\AuthController;
 
-Route::group(['prefix' => 'dashboard'], function () {
+Route::post('/login', [AuthController::class, 'login']);
 
-    /***************************************** Lookup Types *******************************************/
+Route::middleware([
+    'auth:sanctum',
+    'admin.access',
+    'audit'
+])->group(function () {
 
-        // Route::apiResource('lookup-type', LookupTypeController::class);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-        Route::GET('lookup-type', [LookupTypeController::class, 'index']);
-        Route::GET('lookup-type/{lookupType}', [LookupTypeController::class, 'show']);
-        Route::POST('lookup-type', [LookupTypeController::class, 'store']);
-        Route::POST('lookup-type/{lookupType}', [LookupTypeController::class, 'update']);
-        Route::DELETE('lookup-type/{lookupValue}', [LookupTypeController::class, 'destroy']);
+    Route::get('/refresh', [AuthController::class, 'refresh']);
 
-    /***************************************** Lookup Values *******************************************/
+    Route::group(['prefix' => 'dashboard'], function () {
 
-        // Route::apiResource('lookup-value', LookupValueController::class);
+        /***************************************** Lookup Types *******************************************/
 
-        Route::GET('lookup-value', [LookupValueController::class, 'index']);
-        Route::GET('lookup-value/{lookupValue}', [LookupValueController::class, 'show']);
-        Route::POST('lookup-value', [LookupValueController::class, 'store']);
-        Route::POST('lookup-value/{lookupValue}', [LookupValueController::class, 'update']);
-        Route::DELETE('lookup-value/{lookupValue}', [LookupValueController::class, 'destroy']);
+            // Route::apiResource('lookup-type', LookupTypeController::class);
 
-    /***************************************** Users *******************************************/
+            Route::GET('lookup-type', [LookupTypeController::class, 'index']);
+            Route::GET('lookup-type/{lookupType}', [LookupTypeController::class, 'show']);
+            Route::POST('lookup-type', [LookupTypeController::class, 'store']);
+            Route::POST('lookup-type/{lookupType}', [LookupTypeController::class, 'update']);
+            Route::DELETE('lookup-type/{lookupValue}', [LookupTypeController::class, 'destroy']);
 
-        // Route::apiResource('user', UserController::class);
+        /***************************************** Lookup Values *******************************************/
 
-        Route::GET('user', [UserController::class, 'index']);
-        Route::GET('user/{user}', [UserController::class, 'show']);
-        Route::POST('user', [UserController::class, 'store']);
-        Route::POST('user/{user}', [UserController::class, 'update']);
-        Route::DELETE('user/{user}', [UserController::class, 'destroy']);
+            // Route::apiResource('lookup-value', LookupValueController::class);
 
-    /***************************************** Addresses *******************************************/
+            Route::GET('lookup-value', [LookupValueController::class, 'index']);
+            Route::GET('lookup-value/{lookupValue}', [LookupValueController::class, 'show']);
+            Route::POST('lookup-value', [LookupValueController::class, 'store']);
+            Route::POST('lookup-value/{lookupValue}', [LookupValueController::class, 'update']);
+            Route::DELETE('lookup-value/{lookupValue}', [LookupValueController::class, 'destroy']);
 
-        // Route::apiResource('address', AddressController::class);
+        /***************************************** Users *******************************************/
 
-        Route::GET('address', [AddressController::class, 'index']);
-        Route::GET('address/{address}', [AddressController::class, 'show']);
-        Route::POST('address', [AddressController::class, 'store']);
-        Route::POST('address/{address}', [AddressController::class, 'update']);
-        Route::DELETE('address/{address}', [AddressController::class, 'destroy']);
+            // Route::apiResource('user', UserController::class);
 
-    /***************************************** Category *******************************************/
+            Route::GET('user', [UserController::class, 'index']);
+            Route::GET('user/{user}', [UserController::class, 'show']);
+            Route::POST('user', [UserController::class, 'store']);
+            Route::POST('user/{user}', [UserController::class, 'update']);
+            Route::DELETE('user/{user}', [UserController::class, 'destroy']);
 
-        // Route::apiResource('category', CategoryController::class);
+        /***************************************** Addresses *******************************************/
 
-        Route::GET('category', [CategoryController::class, 'index']);
-        Route::GET('category/{category}', [CategoryController::class, 'show']);
-        Route::POST('category', [CategoryController::class, 'store']);
-        Route::POST('category/{category}', [CategoryController::class, 'update']);
-        Route::DELETE('category/{category}', [CategoryController::class, 'destroy']);
+            // Route::apiResource('address', AddressController::class);
 
-    /***************************************** Products *******************************************/
+            Route::GET('address', [AddressController::class, 'index']);
+            Route::GET('address/{address}', [AddressController::class, 'show']);
+            Route::POST('address', [AddressController::class, 'store']);
+            Route::POST('address/{address}', [AddressController::class, 'update']);
+            Route::DELETE('address/{address}', [AddressController::class, 'destroy']);
 
-        // Route::apiResource('product', ProductController::class);
+        /***************************************** Category *******************************************/
 
-        Route::GET('product', [ProductController::class, 'index']);
-        Route::GET('product/{product}', [ProductController::class, 'show']);
-        Route::POST('product', [ProductController::class, 'store']);
-        Route::POST('product/{product}', [ProductController::class, 'update']);
-        Route::DELETE('product/{product}', [ProductController::class, 'destroy']);
+            // Route::apiResource('category', CategoryController::class);
 
-    /***************************************** Shipping Methods *******************************************/
+            Route::GET('category', [CategoryController::class, 'index']);
+            Route::GET('category/{category}', [CategoryController::class, 'show']);
+            Route::POST('category', [CategoryController::class, 'store']);
+            Route::POST('category/{category}', [CategoryController::class, 'update']);
+            Route::DELETE('category/{category}', [CategoryController::class, 'destroy']);
 
-        // Route::apiResource('shipping-method', ShippingMethodController::class);
+        /***************************************** Products *******************************************/
 
-        Route::GET('shipping-method', [ShippingMethodController::class, 'index']);
-        Route::GET('shipping-method/{shippingMethod}', [ShippingMethodController::class, 'show']);
-        Route::POST('shipping-method', [ShippingMethodController::class, 'store']);
-        Route::POST('shipping-method/{shippingMethod}', [ShippingMethodController::class, 'update']);
-        Route::DELETE('shipping-method/{shippingMethod}', [ShippingMethodController::class, 'destroy']);
+            // Route::apiResource('product', ProductController::class);
 
-    /***************************************** Coupons *******************************************/
+            Route::GET('product', [ProductController::class, 'index']);
+            Route::GET('product/{product}', [ProductController::class, 'show']);
+            Route::POST('product', [ProductController::class, 'store']);
+            Route::POST('product/{product}', [ProductController::class, 'update']);
+            Route::DELETE('product/{product}', [ProductController::class, 'destroy']);
 
-        // Route::apiResource('coupon', CouponController::class);
+        /***************************************** Shipping Methods *******************************************/
 
-        Route::GET('coupon', [CouponController::class, 'index']);
-        Route::GET('coupon/{coupon}', [CouponController::class, 'show']);
-        Route::POST('coupon', [CouponController::class, 'store']);
-        Route::POST('coupon/{coupon}', [CouponController::class, 'update']);
-        Route::DELETE('coupon/{coupon}', [CouponController::class, 'destroy']);
+            // Route::apiResource('shipping-method', ShippingMethodController::class);
 
-    /***************************************** Orders & Orders Details *******************************************/
+            Route::GET('shipping-method', [ShippingMethodController::class, 'index']);
+            Route::GET('shipping-method/{shippingMethod}', [ShippingMethodController::class, 'show']);
+            Route::POST('shipping-method', [ShippingMethodController::class, 'store']);
+            Route::POST('shipping-method/{shippingMethod}', [ShippingMethodController::class, 'update']);
+            Route::DELETE('shipping-method/{shippingMethod}', [ShippingMethodController::class, 'destroy']);
 
-        Route::GET('/get-orders-list', [OrderController::class, 'getOrdersList']);
-        Route::GET('/get-order-details/{order}', [OrderController::class, 'getOrderDetails']);
-        Route::POST('/confirm-order/{order}', [OrderController::class, 'confirmOrder']);
+        /***************************************** Coupons *******************************************/
 
-    /***************************************** Cart Product *******************************************/
+            // Route::apiResource('coupon', CouponController::class);
 
-        // Route::apiResource('cart-product', CartProductController::class);
+            Route::GET('coupon', [CouponController::class, 'index']);
+            Route::GET('coupon/{coupon}', [CouponController::class, 'show']);
+            Route::POST('coupon', [CouponController::class, 'store']);
+            Route::POST('coupon/{coupon}', [CouponController::class, 'update']);
+            Route::DELETE('coupon/{coupon}', [CouponController::class, 'destroy']);
 
-        Route::GET('cart-product', [CartProductController::class, 'index']);
-        Route::GET('cart-product/{cartProduct}', [CartProductController::class, 'show']);
+        /***************************************** Orders & Orders Details *******************************************/
 
-    /***************************************** User Wish List *******************************************/
+            Route::GET('/get-orders-list', [OrderController::class, 'getOrdersList']);
+            Route::GET('/get-order-details/{order}', [OrderController::class, 'getOrderDetails']);
+            Route::POST('/confirm-order/{order}', [OrderController::class, 'confirmOrder']);
 
-        // Route::apiResource('user-wish-list', UserWishListController::class);
+        /***************************************** Cart Product *******************************************/
 
-        Route::GET('user-wish-list', [UserWishListController::class, 'index']);
-        Route::GET('user-wish-list/{userWishlist}', [UserWishListController::class, 'show']);
+            // Route::apiResource('cart-product', CartProductController::class);
 
-    /***************************************** Product Review *******************************************/
+            Route::GET('cart-product', [CartProductController::class, 'index']);
+            Route::GET('cart-product/{cartProduct}', [CartProductController::class, 'show']);
 
-        Route::GET('product-review', [ProductReviewController::class, 'index']);
-        Route::GET('product-review/{productReview}', [ProductReviewController::class, 'show']);
-        Route::DELETE('product-review/{productReview}', [ProductReviewController::class, 'destroy']);
+        /***************************************** User Wish List *******************************************/
 
-    /***************************************** Site Theme *******************************************/
+            // Route::apiResource('user-wish-list', UserWishListController::class);
 
-        // Route::apiResource('site-theme', SiteThemeController::class);
+            Route::GET('user-wish-list', [UserWishListController::class, 'index']);
+            Route::GET('user-wish-list/{userWishlist}', [UserWishListController::class, 'show']);
 
-        Route::GET('site-theme', [SiteThemeController::class, 'index']);
-        Route::GET('site-theme/{siteTheme}', [SiteThemeController::class, 'show']);
-        Route::POST('site-theme', [SiteThemeController::class, 'store']);
-        Route::POST('site-theme/{siteTheme}', [SiteThemeController::class, 'update']);
-        Route::DELETE('site-theme/{siteTheme}', [SiteThemeController::class, 'destroy']);
+        /***************************************** Product Review *******************************************/
 
-    /***************************************** Site Images *******************************************/
+            Route::GET('product-review', [ProductReviewController::class, 'index']);
+            Route::GET('product-review/{productReview}', [ProductReviewController::class, 'show']);
+            Route::DELETE('product-review/{productReview}', [ProductReviewController::class, 'destroy']);
 
-        // Route::apiResource('site-image', SiteImageController::class);
+        /***************************************** Site Theme *******************************************/
 
-        Route::GET('site-media', [SiteMediaController::class, 'index']);
-        Route::GET('site-media/{siteMedia}', [SiteMediaController::class, 'show']);
-        Route::POST('site-media', [SiteMediaController::class, 'store']);
-        Route::POST('site-media/{siteMedia}', [SiteMediaController::class, 'update']);
-        Route::DELETE('site-media/{siteMedia}', [SiteMediaController::class, 'destroy']);
+            // Route::apiResource('site-theme', SiteThemeController::class);
+
+            Route::GET('site-theme', [SiteThemeController::class, 'index']);
+            Route::GET('site-theme/{siteTheme}', [SiteThemeController::class, 'show']);
+            Route::POST('site-theme', [SiteThemeController::class, 'store']);
+            Route::POST('site-theme/{siteTheme}', [SiteThemeController::class, 'update']);
+            Route::DELETE('site-theme/{siteTheme}', [SiteThemeController::class, 'destroy']);
+
+        /***************************************** Site Images *******************************************/
+
+            // Route::apiResource('site-image', SiteImageController::class);
+
+            Route::GET('site-media', [SiteMediaController::class, 'index']);
+            Route::GET('site-media/{siteMedia}', [SiteMediaController::class, 'show']);
+            Route::POST('site-media', [SiteMediaController::class, 'store']);
+            Route::POST('site-media/{siteMedia}', [SiteMediaController::class, 'update']);
+            Route::DELETE('site-media/{siteMedia}', [SiteMediaController::class, 'destroy']);
+
+    });
+
 
 });
+
+
 
 Route::group(['prefix' => 'client'], function () {
 
@@ -201,6 +219,7 @@ Route::group(['prefix' => 'client'], function () {
 
         // Define a route to Get Orders List Orders
         Route::POST('/delete-wish-list', [MainWishListController::class, 'deleteWishList']);
+
 
     /***************************************** User Cart *******************************************/
 

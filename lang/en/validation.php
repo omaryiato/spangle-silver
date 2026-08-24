@@ -4,6 +4,11 @@ return [
     "exception_error" => "Something went wrong.",
 
     // Add To Cart Validation
+    /*
+    |--------------------------------------------------------------------------
+    | Add To Cart Validation
+    |--------------------------------------------------------------------------
+    */
 
     // 'user_id' => [
     //     'required' => 'User ID is required.',
@@ -26,6 +31,11 @@ return [
     'exceeded_quantity' => 'The requested quantity exceeds available stock.',
 
     // Delete Cart List Validation
+    /*
+    |--------------------------------------------------------------------------
+    | Delete Cart List Validation
+    |--------------------------------------------------------------------------
+    */
 
     'cart_id' => [
         'required' => 'Cart ID is required.',
@@ -34,6 +44,11 @@ return [
     ],
 
     // Add To Wishlist Validation
+    /*
+    |--------------------------------------------------------------------------
+    | Add To Wishlist Validation
+    |--------------------------------------------------------------------------
+    */
 
     'product_id' => [
         'required' => 'Product ID is required.',
@@ -42,6 +57,11 @@ return [
     ],
 
     // Delete Wishlist Validation
+    /*
+    |--------------------------------------------------------------------------
+    | Delete Wishlist Validation
+    |--------------------------------------------------------------------------
+    */
 
     'wishlist_id' => [
         'required' => 'Wishlist ID is required.',
@@ -50,6 +70,11 @@ return [
     ],
 
     // Review Product
+    /*
+    |--------------------------------------------------------------------------
+    | Review Product
+    |--------------------------------------------------------------------------
+    */
 
     'comment' => [
         'required_without' => 'Please provide a comment or rating.',
@@ -65,6 +90,11 @@ return [
 
 
     // Place New Order Validation
+    /*
+    |--------------------------------------------------------------------------
+    | Place New Order Validation
+    |--------------------------------------------------------------------------
+    */
 
     'address_id' => [
         'required' => 'Address ID is required.',
@@ -98,6 +128,11 @@ return [
 
 
     // Client Side Messgaes
+    /*
+    |--------------------------------------------------------------------------
+    | Client Side Messgaes
+    |--------------------------------------------------------------------------
+    */
 
     'home_page' => 'All Site Details successfully retrived.',
     'get_site_theme' => 'Site theme retrieved successfully.',
@@ -556,6 +591,17 @@ return [
     | Coupon Validation
     |--------------------------------------------------------------------------
     */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Login Messages
+    |--------------------------------------------------------------------------
+    */
+
+    'invalid_credentials'   => 'Invalid email address or password.',
+    'logged_in'   => 'Welcome.',
+    'logged_out'   => 'Goodbye.',
+    'token_available'   => 'Token available.',
 
 
 

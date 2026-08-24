@@ -1,6 +1,9 @@
 <?php
 
 use App\Helpers\ResponseHelper;
+use App\Http\Middleware\ApiAuditLogger;
+use App\Http\Middleware\DataValidation;
+use App\Http\Middleware\UserAccessibility;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -19,16 +22,35 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
-    )
-    ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+    )->withMiddleware(function (Middleware $middleware): void {
 
-        $middleware->web(append: [
-            HandleAppearance::class,
-            HandleInertiaRequests::class,
-            AddLinkHeadersForPreloadedAssets::class,
+        $middleware->api(prepend: [
+
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+
+            DataValidation::class,
+
         ]);
+
+        $middleware->alias([
+
+            'admin.access' => UserAccessibility::class,
+
+            'audit' => ApiAuditLogger::class,
+
+        ]);
+
+        $middleware->trustProxies(at: '*');
     })
+    // ->withMiddleware(function (Middleware $middleware): void {
+    //     $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+
+    //     $middleware->web(append: [
+    //         HandleAppearance::class,
+    //         HandleInertiaRequests::class,
+    //         AddLinkHeadersForPreloadedAssets::class,
+    //     ]);
+    // })
     ->withExceptions(function ($exceptions) {
 
         $exceptions->render(function (ModelNotFoundException $e, Request $request) {
