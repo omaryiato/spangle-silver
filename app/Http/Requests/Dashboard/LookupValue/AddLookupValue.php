@@ -53,7 +53,8 @@ class AddLookupValue extends BaseRequest
             ],
 
             'color' => [
-                'required',
+                'nullable',
+                'required_if:type_id,1',
                 'string',
                 'max:255',
             ],
