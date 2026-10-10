@@ -71,7 +71,7 @@ class AddProduct extends BaseRequest
                 'nullable',
                 'file',
                 'mimes:mp4',
-                'max:50000',
+                // 'max:50000',
             ],
 
             'product_price' => [
@@ -103,7 +103,7 @@ class AddProduct extends BaseRequest
                 'required',
                 'file',
                 'mimes:jpg,jpeg,png,webp',
-                'max:5120',
+                // 'max:5120',
             ],
 
             'product_images.*.is_primary' => [
