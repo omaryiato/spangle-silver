@@ -43,6 +43,7 @@ class ProductService
                 $product_request['product_reels'] = $reels;
             }
 
+            dd($product_request);
             dd($this->prepareProductRequest($product_request));
 
             $product = $this->productRepository->addNewProduct($this->prepareProductRequest($product_request));
