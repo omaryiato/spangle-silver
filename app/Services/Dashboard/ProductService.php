@@ -41,9 +41,7 @@ class ProductService
             if (!empty($product_request['product_reels'])) {
                 $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name']);
                 $product_request['product_reels'] = $reels;
-            }
-
-            dd($product_request);
+            } 
             dd($this->prepareProductRequest($product_request));
 
             $product = $this->productRepository->addNewProduct($this->prepareProductRequest($product_request));
