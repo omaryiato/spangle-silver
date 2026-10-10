@@ -43,12 +43,16 @@ class ProductService
                 $product_request['product_reels'] = $reels;
             }
 
+            dd($this->prepareProductRequest($product_request));
+
             $product = $this->productRepository->addNewProduct($this->prepareProductRequest($product_request));
+            dd($this->prepareProductRequest($product_request['product_images']));
 
             if (!empty($product_request['product_images'])) {
                 $images = $this->uploadProductImages($product_request, $product['product_en_name']);
                 $this->productRepository->addProductImages($product, $images);
-            }
+                }
+                dd($this->prepareProductVariants($product_request));
 
             if (!empty($product_request['product_variants'])) {
                 $variants = $this->prepareProductVariants($product_request);

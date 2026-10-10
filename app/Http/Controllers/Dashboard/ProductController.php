@@ -43,9 +43,10 @@ class ProductController extends Controller
             200);
     }
 
-    public function store(AddProduct $request)
+    public function store(Request $request)
     {
         try{
+            dd($request->all());
             $product_details = $this->productService->addNewProduct($request->validated());
             return ResponseHelper::success(
                 new ProductResource($product_details),
