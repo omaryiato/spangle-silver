@@ -146,7 +146,7 @@ class AddProduct extends BaseRequest
             ],
 
             'product_variants.*.stock' => [
-                'required',
+                'nullable',
                 'integer',
                 'min:0',
             ],
