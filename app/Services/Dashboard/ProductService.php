@@ -39,7 +39,7 @@ class ProductService
         return DB::transaction(function () use ($product_request) {
 
             if (!empty($product_request['product_reels'])) {
-                $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name']);
+                $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name'], $product_request);
                 $product_request['product_reels'] = $reels;
             }
 
@@ -66,7 +66,7 @@ class ProductService
             // $product = $this->productRepository->getProductDetails($id);
 
             if (!empty($product_request['product_reels'])) {
-                $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name']);
+                $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name'], $product_request);
                 $product_request['product_reels'] = $reels;
             }
 
@@ -138,7 +138,7 @@ class ProductService
             $extension = $product_image['image']->getClientOriginalExtension();
             $file_name = "{$product_name}_" . uniqid() . ".{$extension}";
 
-            $path = public_path("documents/{$product_en_name}_product");
+            $path = public_path("documents/{$product_request['category_id']}/{$product_en_name}_product");
 
             if (!File::exists($path)) {
                 File::makeDirectory($path, 0755, true);
@@ -160,7 +160,7 @@ class ProductService
             // $image['file']->move($path, $file_name);
 
             $product_images[] = [
-                'image' => "{$path}/{$webp_name}",
+                'image' => "documents/{$product_request['category_id']}/{$product_en_name}_product/{$webp_name}",
                 'is_primary' => $product_image['is_primary'] ?? 0,
                 'sort_order' => $product_image['sort_order'] ?? 0,
                 'created_by' => $product_request['updated_by'],
@@ -173,17 +173,10 @@ class ProductService
 
     public function prepareProductVariants(array $product_request)
     {
-        $product_variants = $product_request['product_variants'];
+        $product_variants = [];
 
-        // if (is_array($product_variants) && isset($product_variants[0]) && is_string($product_variants[0])) {
-        //     $product_variants = json_decode($product_variants[0], true);
-        // }
+        foreach ($product_request['product_variants'] as $product_variant) {
 
-        if (is_string($product_variants)) {
-            $product_variants = json_decode($product_variants, true);
-        }
-
-        return array_map(function ($product_variant) use ($product_request) {
             $request_data = [
                 'color_id' => $product_variant['color_id'] ?? null,
                 'size_id' => $product_variant['size_id'] ?? null,
@@ -201,9 +194,46 @@ class ProductService
                 $request_data['updated_by'] = $product_request['updated_by'];
             }
 
-            return $request_data;
-        }, $product_variants);
+            $product_variants[] = [$request_data];
+
+        }
+
+        return $product_variants;
     }
+
+    // public function prepareProductVariants(array $product_request)
+    // {
+    //     $product_variants = $product_request['product_variants'];
+
+    //     // if (is_array($product_variants) && isset($product_variants[0]) && is_string($product_variants[0])) {
+    //     //     $product_variants = json_decode($product_variants[0], true);
+    //     // }
+
+    //     if (is_string($product_variants)) {
+    //         $product_variants = json_decode($product_variants, true);
+    //     }
+
+    //     return array_map(function ($product_variant) use ($product_request) {
+    //         $request_data = [
+    //             'color_id' => $product_variant['color_id'] ?? null,
+    //             'size_id' => $product_variant['size_id'] ?? null,
+    //             'sku' => $product_variant['sku'] ?? null,
+    //             'stock' => $product_variant['stock'] ?? 0,
+    //             'price' => $product_variant['price'] ?? 0,
+    //             'status' => $product_variant['status'] ?? 1,
+    //         ];
+
+    //         if (isset($product_request['created_by'])) {
+    //             $request_data['created_by'] = $product_request['created_by'];
+    //         }
+
+    //         if (isset($product_request['updated_by'])) {
+    //             $request_data['updated_by'] = $product_request['updated_by'];
+    //         }
+
+    //         return $request_data;
+    //     }, $product_variants);
+    // }
 
     // deleteProduct Funtion To Delete Product
     public function deleteProduct(Product $product)
@@ -212,10 +242,10 @@ class ProductService
         return $this->productRepository->deleteProduct($product);
     }
 
-    protected function uploadProductReels(UploadedFile $file, string $product_en_name): string
+    protected function uploadProductReels(UploadedFile $file, string $product_en_name, array $product_request): string
     {
 
-        $destination_path = public_path("documents/{$product_en_name}_product/");
+        $destination_path = public_path("documents/{$product_request['category_id']}/{$product_en_name}_product");
 
         if (!File::exists($destination_path)) {
             File::makeDirectory(
@@ -242,7 +272,7 @@ class ProductService
         );
 
 
-        return "documents/{$product_en_name}_product/{$file_name}";
+        return "documents/{$product_request['category_id']}/{$product_en_name}_product/{$file_name}";
     }
 
 }
