@@ -194,7 +194,7 @@ class ProductService
                 $request_data['updated_by'] = $product_request['updated_by'];
             }
 
-            $product_variants[] = [$request_data];
+            $product_variants[] = $request_data;
 
         }
 
