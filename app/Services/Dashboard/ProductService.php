@@ -107,8 +107,6 @@ class ProductService
             'product_ar_description' => $product_request['product_ar_description'] ?? null,
             'product_status' => $product_request['product_status'] ?? 1,
             'product_price' => $product_request['product_price'] ?? null,
-            'product_material' => $product_request['product_material'] ?? null,
-            'product_stone' => $product_request['product_stone'] ?? null,
             'product_reels' => $product_request['product_reels'] ?? null,
             'category_id' => $product_request['category_id'] ?? null,
             'created_by' => $product_request['created_by'] ?? null,
@@ -184,6 +182,8 @@ class ProductService
                 'stock' => $product_variant['stock'] ?? 0,
                 'price' => $product_variant['price'] ?? 0,
                 'status' => $product_variant['status'] ?? 1,
+                'material_id' => $product_request['material_id'] ?? null,
+                'stone_id' => $product_request['stone_id'] ?? null,
             ];
 
             if (isset($product_request['created_by'])) {

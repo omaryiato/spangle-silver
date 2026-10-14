@@ -19,8 +19,8 @@ class ProductRepository
             'images',
             'reviews',
             'reviews.user',
-            'material',
-            'stone',
+            'variants.material',
+            'variants.stone',
             'category'
             ])->get();
     }
@@ -35,8 +35,8 @@ class ProductRepository
             'images',
             'reviews',
             'reviews.user',
-            'material',
-            'stone',
+            'variants.material',
+            'variants.stone',
             'category'
         ]);
     }

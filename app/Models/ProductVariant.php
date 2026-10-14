@@ -12,6 +12,9 @@ class ProductVariant extends Model
         "product_id",
         "color_id",
         "size_id",
+        'material_id',
+        'stone_id',
+        'length',
         "sku",
         "stock",
         "price",
@@ -38,6 +41,16 @@ class ProductVariant extends Model
     public function size()
     {
         return $this->belongsTo(LookupValue::class, 'size_id', 'id');
+    }
+
+    public function material()
+    {
+        return $this->belongsTo(LookupValue::class, 'material_id', 'id');
+    }
+
+    public function stone()
+    {
+        return $this->belongsTo(LookupValue::class, 'stone_id', 'id');
     }
 
     public function stockMovements()

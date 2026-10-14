@@ -38,6 +38,14 @@ class ProductVariantResource extends JsonResource
             'size_id' => $this->size_id ?? null,
             'size_en_name' => $this->size?->en_meaning ?? null,
             'size_ar_name' => $this->size?->ar_meaning ?? null,
+
+            'material_id' => $this->material_id ?? null,
+            'material_en_name' => $this->material?->en_meaning ?? null,
+            'material_ar_name' => $this->material?->ar_meaning ?? null,
+
+            'stone_id' => $this->stone_id ?? null,
+            'stone_en_name' => $this->stone?->en_meaning ?? null,
+            'stone_ar_name' => $this->stone?->ar_meaning ?? null,
         ];
     }
 }

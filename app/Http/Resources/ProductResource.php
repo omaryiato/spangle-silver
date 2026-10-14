@@ -39,14 +39,6 @@ class ProductResource extends JsonResource
             'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
 
 
-            'product_material' => $this->product_material ?? null,
-            'material_en_name' => $this->material?->en_meaning ?? null,
-            'material_ar_name' => $this->material?->ar_meaning ?? null,
-
-            'product_stone' => $this->product_stone ?? null,
-            'stone_en_name' => $this->stone?->en_meaning ?? null,
-            'stone_ar_name' => $this->stone?->ar_meaning ?? null,
-
             'produst_images' => ProductImageResource::collection($this->whenLoaded('images')),
             'product_variants' => ProductVariantResource::collection($this->whenLoaded('variants')),
             'product_reviews' => ProductReviewResource::collection($this->whenLoaded('reviews')),

@@ -16,8 +16,6 @@ class Product extends Model
         'product_ar_name',
         'product_en_description',
         'product_ar_description',
-        'product_material',
-        'product_stone',
         'product_reels',
         'product_price',
         'product_status',
@@ -54,13 +52,5 @@ class Product extends Model
         return $this->hasMany(ProductReview::class, 'product_id', 'id');
     }
 
-    public function material()
-    {
-        return $this->belongsTo(LookupValue::class, 'product_material', 'id');
-    }
 
-    public function stone()
-    {
-        return $this->belongsTo(LookupValue::class, 'product_stone', 'id');
-    }
 }
