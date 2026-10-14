@@ -28,19 +28,20 @@ class AddProduct extends BaseRequest
     {
         return [
 
-            // Product
             'product_en_name' => [
                 'required',
                 'string',
                 'max:255',
-                'unique:products,product_en_name',
+                Rule::unique('products', 'product_en_name')
+                    ->where('category_id', $this->input('category_id')),
             ],
 
             'product_ar_name' => [
                 'required',
                 'string',
                 'max:255',
-                'unique:products,product_ar_name',
+                Rule::unique('products', 'product_ar_name')
+                    ->where('category_id', $this->input('category_id')),
             ],
 
             'product_en_description' => [

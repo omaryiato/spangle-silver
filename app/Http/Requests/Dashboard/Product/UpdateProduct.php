@@ -36,6 +36,7 @@ class UpdateProduct extends BaseRequest
                 'string',
                 'max:255',
                 Rule::unique('products', 'product_en_name')
+                        ->where('category_id', $this->input('category_id'))
                         ->ignore($id)
                         ->where('id', $this->input('id')),
             ],
@@ -45,6 +46,7 @@ class UpdateProduct extends BaseRequest
                 'string',
                 'max:255',
                 Rule::unique('products', 'product_ar_name')
+                        ->where('category_id', $this->input('category_id'))
                         ->ignore($id)
                         ->where('id', $this->input('id')),
             ],
@@ -140,6 +142,24 @@ class UpdateProduct extends BaseRequest
             'product_variants.*.size_id' => [
                 'nullable',
                 'integer',
+                'exists:lookup_values,id',
+            ],
+
+            'product_variants.*.material_id' => [
+                'nullable',
+                'integer',
+                'exists:lookup_values,id',
+            ],
+
+            'product_variants.*.stone_id' => [
+                'nullable',
+                'integer',
+                'exists:lookup_values,id',
+            ],
+
+            'product_variants.*.length' => [
+                'nullable',
+                'numeric',
                 'exists:lookup_values,id',
             ],
 
