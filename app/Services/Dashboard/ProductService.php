@@ -182,8 +182,9 @@ class ProductService
                 'stock' => $product_variant['stock'] ?? 0,
                 'price' => $product_variant['price'] ?? 0,
                 'status' => $product_variant['status'] ?? 1,
-                'material_id' => $product_request['material_id'] ?? null,
+                'material_id' => $product_request['material_id'] ?? 20,
                 'stone_id' => $product_request['stone_id'] ?? null,
+                'length' => $product_request['length'] ?? null,
             ];
 
             if (isset($product_request['created_by'])) {

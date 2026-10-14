@@ -137,6 +137,24 @@ class AddProduct extends BaseRequest
                 'exists:lookup_values,id',
             ],
 
+            'product_variants.*.material_id' => [
+                'nullable',
+                'integer',
+                'exists:lookup_values,id',
+            ],
+
+            'product_variants.*.stone_id' => [
+                'nullable',
+                'integer',
+                'exists:lookup_values,id',
+            ],
+
+            'product_variants.*.length' => [
+                'nullable',
+                'numeric',
+                'exists:lookup_values,id',
+            ],
+
             'product_variants.*.sku' => [
                 'nullable',
                 'string',
