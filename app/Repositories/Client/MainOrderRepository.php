@@ -20,6 +20,8 @@ class MainOrderRepository
             'details.variant',
             'details.variant.color',
             'details.variant.size',
+            'details.variant.material',
+            'details.variant.stone',
         ])->get();
     }
 

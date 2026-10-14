@@ -22,10 +22,10 @@ class MainRepository
                     'products.variants' => fn($q) => $q->where('status', 1),
                     'products.variants.color',
                     'products.variants.size',
+                    'products.variants.material',
+                    'products.variants.stone',
                     'products.reviews',
                     'products.reviews.user' => fn($q) => $q->where('status', 1),
-                    'products.material',
-                    'products.stone',
                 ])
                 ->get();
     }

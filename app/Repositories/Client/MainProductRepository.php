@@ -24,8 +24,8 @@ class MainProductRepository
                             'variants.size',
                             'reviews',
                             'reviews.user' => fn($q) => $q->where('status', 1),
-                            'material',
-                            'stone',
+                            'variants.material',
+                            'variants.stone',
                         ])
                         ->get();
     }
@@ -40,8 +40,8 @@ class MainProductRepository
                             'variants.size',
                             'reviews',
                             'reviews.user' => fn($q) => $q->where('status', 1),
-                            'material',
-                            'stone',
+                            'variants.material',
+                            'variants.stone',
                         ]);
     }
 

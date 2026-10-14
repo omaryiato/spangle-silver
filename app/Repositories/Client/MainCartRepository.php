@@ -15,8 +15,8 @@ class MainCartRepository
             'variant.color',
             'variant.size',
             'variant.product.images',
-            'variant.product.material',
-            'variant.product.stone'
+            'variant.material',
+            'variant.stone'
         ])->findOrFail($id);
     }
     public function getUserCartList(int $user_id)
@@ -27,8 +27,8 @@ class MainCartRepository
             'variant.color',
             'variant.size',
             'variant.product.images',
-            'variant.product.material',
-            'variant.product.stone'
+            'variant.material',
+            'variant.stone'
         ])->where('user_id', $user_id)->get();
     }
 
