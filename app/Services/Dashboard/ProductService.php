@@ -134,11 +134,11 @@ class ProductService
 
         foreach ($product_request['product_images'] as $product_image) {
 
-            $product_name = str_replace(' ', '_', $product_request['product_en_name']);
+            $product_name = str_replace(' ', '_', strtolower($product_request['product_en_name']));
             $extension = $product_image['image']->getClientOriginalExtension();
             $file_name = "{$product_name}_" . uniqid() . ".{$extension}";
 
-            $path = public_path("documents/{$product_request['category_id']}/{$product_en_name}_product");
+            $path = public_path("documents/{$product_request['category_id']}/{$product_name}_product");
 
             if (!File::exists($path)) {
                 File::makeDirectory($path, 0755, true);
@@ -160,7 +160,7 @@ class ProductService
             // $image['file']->move($path, $file_name);
 
             $product_images[] = [
-                'image' => "documents/{$product_request['category_id']}/{$product_en_name}_product/{$webp_name}",
+                'image' => "documents/{$product_request['category_id']}/{$product_name}_product/{$webp_name}",
                 'is_primary' => $product_image['is_primary'] ?? 0,
                 'sort_order' => $product_image['sort_order'] ?? 0,
                 'created_by' => $product_request['updated_by'],
