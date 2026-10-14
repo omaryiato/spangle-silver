@@ -160,7 +160,6 @@ class UpdateProduct extends BaseRequest
             'product_variants.*.length' => [
                 'nullable',
                 'numeric',
-                'exists:lookup_values,id',
             ],
 
             'product_variants.*.sku' => [
