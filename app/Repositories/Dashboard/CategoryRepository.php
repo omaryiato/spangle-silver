@@ -19,7 +19,7 @@ class CategoryRepository {
             'products.reviews',
             'products.reviews.user',
             'products.variants.material',
-            'products.stone'
+            'products.variants.stone'
         ])->get();
     }
 
@@ -33,7 +33,7 @@ class CategoryRepository {
             'products.reviews',
             'products.reviews.user',
             'products.variants.material',
-            'products.stone'
+            'products.variants.stone'
         ]);
     }
 
