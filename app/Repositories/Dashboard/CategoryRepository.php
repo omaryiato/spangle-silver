@@ -18,7 +18,7 @@ class CategoryRepository {
             'products.variants.size',
             'products.reviews',
             'products.reviews.user',
-            'products.material',
+            'products.variants.material',
             'products.stone'
         ])->get();
     }
@@ -32,7 +32,7 @@ class CategoryRepository {
             'products.variants.size',
             'products.reviews',
             'products.reviews.user',
-            'products.material',
+            'products.variants.material',
             'products.stone'
         ]);
     }
