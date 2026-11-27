@@ -5,7 +5,6 @@ namespace App\Http\Requests\Dashboard\SiteMedia;
 use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-
 class UpdateMedia extends BaseRequest
 {
     /**
@@ -24,23 +23,23 @@ class UpdateMedia extends BaseRequest
     public function rules(): array
     {
         return [
+            'media' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:51200'],
+            'alt_text' => ['sometimes', 'nullable', 'array:ar,en'],
+            'alt_text.ar' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'alt_text.en' => ['sometimes', 'nullable', 'string', 'max:255'],
 
             'type' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:50',
             ],
 
             'status' => [
-                'nullable',
-                'integer',
-                'in:0,1',
-            ],
-
-            'updated_by' => [
+                'sometimes',
                 'required',
                 'integer',
-                'exists:users,id'
+                'in:0,1',
             ],
         ];
     }

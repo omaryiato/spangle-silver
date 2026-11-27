@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
-
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -25,10 +22,13 @@ class User extends Authenticatable
         'status',
         'user_type',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $casts = [
+        'password' => 'hashed',
+        'status' => 'integer',
+        'user_type' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -37,7 +37,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
     ];
-
 
     public function addresses()
     {
@@ -64,4 +63,3 @@ class User extends Authenticatable
         return $this->hasMany(ProductReview::class, 'user_id', 'id');
     }
 }
-

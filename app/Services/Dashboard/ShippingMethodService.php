@@ -7,7 +7,6 @@ use App\Repositories\Dashboard\ShippingMethodRepository;
 
 class ShippingMethodService
 {
-
     protected $shippingMethodRepository;
 
     public function __construct(ShippingMethodRepository $shippingMethodRepository)
@@ -18,7 +17,7 @@ class ShippingMethodService
     // getShippingMethodsList Funtion To Get Shipping Methods List
     public function getShippingMethodsList()
     {
-        return  $this->shippingMethodRepository->getShippingMethodsList();
+        return $this->shippingMethodRepository->getShippingMethodsList();
     }
 
     // getShippingMethodDetails Funtion To Get Shipping Method Details
@@ -42,7 +41,7 @@ class ShippingMethodService
         // if(!$shipping_method_details){
         //     return null;
         // }
-        return $this->shippingMethodRepository->updateShippingMethod($shippingMethod, $this->prepareRequestInfo($shipping_method_request));
+        return $this->shippingMethodRepository->updateShippingMethod($shippingMethod, $this->prepareRequestInfo($shipping_method_request, true));
     }
 
     // deleteShippingMethod Funtion To Delete Shipping Method
@@ -57,19 +56,29 @@ class ShippingMethodService
 
     }
 
-    public function prepareRequestInfo(array $request_info)
+    public function prepareRequestInfo(array $request_info, bool $updating = false)
     {
 
         $request_data = [
             'method_en_name' => $request_info['method_en_name'] ?? null,
             'method_ar_name' => $request_info['method_ar_name'] ?? null,
-            'price' => $request_info['price'] ?? null,
+            'price' => $request_info['price'] ?? 0,
             'estimated_days' => $request_info['estimated_days'] ?? null,
-            'status' => $request_info['status'] ?? null,
+            'status' => $request_info['status'] ?? 1,
         ];
+
+        if ($updating) {
+            $request_data = array_intersect_key($request_data, $request_info);
+        }
 
         return $request_data;
     }
 
-}
+    public function getActiveMethod(int $id): ShippingMethod
+    {
+        $method = $this->shippingMethodRepository->findById($id);
+        abort_unless((int) $method->status === 1, 409);
 
+        return $method;
+    }
+}

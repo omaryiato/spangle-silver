@@ -12,15 +12,12 @@ use App\Http\Resources\ShippingMethodResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Services\Client\MainProductService;
-use Exception;
-use Illuminate\Http\Request;
 
 class MainProductController extends Controller
 {
     public function __construct(
         protected MainProductService $mainProductService
     ) {}
-
 
     public function getProductsList(Category $category)
     {
@@ -35,7 +32,6 @@ class MainProductController extends Controller
             200
         );
     }
-
 
     public function getProductDetails(Product $product)
     {
@@ -81,44 +77,34 @@ class MainProductController extends Controller
 
     public function reviewProduct(ReviewProduct $request)
     {
-        try{
 
-            $review_details = $this->mainProductService->reviewProduct($request->validated());
+        $review_details = $this->mainProductService->reviewProduct($request->validated());
 
-            return ResponseHelper::success(
-                new ProductReviewResource($review_details),
-                [
-                    'en' => trans('validation.review_product', [], 'en'),
-                    'ar' => trans('validation.review_product', [], 'ar'),
-                ],
-                200
-            );
-        } catch(Exception $exception){
-            return ResponseHelper::error(
-                [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
-                ],
-                $exception->getMessage(),
-                500);
-        }
+        return ResponseHelper::success(
+            new ProductReviewResource($review_details),
+            [
+                'en' => trans('validation.review_product', [], 'en'),
+                'ar' => trans('validation.review_product', [], 'ar'),
+            ],
+            200
+        );
+
     }
 
     public function stream(Product $product)
     {
         $product_reel = $this->mainProductService->stream($product);
 
-        if(!$product_reel){
+        if (! $product_reel) {
             return ResponseHelper::error(
-                    $product_reel,
-                    [
-                        'en' => trans('validation.no_data_found', [], 'en'),
-                        'ar' => trans('validation.no_data_found', [], 'ar'),
-                    ],
-                    404);
+                $product_reel,
+                [
+                    'en' => trans('validation.no_data_found', [], 'en'),
+                    'ar' => trans('validation.no_data_found', [], 'ar'),
+                ],
+                404);
         }
 
         return $product_reel;
     }
-
 }

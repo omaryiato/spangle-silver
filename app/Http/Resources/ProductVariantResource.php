@@ -16,6 +16,9 @@ class ProductVariantResource extends JsonResource
     {
 
         return [
+            'color' => LookupValueResource::make($this->whenLoaded('color')),
+            'size' => LookupValueResource::make($this->whenLoaded('size')),
+
             'id' => $this->id ?? null,
             'sku' => $this->sku ?? null,
             'stock' => $this->stock ?? null,
@@ -32,20 +35,12 @@ class ProductVariantResource extends JsonResource
             'product_id' => $this->product_id ?? null,
 
             'color_id' => $this->color_id ?? null,
-            'color_en_name' => $this->color?->en_meaning ?? null,
-            'color_ar_name' => $this->color?->ar_meaning ?? null,
+            'color_en_name' => $this->whenLoaded('color', fn () => $this->color?->en_meaning ?? null),
+            'color_ar_name' => $this->whenLoaded('color', fn () => $this->color?->ar_meaning ?? null),
 
             'size_id' => $this->size_id ?? null,
-            'size_en_name' => $this->size?->en_meaning ?? null,
-            'size_ar_name' => $this->size?->ar_meaning ?? null,
-
-            'material_id' => $this->material_id ?? null,
-            'material_en_name' => $this->material?->en_meaning ?? null,
-            'material_ar_name' => $this->material?->ar_meaning ?? null,
-
-            'stone_id' => $this->stone_id ?? null,
-            'stone_en_name' => $this->stone?->en_meaning ?? null,
-            'stone_ar_name' => $this->stone?->ar_meaning ?? null,
+            'size_en_name' => $this->whenLoaded('size', fn () => $this->size?->en_meaning ?? null),
+            'size_ar_name' => $this->whenLoaded('size', fn () => $this->size?->ar_meaning ?? null),
         ];
     }
 }

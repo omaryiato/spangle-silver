@@ -18,8 +18,8 @@ class ProductReviewResource extends JsonResource
             'id' => $this->id ?? null,
 
             'user_id' => $this->user_id ?? null,
-            'full_name' => $this->user?->full_name ?? null,
-            'user_name' => $this->user?->user_name ?? null,
+            'full_name' => $this->whenLoaded('user', fn () => $this->user?->full_name ?? null),
+            'user_name' => $this->whenLoaded('user', fn () => $this->user?->user_name ?? null),
 
             'product_id' => $this->product_id ?? null,
 

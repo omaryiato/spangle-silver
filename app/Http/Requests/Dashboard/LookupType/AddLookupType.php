@@ -5,7 +5,6 @@ namespace App\Http\Requests\Dashboard\LookupType;
 use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-
 class AddLookupType extends BaseRequest
 {
     /**
@@ -45,21 +44,10 @@ class AddLookupType extends BaseRequest
             ],
 
             'status' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
-            ],
-
-            'created_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
-
-            'updated_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
             ],
         ];
     }

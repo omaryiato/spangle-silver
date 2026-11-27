@@ -23,17 +23,11 @@ class DeleteCartList extends BaseRequest
     public function rules(): array
     {
         return [
-            'user_id' => [
-                'bail',
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
             'cart_id' => [
                 'bail',
-                'required',
+                'sometimes',
                 'integer',
-                'exists:cart_products,id'
+                'exists:cart_products,id',
             ],
         ];
     }

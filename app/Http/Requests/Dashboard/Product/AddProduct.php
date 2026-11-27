@@ -6,8 +6,6 @@ use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
-
-
 class AddProduct extends BaseRequest
 {
     /**
@@ -23,10 +21,11 @@ class AddProduct extends BaseRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-
     public function rules(): array
     {
         return [
+            'product_variants.*' => ['array:color_id,size_id,sku,stock,price,status'],
+            'product_images.*' => ['array:image,is_primary,sort_order'],
 
             'product_en_name' => [
                 'required',
@@ -72,17 +71,19 @@ class AddProduct extends BaseRequest
                 'nullable',
                 'file',
                 'mimes:mp4',
-                // 'max:50000',
+                'max:51200',
             ],
 
             'product_price' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'numeric',
                 'min:0',
             ],
 
             'product_status' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
             ],
@@ -93,18 +94,17 @@ class AddProduct extends BaseRequest
                 'exists:category,id',
             ],
 
-
             // Images
             'product_images' => [
                 'nullable',
-                'array',
+                'array', 'list', 'max:100',
             ],
 
             'product_images.*.image' => [
                 'required',
                 'file',
                 'mimes:jpg,jpeg,png,webp',
-                // 'max:5120',
+                'max:5120',
             ],
 
             'product_images.*.is_primary' => [
@@ -119,11 +119,10 @@ class AddProduct extends BaseRequest
                 'min:0',
             ],
 
-
             // Variants
             'product_variants' => [
                 'nullable',
-                'array',
+                'array', 'list', 'max:100',
             ],
 
             'product_variants.*.color_id' => [
@@ -136,23 +135,6 @@ class AddProduct extends BaseRequest
                 'nullable',
                 'integer',
                 'exists:lookup_values,id',
-            ],
-
-            'product_variants.*.material_id' => [
-                'nullable',
-                'integer',
-                'exists:lookup_values,id',
-            ],
-
-            'product_variants.*.stone_id' => [
-                'nullable',
-                'integer',
-                'exists:lookup_values,id',
-            ],
-
-            'product_variants.*.length' => [
-                'nullable',
-                'numeric',
             ],
 
             'product_variants.*.sku' => [
@@ -176,23 +158,11 @@ class AddProduct extends BaseRequest
             ],
 
             'product_variants.*.status' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
             ],
-
-            'created_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
-
-            'updated_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
         ];
     }
-
 }

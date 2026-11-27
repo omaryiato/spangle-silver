@@ -1,150 +1,91 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Client;
 
-use App\Helpers\ContactMessageHelper;
+use App\Models\Order;
 use App\Repositories\Client\MainOrderRepository;
+use App\Services\ActingUserService;
+use App\Services\Dashboard\AddressService;
+use App\Services\Dashboard\CouponService;
+use App\Services\Dashboard\ShippingMethodService;
+use App\Services\LoggingService;
+use App\Services\Products\InventoryService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use App\Repositories\Dashboard\UserRepository;
-use Exception;
 
 class MainOrderService
 {
-    public function __construct(
-        protected MainOrderRepository $mainOrderRepository,
-        protected ContactMessageHelper $contactMessageHelper,
-        protected UserRepository $userRepository,
-    ) {}
+    public function __construct(private MainOrderRepository $repository, private ActingUserService $actor,
+        private AddressService $addresses, private CouponService $coupons, private ShippingMethodService $shipping,
+        private InventoryService $inventory, private LoggingService $logging) {}
 
-    public function getUserOrders(int $user_id)
+    public function getUserOrders(): Collection
     {
-        return $this->mainOrderRepository->getUserOrders($user_id);
+        return $this->repository->getUserOrders($this->actor->id());
     }
 
-    public function addNewOrder($order_request)
+    /** Prices are derived from persisted data and calculated in integer cents. */
+    public function addNewOrder(array $data): Order
     {
-
-        return DB::transaction(function () use ($order_request) {
-
-            if(isset($order_request['coupon_id']) && isset($order_request['user_id'])){
-
-                $usage_validity = $this->mainOrderRepository->checkCouponUsageValidity($order_request['coupon_id'], $order_request['user_id']);
-                if($usage_validity){
-                    throw new Exception('Coupon Usage Limit Reached');
-                }
+        return DB::transaction(function () use ($data): Order {
+            $userId = $this->actor->id();
+            $quantities = [];
+            foreach ($data['order_details'] as $line) {
+                $quantities[(int) $line['variant_id']] = (int) $line['quantity'];
             }
-
-            if(!isset($order_request['user_id'])){
-                $create_guest_user = [
-
-                    'full_name' => $order_request['snap_user_name'] ?? null,
-                    'user_name' => $order_request['snap_user_name'] ?? null,
-                    'phone_number' => $order_request['snap_phone'] ?? null,
-                    'email_address' => $order_request['snap_email'] ?? null,
-                    'password' =>  null,
-                    'status' => 1,
-                    'user_type' => 3,
-
-                ];
-
-                $user_info = $this->userRepository->addNewUser($create_guest_user);
-                $order_request['user_id'] = $user_info->id;
-
+            $variants = $this->inventory->lockAvailable($quantities);
+            $subtotal = 0;
+            $details = [];
+            foreach ($quantities as $id => $quantity) {
+                $variant = $variants->get($id);
+                $price = (int) round((float) ($variant->price ?? $variant->product->product_price) * 100);
+                abort_if($price < 0 || $quantity > 1000000, 422);
+                $lineTotal = $price * $quantity;
+                $subtotal += $lineTotal;
+                abort_if($lineTotal > 9999999999 || $subtotal > 9999999999, 422);
+                $details[] = $this->actor->attributes(['variant_id' => $id, 'quantity' => $quantity,
+                    'unit_price' => $price / 100, 'total_price' => $lineTotal / 100]);
             }
-
-            // 1. Create Order
-            $add_new_order = $this->mainOrderRepository->addNewOrder($this->prepareOrderInfo($order_request));
-
-            // 2. Insert Details
-            if (!empty($order_request['order_details'])) {
-
-                $details = $this->prepareOrderDetail($order_request);
-
-                $this->mainOrderRepository->addOrderDetails($add_new_order, $details);
+            $shipping = $this->shipping->getActiveMethod((int) $data['shipping_id']);
+            $shippingCents = (int) round((float) $shipping->price * 100);
+            $coupon = isset($data['coupon_id']) ? $this->coupons->getAvailableCoupon((int) $data['coupon_id'], $userId, $subtotal) : null;
+            $discount = $coupon ? min($subtotal, (int) round((float) $coupon->discount_amount * 100)) : 0;
+            $address = isset($data['address_id']) ? $this->addresses->getOwnedAddress((int) $data['address_id'], $userId) : null;
+            $payload = array_intersect_key($data, array_flip(['notes', 'snap_user_name', 'snap_address', 'snap_city', 'snap_country', 'snap_phone', 'snap_email', 'snap_postal_code']));
+            if ($address) {
+                $payload = array_merge($payload, ['snap_user_name' => $address->full_name, 'snap_address' => $address->address_line,
+                    'snap_city' => $address->city, 'snap_country' => $address->country, 'snap_phone' => $address->phone, 'snap_postal_code' => $address->postal_code]);
             }
-
-
-            if(isset($order_request['coupon_id'])){
-
-                $use_coupon = [
-                    'coupon_id' => $order_request['coupon_id'] ?? null,
-                    'user_id' => $order_request['user_id'] ?? null,
-                    'order_id' => $add_new_order->id ?? null,
-                ];
-
-                $user_info = $this->mainOrderRepository->addNewCouponUsage($use_coupon);
-
+            abort_if($subtotal + $shippingCents - $discount > 9999999999, 422);
+            $payload = array_merge($payload, ['user_id' => $userId, 'address_id' => $address?->id, 'shipping_id' => $shipping->id,
+                'subtotal' => $subtotal / 100, 'shipping_cost' => $shippingCents / 100, 'discount' => $discount / 100,
+                'total_price' => ($subtotal + $shippingCents - $discount) / 100, 'status' => 1]);
+            $order = $this->repository->addNewOrder($this->actor->attributes($payload));
+            $this->repository->addOrderDetails($order, $details);
+            if ($coupon) {
+                $this->coupons->recordOrderUsage($coupon, $userId, (int) $order->id);
             }
+            DB::afterCommit(function () use ($userId): void {
+                $this->logging->record('PlaceOrder', $userId, 'SUCCESS');
+            });
 
-            // $this->mainOrderRepository->prepareNotificationDetails($add_new_order->id, 'technical_office', $add_new_request->updated_by, 'Approver', $add_new_request->notes);
-
-            return $add_new_order;
+            return $this->repository->getOrderDetails($order);
         });
-
     }
 
-    public function prepareOrderInfo(array $order_info)
+    public function cancelOrder(Order $order): Order
     {
-        $order_data = [
-            'user_id' => $order_info['user_id'] ?? null,
-            'address_id' => $order_info['address_id'] ?? null,
-            'shipping_id' => $order_info['shipping_id'] ?? null,
-            'subtotal' => $order_info['subtotal'] ?? null,
-            'shipping_cost' => $order_info['shipping_cost'] ?? null,
-            'discount' => $order_info['discount'] ?? null,
-            'total_price' => $order_info['total_price'] ?? null,
-            'status' => $order_info['status'] ?? 0,
-            'notes' => $order_info['notes'] ?? null,
-            'snap_user_name' => $order_info['snap_user_name'] ?? null,
-            'snap_address' => $order_info['snap_address'] ?? null,
-            'snap_city' => $order_info['snap_city'] ?? null,
-            'snap_country' => $order_info['snap_country'] ?? null,
-            'snap_phone' => $order_info['snap_phone'] ?? null,
-            'snap_email' => $order_info['snap_email'] ?? null,
-            'snap_postal_code' => $order_info['snap_postal_code'] ?? null,
-        ];
+        return DB::transaction(function () use ($order): Order {
+            $order = $this->repository->lockOwned($order, $this->actor->id());
+            abort_unless((int) $order->status === 1, 409);
+            $order = $this->repository->updateStatus($order, $this->actor->attributes(['status' => 6], true));
+            DB::afterCommit(function (): void {
+                $this->logging->record('CancelOrder', $this->actor->id(), 'SUCCESS');
+            });
 
-        if (isset($order_info['created_by'])) {
-            $order_data['created_by'] = $order_info['user_id'];
-        }
-
-        if (isset($order_info['updated_by'])) {
-            $order_data['updated_by'] = $order_info['user_id'];
-        }
-
-        return $order_data;
+            return $order;
+        });
     }
-
-    public function prepareOrderDetail($order_info)
-    {
-        $order_details = $order_info['order_details'];
-
-        // if (is_array($order_details) && isset($order_details[0]) && is_string($order_details[0])) {
-        //     $order_details = json_decode($order_details[0], true);
-        // }
-
-        if (is_string($order_details)) {
-            $order_details = json_decode($order_details, true);
-        }
-
-        return array_map(function ($order_detail) use($order_info) {
-            $order_data = [
-                'variant_id' => $order_detail['variant_id'] ?? null,
-                'quantity' => $order_detail['quantity'] ?? null,
-                'unit_price' => $order_detail['unit_price'] ?? null,
-                'total_price' => $order_detail['unit_price'] ?? null,
-            ];
-
-            if (isset($order_detail['created_by'])) {
-                $order_data['created_by'] = $order_info['user_id'];
-            }
-
-            if (isset($order_detail['updated_by'])) {
-                $order_data['updated_by'] = $order_info['user_id'];
-            }
-
-            return $order_data;
-        }, $order_details);
-    }
-
 }

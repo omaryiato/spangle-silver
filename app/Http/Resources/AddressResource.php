@@ -19,7 +19,7 @@ class AddressResource extends JsonResource
             'id' => $this->id ?? null,
 
             'user_id' => $this->user_id ?? null,
-            'user_full_name' => $this->user?->full_name ?? null,
+            'user_full_name' => $this->whenLoaded('user', fn () => $this->user?->full_name ?? null),
 
             'label' => $this->label ?? null,
             'full_name' => $this->full_name ?? null,

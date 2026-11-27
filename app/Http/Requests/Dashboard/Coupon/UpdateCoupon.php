@@ -6,8 +6,6 @@ use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
-
-
 class UpdateCoupon extends BaseRequest
 {
     /**
@@ -25,59 +23,58 @@ class UpdateCoupon extends BaseRequest
      */
     public function rules(): array
     {
-        $id = $this->route("category_id");
-
+        $id = $this->route('coupon');
 
         return [
 
             'code' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:50',
                 Rule::unique('coupons', 'code')
-                        ->ignore($id)
-                        ->where('id', $this->input('id')),
+                    ->ignore($id),
             ],
 
             'discount_amount' => [
+                'sometimes',
                 'required',
                 'numeric',
                 'gt:0',
             ],
 
             'minimum_order_amount' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'numeric',
                 'min:0',
             ],
 
             'max_usage' => [
+                'sometimes',
                 'nullable',
                 'integer',
                 'min:0',
             ],
 
             'used_count' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'min:0',
             ],
 
             'expires_at' => [
+                'sometimes',
                 'nullable',
                 'date',
             ],
 
             'status' => [
-                'nullable',
-                'integer',
-                'in:0,1',
-            ],
-
-            'updated_by' => [
+                'sometimes',
                 'required',
                 'integer',
-                'exists:users,id'
+                'in:0,1',
             ],
         ];
     }

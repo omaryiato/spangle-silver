@@ -5,8 +5,6 @@ namespace App\Http\Requests\Client;
 use App\Http\Requests\Base\BaseRequest;
 use App\Models\ProductVariant;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Validation\Rule;
-
 
 class AddToCart extends BaseRequest
 {
@@ -27,18 +25,11 @@ class AddToCart extends BaseRequest
     {
         return [
 
-            'user_id' => [
-                'bail',
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
-
             'variant_id' => [
                 'bail',
                 'required',
                 'integer',
-                'exists:product_variants,id'
+                'exists:product_variants,id',
             ],
 
             'quantity' => [
@@ -50,7 +41,7 @@ class AddToCart extends BaseRequest
 
                     $variant = ProductVariant::find($this->variant_id);
 
-                    if (!$variant) {
+                    if (! $variant) {
                         return;
                     }
 

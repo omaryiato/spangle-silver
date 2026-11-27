@@ -7,7 +7,6 @@ use App\Repositories\Dashboard\AddressRepository;
 
 class AddressService
 {
-
     protected $addressRepository;
 
     public function __construct(AddressRepository $addressRepository)
@@ -18,7 +17,7 @@ class AddressService
     // Funtion To Get Addresses List
     public function getAddressesList()
     {
-        return  $this->addressRepository->getAddressesList();
+        return $this->addressRepository->getAddressesList();
     }
 
     // getAddressDetails Funtion To Get Address Details
@@ -41,11 +40,11 @@ class AddressService
         //     return null;
         // }
         return $this->addressRepository->updateAddress($address,
-                                            $this->prepareRequestInfo($address_request));
+            $this->prepareRequestInfo($address_request, true));
     }
 
     // deleteAddress Funtion To Delete Address
-    public function deleteAddress($address_request, Address $address)
+    public function deleteAddress(Address $address)
     {
         try {
             // $address_details = $this->addressRepository->getAddressDetails($id);
@@ -59,13 +58,13 @@ class AddressService
         }
     }
 
-    public function prepareRequestInfo(array $request_info)
+    public function prepareRequestInfo(array $request_info, bool $updating = false)
     {
 
         $request_data = [
-            'user_id' => $request_info['user_id'],
+            'user_id' => $request_info['user_id'] ?? null,
             'label' => $request_info['label'] ?? null,
-            'full_name' => $request_info['full_name'],
+            'full_name' => $request_info['full_name'] ?? null,
             'address_line' => $request_info['address_line'] ?? null,
             'city' => $request_info['city'] ?? null,
             'country' => $request_info['country'] ?? null,
@@ -74,8 +73,15 @@ class AddressService
             'is_default' => $request_info['is_default'] ?? 0,
         ];
 
+        if ($updating) {
+            $request_data = array_intersect_key($request_data, $request_info);
+        }
+
         return $request_data;
     }
 
+    public function getOwnedAddress(int $id, int $userId): Address
+    {
+        return $this->addressRepository->findOwned($id, $userId);
+    }
 }
-

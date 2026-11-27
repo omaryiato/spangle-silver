@@ -4,14 +4,15 @@ namespace App\Services\Dashboard;
 
 use App\Models\User;
 use App\Repositories\Dashboard\UserRepository;
+use App\Services\ActingUserService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-
     protected $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, protected ActingUserService $actingUserService)
     {
         $this->userRepository = $userRepository;
     }
@@ -19,20 +20,20 @@ class UserService
     // getUsersList Funtion To Get Users List
     public function getUsersList()
     {
-        return  $this->userRepository->getUsersList();
+        return $this->userRepository->getUsersList();
     }
 
     // getUserDetails Funtion To Get User Details
-    public function getUserDetails(User  $user)
+    public function getUserDetails(User $user)
     {
 
-        return  $this->userRepository->getUserDetails($user);
+        return $this->userRepository->getUserDetails($user);
     }
 
     // addNewUser Funtion To Add new User
     public function addNewUser(array $user_request)
     {
-        return $this->userRepository->addNewUser($user_request);
+        return $this->userRepository->addNewUser($this->prepareRequestInfo($user_request));
     }
 
     // updateUser Funtion To Update User info
@@ -42,20 +43,35 @@ class UserService
         // if(!$user_details){
         //     return null;
         // }
-        return $this->userRepository->updateUser($user, $user_request);
+        $update = fn () => $this->userRepository->updateUser($user, $this->prepareRequestInfo($user_request, true));
+        if (isset($user_request['password']) || (isset($user_request['status']) && (int) $user_request['status'] === 0)) {
+            return DB::transaction(function () use ($update, $user) {
+                $result = $update();
+                $this->userRepository->revokeTokens($user);
+
+                return $result;
+            });
+        }
+
+        return $update();
     }
 
     // deleteUser Funtion To Delete User
-    public function deleteUser($user_request, User $user)
+    public function deleteUser(User $user)
     {
         // $user_details = $this->userRepository->getUserDetails($user);
         // if(!$user_details){
         //     return null;
         // }
-        return $this->userRepository->deleteUser($user);
+        return DB::transaction(function () use ($user) {
+            $result = $this->userRepository->deleteUser($user, $this->actingUserService->attributes(['status' => 0], true));
+            $this->userRepository->revokeTokens($user);
+
+            return $result;
+        });
     }
 
-    public function prepareRequestInfo(array $request_info)
+    public function prepareRequestInfo(array $request_info, bool $updating = false)
     {
 
         $request_data = [
@@ -66,20 +82,14 @@ class UserService
             'password' => isset($request_info['password'])
                     ? Hash::make($request_info['password'])
                     : null,
-            'status' => $request_info['status'] ?? null,
-            'user_type' => $request_info['user_type'] ?? null,
+            'status' => $request_info['status'] ?? 1,
+            'user_type' => $request_info['user_type'] ?? 0,
         ];
 
-        if (isset($request_info['created_by'])) {
-            $request_data['created_by'] = $request_info['created_by'];
+        if ($updating) {
+            $request_data = array_intersect_key($request_data, $request_info);
         }
 
-        if (isset($request_info['updated_by'])) {
-            $request_data['updated_by'] = $request_info['updated_by'];
-        }
-
-        return $request_data;
+        return $this->actingUserService->attributes($request_data, $updating);
     }
-
 }
-

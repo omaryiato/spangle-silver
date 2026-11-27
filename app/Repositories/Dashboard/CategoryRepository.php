@@ -2,12 +2,10 @@
 
 namespace App\Repositories\Dashboard;
 
-
 use App\Models\Category;
 
-
-class CategoryRepository {
-
+class CategoryRepository
+{
     public function getCategoryList()
     {
         return Category::with([
@@ -18,12 +16,11 @@ class CategoryRepository {
             'products.variants.size',
             'products.reviews',
             'products.reviews.user',
-            'products.variants.material',
-            'products.variants.stone'
         ])->get();
     }
 
-    public function getCategoryDetails(Category $category){
+    public function getCategoryDetails(Category $category)
+    {
         return $category->load([
             'products',
             'products.images',
@@ -32,23 +29,25 @@ class CategoryRepository {
             'products.variants.size',
             'products.reviews',
             'products.reviews.user',
-            'products.variants.material',
-            'products.variants.stone'
         ]);
     }
 
-    public function addNewCategory(array $category_request){
+    public function addNewCategory(array $category_request)
+    {
         return Category::create($category_request);
     }
 
-    public function updateCategoryDetails(Category $category, array $categroy_request){
+    public function updateCategoryDetails(Category $category, array $categroy_request)
+    {
         $category->update($categroy_request);
+
         return $category;
     }
 
-    public function deleteCategory(Category $category){
+    public function deleteCategory(Category $category)
+    {
         $category->delete();
+
         return $category;
     }
-
 }

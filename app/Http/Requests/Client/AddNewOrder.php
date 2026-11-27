@@ -1,143 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Client;
 
 use App\Http\Requests\Base\BaseRequest;
-use App\Models\ProductVariant;
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Validation\Rule;
 
 class AddNewOrder extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
-
-
     public function rules(): array
     {
         return [
-            'user_id' => [
-                'bail',
-                'nullable',
-                'integer',
-                // 'exists:users,id'
-            ],
-
-            'address_id' => [
-                'bail',
-                'nullable',
-                'integer',
-                // 'exists:addresses,id'
-            ],
-
-            'coupon_id' => [
-                'bail',
-                'nullable',
-                'integer',
-                'exists:coupons,id'
-            ],
-
-            'shipping_id' => [
-                'bail',
-                'required',
-                'integer',
-                'exists:shipping_methods,id'
-            ],
-
-            'order_details' => [
-                'bail',
-                'required',
-                'array',
-                'min:1'
-            ],
-
-            'order_details.*.variant_id' => [
-                'bail',
-                'required',
-                'integer',
-                'exists:product_variants,id'
-            ],
-
-            'order_details.*.quantity' => [
-                'bail',
-                'required',
-                'integer',
-                'min:1',
-                function ($attribute, $value, $fail) {
-
-                    // استخراج index من الحقل
-                    // order_details.0.quantity
-                    preg_match('/order_details\.(\d+)\.quantity/', $attribute, $matches);
-
-                    $index = $matches[1] ?? null;
-
-                    if ($index === null) {
-                        return;
-                    }
-
-                    $variantId = request("order_details.$index.variant_id");
-
-                    $variant = ProductVariant::find($variantId);
-
-                    if (!$variant) {
-                        return;
-                    }
-
-                    if ($value > $variant->stock) {
-                        $fail(trans('validation.exceeded_quantity', [], 'en'));
-                    }
-                },
-            ],
-
-            'order_details.*.unit_price' => [
-                'bail',
-                'required',
-                'numeric',
-                'min:0'
-            ],
-
-            'order_details.*.total_price' => [
-                'bail',
-                'required',
-                'numeric',
-                'min:0'
-            ],
-
-            'subtotal' => [
-                'bail',
-                'required',
-                'numeric',
-                'min:0'
-            ],
-            'shipping_cost' => [
-                'bail',
-                'required',
-                'numeric',
-                'min:0'
-            ],
-            'discount' => [
-                'bail',
-                'required',
-                'numeric',
-                'min:0'
-            ],
-            'total_price' => [
-                'bail',
-                'required',
-                'numeric',
-                'min:0'
-            ],
+            'address_id' => ['nullable', 'integer', 'exists:addresses,id'],
+            'coupon_id' => ['nullable', 'integer', 'exists:coupons,id'],
+            'shipping_id' => ['required', 'integer', 'exists:shipping_methods,id'],
+            'order_details' => ['required', 'array', 'list', 'min:1', 'max:100'],
+            'order_details.*.variant_id' => ['required', 'integer', 'distinct', 'exists:product_variants,id'],
+            'order_details.*.quantity' => ['required', 'integer', 'min:1', 'max:1000000'],
+            'notes' => ['sometimes', 'nullable', 'string', 'max:1000'],
+            'snap_user_name' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'snap_address' => ['required_without:address_id', 'nullable', 'string', 'max:500'],
+            'snap_city' => ['required_without:address_id', 'nullable', 'string', 'max:100'],
+            'snap_country' => ['required_without:address_id', 'nullable', 'string', 'max:100'],
+            'snap_phone' => ['required_without:address_id', 'nullable', 'string', 'max:20'],
+            'snap_email' => ['sometimes', 'nullable', 'email', 'max:255'],
+            'snap_postal_code' => ['sometimes', 'nullable', 'string', 'max:20'],
         ];
     }
 }

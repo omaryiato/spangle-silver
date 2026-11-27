@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\Dashboard\OrderService;
-use App\Http\Resources\OrderResource;
 use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Dashboard\Order\ConfirmOrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+use App\Services\Dashboard\OrderService;
 
 class OrderController extends Controller
 {
-
     protected $orderService;
 
     public function __construct(OrderService $orderService)
@@ -38,7 +35,7 @@ class OrderController extends Controller
     // getOrderDetails Funtion to Get Order Details
     public function getOrderDetails(Order $order)
     {
-        $order_details =  $this->orderService->getOrderDetails($order);
+        $order_details = $this->orderService->getOrderDetails($order);
 
         return ResponseHelper::success(
             new OrderResource($order_details),
@@ -50,40 +47,28 @@ class OrderController extends Controller
     }
 
     // confirmOrder Funtion To Confirm Order
-    public function confirmOrder(Request $request, Order $order)
+    public function confirmOrder(ConfirmOrderRequest $request, Order $order)
     {
 
-        try {
+        $order_details = $this->orderService->confirmOrder($request->validated(), $order);
 
-            $order_details = $this->orderService->confirmOrder($request->all(), $order);
-
-            if (!$order_details) {
-                return ResponseHelper::error(
-                    $order_details,
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
-
-            return ResponseHelper::success(
-                new OrderResource($order_details),
-                [
-                    'en' => trans('validation.data_updated', [], 'en'),
-                    'ar' => trans('validation.data_updated', [], 'ar'),
-                ],
-                201);
-        } catch (\Exception $exception) {
-            DB::rollBack();
+        if (! $order_details) {
             return ResponseHelper::error(
+                $order_details,
                 [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                $exception->getMessage(),
-                500);
+                404);
         }
-    }
 
+        return ResponseHelper::success(
+            new OrderResource($order_details),
+            [
+                'en' => trans('validation.data_updated', [], 'en'),
+                'ar' => trans('validation.data_updated', [], 'ar'),
+            ],
+            200);
+
+    }
 }

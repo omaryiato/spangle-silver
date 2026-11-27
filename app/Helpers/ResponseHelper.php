@@ -1,42 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Helpers;
 
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
-// This Class For Response Result To return Success or error based on status comes from api
 class ResponseHelper
 {
-
-    // This Function To return Success result
-    public static function success($data = null, $message = 'Success', int $code = 200): JsonResponse
+    public static function success($data = null, $message = null, int $code = 200): JsonResponse
     {
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'data'    => $data
-        ], $code);
+        return response()->json(['status' => $code, 'success' => true,
+            'message' => self::message($message, ['ar' => 'تمت العملية بنجاح', 'en' => 'Operation completed successfully']), 'data' => $data], $code);
     }
 
-    public static function error($message = 'Error', $errors = null, int $code = 500,): JsonResponse
+    public static function error($message = null, $errors = null, int $code = 500, string $errorCode = 'REQUEST_ERROR'): JsonResponse
     {
-        return response()->json([
-            'success' => false,
-            'message' => $message,
-            'errors'  => $errors
-        ], $code);
+        if (! is_array($message) || ! isset($message['ar'], $message['en'])) {
+            if (is_array($errors) && isset($errors['ar'], $errors['en'])) {
+                $message = $errors;
+                $errors = null;
+            }
+        }
+        if ($code >= 500) {
+            $errors = null;
+            $message = ['ar' => 'حدث خطأ داخلي', 'en' => 'An internal error occurred'];
+        }
+
+        return response()->json(['status' => $code, 'success' => false,
+            'message' => self::message($message, ['ar' => 'تعذر إتمام العملية', 'en' => 'Unable to complete the operation']),
+            'error' => (object) ['code' => $errorCode, 'details' => (object) (is_array($errors) ? $errors : [])]], $code);
     }
 
-    /**
-     * Check if a value is a valid date (any format)
-     *
-     * @param mixed $value
-     * @return bool
-     */
-    public static function isValidDate($value)
+    private static function message($message, array $fallback): array
     {
-        // strtotime يحول أي string مقبول لتاريخ إلى timestamp
-        return strtotime($value) !== false;
+        return is_array($message) && isset($message['ar'], $message['en']) ? ['ar' => $message['ar'], 'en' => $message['en']] : $fallback;
+    }
+
+    public static function isValidDate($value): bool
+    {
+        return is_string($value) && strtotime($value) !== false;
     }
 }

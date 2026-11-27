@@ -4,24 +4,26 @@ namespace App\Services\Dashboard;
 
 use App\Models\Category;
 use App\Repositories\Dashboard\CategoryRepository;
+use App\Services\ActingUserService;
+use App\Services\MediaStorageService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
-use Intervention\Image\Format;
-use Intervention\Image\Laravel\Facades\Image;
 
 class CategoryService
 {
-
     protected $categoryRepository;
-    public function __construct(CategoryRepository $categoryRepository) {
+
+    public function __construct(CategoryRepository $categoryRepository, protected ActingUserService $actingUserService, protected MediaStorageService $mediaStorage)
+    {
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function getCategoryList(){
+    public function getCategoryList()
+    {
         return $this->categoryRepository->getCategoryList();
     }
 
-    public function getCategoryDetails(Category $category){
+    public function getCategoryDetails(Category $category)
+    {
         return $this->categoryRepository->getCategoryDetails($category);
     }
 
@@ -38,54 +40,39 @@ class CategoryService
             $category_request['category_image'] = $category_image;
         }
 
-        return $this->categoryRepository->addNewCategory(
-            $this->prepareRequestInfo($category_request)
-        );
+        try {
+            return $this->categoryRepository->addNewCategory($this->prepareRequestInfo($category_request));
+        } catch (\Throwable $exception) {
+            $this->mediaStorage->delete($category_request['category_image'] ?? null);
+            throw $exception;
+        }
     }
 
     public function updateCategoryDetails(object $request, Category $category)
     {
-        $category_request = $request->validated();
-
-        // $category_details = $this->categoryRepository->getCategoryDetails($id);
-
-        // if(!$category_details){
-        //     return null;
-        // }
-
-
+        $data = $request->validated();
+        unset($data['category_image']);
+        $oldPath = $category->category_image;
+        $newPath = null;
         if ($request->hasFile('category_image')) {
-
-            // Delete old image
-            if ($category->category_image) {
-
-                $old_path = public_path($category->category_image);
-
-                if (File::exists($old_path)) {
-                    File::delete($old_path);
-                }
-            }
-
-
-            // Upload new image
-            $category_request['category_image'] = $this->uploadCategoryImage(
-                $request->file('category_image'),
-                $category_request['category_en_name']
-            );
-
-        } else {
-            // keep old image
-            $category_request['category_image'] = $category->category_image;
+            $newPath = $this->uploadCategoryImage($request->file('category_image'), $category->category_en_name);
+            $data['category_image'] = $newPath;
+        }
+        try {
+            $result = $this->categoryRepository->updateCategoryDetails($category, $this->prepareRequestInfo($data, true));
+        } catch (\Throwable $exception) {
+            $this->mediaStorage->delete($newPath);
+            throw $exception;
+        }
+        if ($newPath) {
+            $this->mediaStorage->delete($oldPath);
         }
 
-
-        return $this->categoryRepository->updateCategoryDetails(
-            $category,
-            $this->prepareRequestInfo($category_request)
-        );
+        return $result;
     }
 
-    public function deleteCategory(Category $category){
+    public function deleteCategory(Category $category)
+    {
         // $category_details = $this->categoryRepository->getCategoryDetails($category);
         // if(!$category_details){
         //     return null;
@@ -93,40 +80,12 @@ class CategoryService
         return $this->categoryRepository->deleteCategory($category);
     }
 
-    public function uploadCategoryImage(UploadedFile $file, string $category_en_name)
+    public function uploadCategoryImage(UploadedFile $file, string $category_en_name): string
     {
-        $extension = $file->getClientOriginalExtension();
-
-        $file_name = str_replace(' ', '_', $category_en_name) . '.' . $extension;
-
-        $folder_path = public_path("documents/categories");
-
-
-        if (!File::exists($folder_path)) {
-            File::makeDirectory($folder_path, 0755, true);
-        }
-
-        $webp_name = pathinfo($file_name, PATHINFO_FILENAME) . '.webp';
-
-        $image = Image::decode($file);
-
-        // encode to webp
-        $encoded = $image->encodeUsingFormat(
-            Format::WEBP,
-            quality: 85
-        );
-
-        // save encoded image
-        $encoded->save("{$folder_path}/{$webp_name}");
-
-
-        // $file->move($folder_path, $file_name);
-
-
-        return "documents/categories/{$webp_name}";
+        return $this->mediaStorage->store($file, 'categories', true);
     }
 
-    public function prepareRequestInfo(array $request_info)
+    public function prepareRequestInfo(array $request_info, bool $updating = false)
     {
 
         $request_data = [
@@ -137,18 +96,10 @@ class CategoryService
             'status' => $request_info['status'] ?? 1,
         ];
 
-
-        if (isset($request_info['created_by'])) {
-            $request_data['created_by'] = $request_info['created_by'];
+        if ($updating) {
+            $request_data = array_intersect_key($request_data, $request_info);
         }
 
-
-        if (isset($request_info['updated_by'])) {
-            $request_data['updated_by'] = $request_info['updated_by'];
-        }
-
-
-        return $request_data;
+        return $this->actingUserService->attributes($request_data, $updating);
     }
-
 }

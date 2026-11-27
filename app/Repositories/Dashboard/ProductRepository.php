@@ -2,13 +2,10 @@
 
 namespace App\Repositories\Dashboard;
 
-
 use App\Models\Product;
-
 
 class ProductRepository
 {
-
     // getProductsList Funtion To Get Product List
     public function getProductsList()
     {
@@ -19,10 +16,8 @@ class ProductRepository
             'images',
             'reviews',
             'reviews.user',
-            'variants.material',
-            'variants.stone',
-            'category'
-            ])->get();
+            'category', 'material', 'stone',
+        ])->get();
     }
 
     // getProductDetails Funtion To Get Product Details
@@ -35,9 +30,7 @@ class ProductRepository
             'images',
             'reviews',
             'reviews.user',
-            'variants.material',
-            'variants.stone',
-            'category'
+            'category', 'material', 'stone',
         ]);
     }
 
@@ -56,21 +49,37 @@ class ProductRepository
         return $product->images()->createMany($images);
     }
 
+    public function saveProductVariants(Product $product, array $variants): void
+    {
+        foreach ($variants as $data) {
+            if (isset($data['id'])) {
+                $variant = $product->variants()->whereKey($data['id'])->lockForUpdate()->firstOrFail();
+                unset($data['id']);
+                $variant->update($data);
+            } else {
+                $product->variants()->create($data);
+            }
+        }
+    }
+
     public function updateProduct(Product $product, array $product_request)
     {
         $product->update($product_request);
+
         return $product;
     }
 
     public function deleteProductImages(Product $product)
     {
         $product->images()->delete();
+
         return $product;
     }
 
-    public function deleteProductVariants(Product  $product)
+    public function deleteProductVariants(Product $product)
     {
         $product->variants()->delete();
+
         return $product;
     }
 
@@ -80,7 +89,7 @@ class ProductRepository
         // $product->update(['product_status' => 0]);
         // return $product;
         $product->delete();
+
         return $product;
     }
 }
-

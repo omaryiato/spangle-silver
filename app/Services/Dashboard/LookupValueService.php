@@ -4,14 +4,13 @@ namespace App\Services\Dashboard;
 
 use App\Models\LookupValue;
 use App\Repositories\Dashboard\LookupValueRepository;
-
+use App\Services\ActingUserService;
 
 class LookupValueService
 {
-
     protected $lookupValueRepository;
 
-    public function __construct(LookupValueRepository $lookupValueRepository)
+    public function __construct(LookupValueRepository $lookupValueRepository, protected ActingUserService $actingUserService)
     {
         $this->lookupValueRepository = $lookupValueRepository;
     }
@@ -19,16 +18,17 @@ class LookupValueService
     // getLookupValueList Funtion To Get Lookup Value List
     public function getLookupValueList()
     {
-        return  $this->lookupValueRepository->getLookupValueList();
+        return $this->lookupValueRepository->getLookupValueList();
     }
 
     // getLookupValueDetails Funtion To Get Lookup Value Details
     public function getLookupValueDetails(LookupValue $lookupValue)
     {
-        $lookup_value_details =  $this->lookupValueRepository->getLookupValueDetails($lookupValue);
-        if(!$lookup_value_details){
+        $lookup_value_details = $this->lookupValueRepository->getLookupValueDetails($lookupValue);
+        if (! $lookup_value_details) {
             return null;
         }
+
         return $lookup_value_details;
     }
 
@@ -48,12 +48,12 @@ class LookupValueService
         //     return null;
         // }
         return $this->lookupValueRepository->updateLookupValue($lookupValue,
-        $this->prepareRequestInfo($lookup_value_request));
+            $this->prepareRequestInfo($lookup_value_request, true));
 
     }
 
     // deleteLookupValue Funtion To Delete Lookup Value
-    public function deleteLookupValue($lookup_type_request, LookupValue $lookupValue)
+    public function deleteLookupValue(LookupValue $lookupValue)
     {
         // $lookup_value_details = $this->lookupValueRepository->getLookupValueDetails($id);
         // if(!$lookup_value_details){
@@ -62,7 +62,7 @@ class LookupValueService
         return $this->lookupValueRepository->deleteLookupValue($lookupValue);
     }
 
-    public function prepareRequestInfo(array $request_info)
+    public function prepareRequestInfo(array $request_info, bool $updating = false)
     {
 
         $request_data = [
@@ -75,16 +75,10 @@ class LookupValueService
             'status' => $request_info['status'] ?? 1,
         ];
 
-        if (isset($request_info['created_by'])) {
-            $request_data['created_by'] = $request_info['created_by'];
+        if ($updating) {
+            $request_data = array_intersect_key($request_data, $request_info);
         }
 
-        if (isset($request_info['updated_by'])) {
-            $request_data['updated_by'] = $request_info['updated_by'];
-        }
-
-        return $request_data;
+        return $this->actingUserService->attributes($request_data, $updating);
     }
-
 }
-

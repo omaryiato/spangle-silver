@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CouponUsage extends Model
 {
+    public $timestamps = false;
+
     protected $table = 'coupon_usage';
 
     protected $fillable = [
@@ -16,9 +18,8 @@ class CouponUsage extends Model
     ];
 
     protected $casts = [
-        'used_at' => 'datetime'
+        'used_at' => 'datetime',
     ];
-
 
     public function coupon()
     {

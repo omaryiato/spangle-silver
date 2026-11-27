@@ -3,14 +3,9 @@
 namespace App\Repositories\Dashboard;
 
 use App\Models\Order;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
-
 
 class OrderRepository
 {
-
     // getOrdersList Funtion To Get Orders List
     public function getOrdersList()
     {
@@ -47,8 +42,12 @@ class OrderRepository
     public function confirmOrder(object $order, array $order_request)
     {
         $order->update($order_request);
+
         return $order;
     }
 
+    public function lockOrder(Order $order): Order
+    {
+        return Order::with('details')->whereKey($order->id)->lockForUpdate()->firstOrFail();
+    }
 }
-

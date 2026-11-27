@@ -4,11 +4,8 @@ namespace App\Repositories\Dashboard;
 
 use App\Models\User;
 
-
-
 class UserRepository
 {
-
     // getUsersList Funtion To Get Users List
     public function getUsersList()
     {
@@ -91,14 +88,20 @@ class UserRepository
     public function updateUser(User $user, array $user_request)
     {
         $user->update($user_request);
+
         return $user;
     }
 
     // deleteUser Funtion To Delete User
-    public function deleteUser(User $user)
+    public function deleteUser(User $user, array $attributes)
     {
-        $user->delete();
+        $user->update($attributes);
+
         return $user;
     }
-}
 
+    public function revokeTokens(User $user): void
+    {
+        $user->tokens()->delete();
+    }
+}

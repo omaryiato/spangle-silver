@@ -5,7 +5,6 @@ namespace App\Http\Requests\Dashboard\Address;
 use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-
 class AddAddress extends BaseRequest
 {
     /**
@@ -73,7 +72,8 @@ class AddAddress extends BaseRequest
             ],
 
             'is_default' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
             ],

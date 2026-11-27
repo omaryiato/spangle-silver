@@ -15,15 +15,17 @@ class UserWishListResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'product' => ProductResource::make($this->whenLoaded('product')),
+
             'id' => $this->id ?? null,
 
             'user_id' => $this->user_id ?? null,
-            'full_name' => $this->user?->full_name ?? null,
+            'full_name' => $this->whenLoaded('user', fn () => $this->user?->full_name ?? null),
 
             'product_id' => $this->product_id ?? null,
-            'product_en_name' => $this->product?->product_en_name ?? null,
-            'product_ar_name' => $this->product?->product_ar_name ?? null,
-            
+            'product_en_name' => $this->whenLoaded('product', fn () => $this->product?->product_en_name ?? null),
+            'product_ar_name' => $this->whenLoaded('product', fn () => $this->product?->product_ar_name ?? null),
+
             'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
             'deleted_at' => $this->deleted_at?->format('Y-m-d H:i:s') ?? null,
         ];

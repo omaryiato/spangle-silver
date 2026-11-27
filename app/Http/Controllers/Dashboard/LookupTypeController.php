@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\LookupType\UpdateLookupType;
-use Illuminate\Http\Request;
-use App\Http\Resources\LookupTypeResource;
-use App\Services\Dashboard\LookupTypeService;
 use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\LookupType\AddLookupType;
+use App\Http\Requests\Dashboard\LookupType\UpdateLookupType;
+use App\Http\Resources\LookupTypeResource;
 use App\Models\LookupType;
+use App\Services\Dashboard\LookupTypeService;
+use Illuminate\Http\Request;
 
 class LookupTypeController extends Controller
 {
@@ -40,7 +40,7 @@ class LookupTypeController extends Controller
     {
         $lookup_type = $this->lookupTypeService->getLookupTypeDetails($lookupType);
 
-        if (!$lookup_type) {
+        if (! $lookup_type) {
             return ResponseHelper::error(
                 $lookup_type,
                 [
@@ -63,94 +63,70 @@ class LookupTypeController extends Controller
     // POST /lookup-types
     public function store(AddLookupType $request)
     {
-        try {
-            $lookup_type = $this->lookupTypeService->addNewLookupType($request->validated());
 
-            return ResponseHelper::success(
-                new LookupTypeResource($lookup_type),
-                [
-                    'en' => trans('validation.data_added', [], 'en'),
-                    'ar' => trans('validation.data_added', [], 'ar'),
-                ],
-                201
-            );
-        } catch (\Exception $exception) {
-            return ResponseHelper::error(
-                [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
-                ],
-                $exception->getMessage(),
-                500);
-        }
+        $lookup_type = $this->lookupTypeService->addNewLookupType($request->validated());
+
+        return ResponseHelper::success(
+            new LookupTypeResource($lookup_type),
+            [
+                'en' => trans('validation.data_added', [], 'en'),
+                'ar' => trans('validation.data_added', [], 'ar'),
+            ],
+            201
+        );
+
     }
 
     // PUT /lookup-types/{id}
     public function update(UpdateLookupType $request, LookupType $lookupType)
     {
-        try {
-            $lookup_type = $this->lookupTypeService->updateLookupType($request->validated(), $lookupType);
 
-            if (!$lookup_type) {
-                return ResponseHelper::error(
-                    $lookup_type,
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
+        $lookup_type = $this->lookupTypeService->updateLookupType($request->validated(), $lookupType);
 
-            return ResponseHelper::success(
-                new LookupTypeResource($lookup_type),
-                [
-                    'en' => trans('validation.data_updated', [], 'en'),
-                    'ar' => trans('validation.data_updated', [], 'ar'),
-                ],
-                201
-            );
-        } catch (\Exception $exception) {
+        if (! $lookup_type) {
             return ResponseHelper::error(
+                $lookup_type,
                 [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                $exception->getMessage(),
-                500);
+                404);
         }
+
+        return ResponseHelper::success(
+            new LookupTypeResource($lookup_type),
+            [
+                'en' => trans('validation.data_updated', [], 'en'),
+                'ar' => trans('validation.data_updated', [], 'ar'),
+            ],
+            200
+        );
+
     }
 
     // DELETE /lookup-types/{id}
     public function destroy(Request $request, LookupType $lookupType)
     {
-        try {
-            $lookup_type = $this->lookupTypeService->deleteLookupType($request->all(), $lookupType);
 
-            if (!$lookup_type) {
-                return ResponseHelper::error(
-                    $lookup_type,
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
+        $lookup_type = $this->lookupTypeService->deleteLookupType($lookupType);
 
-            return ResponseHelper::success(
-                null,
-                [
-                    'en' => trans('validation.data_deleted', [], 'en'),
-                    'ar' => trans('validation.data_deleted', [], 'ar'),
-                ],
-                200);
-        } catch (\Exception $exception) {
+        if (! $lookup_type) {
             return ResponseHelper::error(
+                $lookup_type,
                 [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                $exception->getMessage(),
-                500);
+                404);
         }
+
+        return ResponseHelper::success(
+            null,
+            [
+                'en' => trans('validation.data_deleted', [], 'en'),
+                'ar' => trans('validation.data_deleted', [], 'ar'),
+            ],
+            200);
+
     }
 }

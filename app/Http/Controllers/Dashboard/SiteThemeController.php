@@ -8,8 +8,8 @@ use App\Http\Requests\Dashboard\SiteTheme\AddTheme;
 use App\Http\Requests\Dashboard\SiteTheme\UpdateTheme;
 use App\Http\Resources\SiteThemeResource;
 use App\Models\SiteTheme;
-use Illuminate\Http\Request;
 use App\Services\Dashboard\SiteThemeService;
+use Illuminate\Http\Request;
 
 class SiteThemeController extends Controller
 {
@@ -20,127 +20,100 @@ class SiteThemeController extends Controller
         $this->siteThemeService = $siteThemeService;
     }
 
-    public function index(){
+    public function index()
+    {
         $site_theme_list = $this->siteThemeService->getSiteThemeList();
+
         return ResponseHelper::success(
-                SiteThemeResource::collection($site_theme_list),
-                [
-                    'en' => trans('validation.data_retrieved', [], 'en'),
-                    'ar' => trans('validation.data_retrieved', [], 'ar'),
-                ],
-                200);
+            SiteThemeResource::collection($site_theme_list),
+            [
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
+            ],
+            200);
     }
 
     //  Funtion to Get User Details
     public function show(SiteTheme $siteTheme)
     {
 
-        $site_theme_details =  $this->siteThemeService->getSiteThemeDetails($siteTheme);
+        $site_theme_details = $this->siteThemeService->getSiteThemeDetails($siteTheme);
 
         return ResponseHelper::success(
-                new SiteThemeResource($site_theme_details),
-                [
-                    'en' => trans('validation.data_retrieved', [], 'en'),
-                    'ar' => trans('validation.data_retrieved', [], 'ar'),
-                ],
-                200);
+            new SiteThemeResource($site_theme_details),
+            [
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
+            ],
+            200);
 
     }
 
     //  Funtion To Add New User
     public function store(AddTheme $request)
     {
-        try{
 
-            $site_theme_details = $this->siteThemeService->addNewSiteTheme($request);
-            return ResponseHelper::success(
-                new SiteThemeResource($site_theme_details),
-                [
-                    'en' => trans('validation.data_added', [], 'en'),
-                    'ar' => trans('validation.data_added', [], 'ar'),
-                ],
-                201);
+        $site_theme_details = $this->siteThemeService->addNewSiteTheme($request);
 
-        } catch(\Exception $exception){
-            return ResponseHelper::error(
-                [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
-                ],
-                $exception->getMessage(),
-                500);
-        }
+        return ResponseHelper::success(
+            new SiteThemeResource($site_theme_details),
+            [
+                'en' => trans('validation.data_added', [], 'en'),
+                'ar' => trans('validation.data_added', [], 'ar'),
+            ],
+            201);
 
     }
 
     //  Funtion To Update User
     public function update(UpdateTheme $request, SiteTheme $siteTheme)
     {
-        try {
 
-            $site_theme_details =  $this->siteThemeService->updateSiteTheme($request, $siteTheme);
+        $site_theme_details = $this->siteThemeService->updateSiteTheme($request, $siteTheme);
 
-            if (!$site_theme_details) {
-                return ResponseHelper::error(
-                    new SiteThemeResource($site_theme_details),
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
-
-            return ResponseHelper::success(
-                $site_theme_details,
-                [
-                    'en' => trans('validation.data_updated', [], 'en'),
-                    'ar' => trans('validation.data_updated', [], 'ar'),
-                ],
-                201);
-
-        } catch (\Exception $exception) {
+        if (! $site_theme_details) {
             return ResponseHelper::error(
+                new SiteThemeResource($site_theme_details),
                 [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                $exception->getMessage(),
-                500);
+                404);
         }
+
+        return ResponseHelper::success(
+            $site_theme_details,
+            [
+                'en' => trans('validation.data_updated', [], 'en'),
+                'ar' => trans('validation.data_updated', [], 'ar'),
+            ],
+            200);
+
     }
 
     // deleteUser Funtion To Delete User
     public function destroy(Request $request, SiteTheme $siteTheme)
     {
-        try {
 
-            $site_theme_details = $this->siteThemeService->deleteSiteTheme($siteTheme);
+        $site_theme_details = $this->siteThemeService->deleteSiteTheme($siteTheme);
 
-            if (!$site_theme_details) {
-                return ResponseHelper::error(
-                    $site_theme_details,
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
-
-            return ResponseHelper::success(
-                    null,
-                    [
-                        'en' => trans('validation.data_deleted', [], 'en'),
-                        'ar' => trans('validation.data_deleted', [], 'ar'),
-                    ],
-                    200);
-        } catch (\Exception $exception) {
+        if (! $site_theme_details) {
             return ResponseHelper::error(
+                $site_theme_details,
                 [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                $exception->getMessage(),
-                500);
+                404);
         }
+
+        return ResponseHelper::success(
+            null,
+            [
+                'en' => trans('validation.data_deleted', [], 'en'),
+                'ar' => trans('validation.data_deleted', [], 'ar'),
+            ],
+            200);
+
     }
 }

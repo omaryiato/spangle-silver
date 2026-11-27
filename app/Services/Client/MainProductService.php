@@ -6,12 +6,14 @@ use App\Helpers\ContactMessageHelper;
 use App\Helpers\ResponseHelper;
 use App\Models\Product;
 use App\Repositories\Client\MainProductRepository;
+use App\Services\ActingUserService;
 
 class MainProductService
 {
     public function __construct(
         protected MainProductRepository $mainProductRepository,
-        protected ContactMessageHelper $contactMessageHelper
+        protected ContactMessageHelper $contactMessageHelper,
+        protected ActingUserService $actingUserService,
     ) {}
 
     public function getProductsList(int $category_id)
@@ -34,7 +36,6 @@ class MainProductService
         return $this->mainProductRepository->getCouponsList();
     }
 
-
     public function reviewProduct($review_request)
     {
         return $this->mainProductRepository->reviewProduct($this->prepareReviewRequest($review_request));
@@ -44,33 +45,33 @@ class MainProductService
     public function prepareReviewRequest(array $review_request)
     {
         $request_data = [
-            'user_id' => $review_request['user_id'] ?? null,
+            'user_id' => $this->actingUserService->id(),
             'product_id' => $review_request['product_id'] ?? null,
             'comment' => $review_request['comment'] ?? null,
             'rating' => $review_request['rating'] ?? 1,
         ];
 
-        return $request_data;
+        return $this->actingUserService->attributes($request_data);
     }
 
     public function stream(object $product)
     {
 
-        $relativePath = ltrim('api/'.$product?->product_reels, '/');
+        $relativePath = ltrim($product?->product_reels ?? '', '/');
 
         $path = public_path($relativePath);
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             return ResponseHelper::error(
-                $path,
+                null,
                 [
-                    'en' => "File not found on disk: $path",
-                    'ar' => "File not found on disk: $path",
+                    'en' => 'Media file not found',
+                    'ar' => 'Media file not found',
                 ],
                 400);
         }
 
-        $size     = filesize($path);
+        $size = filesize($path);
         $mimeType = 'video/mp4';
 
         if (request()->hasHeader('Range')) {
@@ -79,16 +80,16 @@ class MainProductService
 
         return response()->stream(function () use ($path) {
             $stream = fopen($path, 'rb');
-            while (!feof($stream)) {
+            while (! feof($stream)) {
                 echo fread($stream, 65536);
                 flush();
             }
             fclose($stream);
         }, 200, [
-            'Content-Type'   => $mimeType,
+            'Content-Type' => $mimeType,
             'Content-Length' => $size,
-            'Accept-Ranges'  => 'bytes',
-            'Cache-Control'  => 'no-cache',
+            'Accept-Ranges' => 'bytes',
+            'Cache-Control' => 'no-cache',
         ]);
     }
 
@@ -97,7 +98,7 @@ class MainProductService
         preg_match('/bytes=(\d+)-(\d*)/', request()->header('Range'), $matches);
 
         $start = (int) $matches[1];
-        $end   = isset($matches[2]) && $matches[2] !== ''
+        $end = isset($matches[2]) && $matches[2] !== ''
                     ? (int) $matches[2]
                     : $size - 1;
 
@@ -108,7 +109,7 @@ class MainProductService
             fseek($stream, $start);
             $remaining = $chunkSize;
 
-            while (!feof($stream) && $remaining > 0) {
+            while (! feof($stream) && $remaining > 0) {
                 $toRead = min(65536, $remaining);
                 echo fread($stream, $toRead);
                 $remaining -= $toRead;
@@ -117,11 +118,10 @@ class MainProductService
 
             fclose($stream);
         }, 206, [
-            'Content-Type'   => $mimeType,
-            'Content-Range'  => "bytes $start-$end/$size",
+            'Content-Type' => $mimeType,
+            'Content-Range' => "bytes $start-$end/$size",
             'Content-Length' => $chunkSize,
-            'Accept-Ranges'  => 'bytes',
+            'Accept-Ranges' => 'bytes',
         ]);
     }
-
 }

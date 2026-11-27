@@ -4,11 +4,8 @@ namespace App\Repositories\Dashboard;
 
 use App\Models\ShippingMethod;
 
-
-
 class ShippingMethodRepository
 {
-
     // getShippingMethodsList Funtion To Get Shipping Methods List
     public function getShippingMethodsList()
     {
@@ -18,7 +15,7 @@ class ShippingMethodRepository
     // getShippingMethodDetails Funtion To Get Shipping Method Details
     public function getShippingMethodDetails(ShippingMethod $shippingMethod)
     {
-        return  $shippingMethod;
+        return $shippingMethod;
     }
 
     // addNewShippingMethod Funtion To Add new Shipping Method
@@ -31,6 +28,7 @@ class ShippingMethodRepository
     public function updateShippingMethod(ShippingMethod $shipping_method, array $shipping_method_request)
     {
         $shipping_method->update($shipping_method_request);
+
         return $shipping_method;
     }
 
@@ -38,7 +36,12 @@ class ShippingMethodRepository
     public function deleteShippingMethod(ShippingMethod $shipping_method)
     {
         $shipping_method->delete();
+
         return $shipping_method;
     }
-}
 
+    public function findById(int $id): ShippingMethod
+    {
+        return ShippingMethod::findOrFail($id);
+    }
+}

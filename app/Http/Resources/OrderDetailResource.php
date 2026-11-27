@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-
 class OrderDetailResource extends JsonResource
 {
     /**
@@ -19,17 +18,18 @@ class OrderDetailResource extends JsonResource
             'id' => $this->id ?? null,
 
             'order_id' => $this->order_id ?? null,
-            
+
             'variant_id' => $this->variant_id ?? null,
-            'sku' => $this->variant?->sku ?? null,
+            'variant' => ProductVariantResource::make($this->whenLoaded('variant')),
+            'sku' => $this->whenLoaded('variant', fn () => $this->variant?->sku ?? null),
 
-            'color' => $this->variant?->color?->variant_id ?? null,
-            'color_en_name' => $this->variant?->color?->en_meaning ?? null,
-            'color_ar_name' => $this->variant?->color?->ar_meaning ?? null,
+            'color' => $this->whenLoaded('variant', fn () => $this->variant?->relationLoaded('color') ? $this->variant?->color?->id ?? null : null),
+            'color_en_name' => $this->whenLoaded('variant', fn () => $this->variant?->relationLoaded('color') ? $this->variant?->color?->en_meaning ?? null : null),
+            'color_ar_name' => $this->whenLoaded('variant', fn () => $this->variant?->relationLoaded('color') ? $this->variant?->color?->ar_meaning ?? null : null),
 
-            'size' => $this->variant?->size?->variant_id ?? null,
-            'size_en_name' => $this->variant?->size?->en_meaning ?? null,
-            'size_ar_name' => $this->variant?->size?->ar_meaning ?? null,
+            'size' => $this->whenLoaded('variant', fn () => $this->variant?->relationLoaded('size') ? $this->variant?->size?->id ?? null : null),
+            'size_en_name' => $this->whenLoaded('variant', fn () => $this->variant?->relationLoaded('size') ? $this->variant?->size?->en_meaning ?? null : null),
+            'size_ar_name' => $this->whenLoaded('variant', fn () => $this->variant?->relationLoaded('size') ? $this->variant?->size?->ar_meaning ?? null : null),
 
             'quantity' => $this->quantity ?? null,
             'unit_price' => $this->unit_price ?? null,
@@ -44,4 +44,3 @@ class OrderDetailResource extends JsonResource
         ];
     }
 }
-

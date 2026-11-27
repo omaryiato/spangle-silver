@@ -6,8 +6,6 @@ use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
-
-
 class AddLookupValue extends BaseRequest
 {
     /**
@@ -53,10 +51,10 @@ class AddLookupValue extends BaseRequest
             ],
 
             'color' => [
-                'nullable',
+                'required',
                 'required_if:type_id,1',
                 'string',
-                'max:255',
+                'max:100',
             ],
 
             'description' => [
@@ -66,21 +64,10 @@ class AddLookupValue extends BaseRequest
             ],
 
             'status' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
-            ],
-
-            'created_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
-
-            'updated_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
             ],
         ];
     }

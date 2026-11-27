@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Dashboard\User;
 
 use App\Http\Requests\Base\BaseRequest;
+use App\Rules\PasswordInput;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
-
 
 class UpdateUser extends BaseRequest
 {
@@ -22,42 +22,53 @@ class UpdateUser extends BaseRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
+    protected function prepareForValidation(): void
+    {
+        if ($this->input('password') === null || $this->input('password') === '') {
+            $this->request->remove('password');
+            $this->json()->remove('password');
+        }
+    }
+
     public function rules(): array
     {
-        $id = $this->route("user");
+        $id = $this->route('user');
 
         return [
             'full_name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
             ],
 
             'user_name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('users', 'user_name')
-                        ->ignore($id)
-                        ->where('id', $this->input('id')),
+                    ->ignore($id),
             ],
 
             'phone_number' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:20',
             ],
 
             'email_address' => [
+                'sometimes',
                 'required',
                 'email',
                 'max:255',
                 Rule::unique('users', 'email_address')
-                        ->ignore($id)
-                        ->where('id', $this->input('id')),
+                    ->ignore($id),
             ],
 
-            'password' => [
+            'password' => [new PasswordInput,
+                'sometimes',
                 'required',
                 'string',
                 'min:8',
@@ -65,21 +76,17 @@ class UpdateUser extends BaseRequest
             ],
 
             'status' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
             ],
 
             'user_type' => [
-                'nullable',
-                'integer',
-                'in:0,1,2',
-            ],
-
-            'updated_by' => [
+                'sometimes',
                 'required',
                 'integer',
-                'exists:users,id'
+                'in:0,1,2',
             ],
         ];
     }

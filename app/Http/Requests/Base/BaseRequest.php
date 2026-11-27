@@ -1,49 +1,44 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Http\Requests\Base;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Helpers\ResponseHelper;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Str;
 
 class BaseRequest extends FormRequest
 {
-    protected function failedValidation(Validator $validator)
-    {
-        $field = $validator->errors()->keys()[0] ?? null;
-
-        $rule = null;
-
-        if ($field && isset($validator->failed()[$field])) {
-            $failedRules = $validator->failed()[$field];
-            $rule = strtolower(array_key_first($failedRules));
-        }
-
-        $field_name = $field ? last(explode('.', $field)) : null;
-
-        $translation_key = $field_name && $rule
-            ? 'validation.' . $field_name . '.' . $rule
-            : null;
-
-        // $translation_key = $field && $rule
-        //     ? 'validation.' . $field . '.' . $rule
-        //     : null;
-
-        $response_message = [
-            'en' => $translation_key ? trans($translation_key, [], 'en') : 'Validation Error',
-            'ar' => $translation_key ? trans($translation_key, [], 'ar') : 'خطأ في التحقق',
-        ];
-
-        throw new HttpResponseException(
-            ResponseHelper::error(
-                $response_message,
-                $validator->errors(),
-                422
-            )
-        );
-    }
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
+    }
+
+    /** Translate the existing failures without rerunning validation or database queries. */
+    protected function failedValidation(Validator $validator): void
+    {
+        $details = [];
+        $failed = $validator->failed();
+        foreach ($validator->errors()->keys() as $field) {
+            $rules = $failed[$field] ?? ['Invalid' => []];
+            foreach (['ar', 'en'] as $locale) {
+                $messages = [];
+                foreach ($rules as $rule => $parameters) {
+                    $rule = Str::snake($rule);
+                    $customKey = 'validation.'.Str::afterLast($field, '.').'.'.$rule;
+                    $key = app('translator')->hasForLocale($customKey, $locale) ? $customKey : 'api_validation.'.$rule;
+                    if (! app('translator')->hasForLocale($key, $locale)) {
+                        $key = 'api_validation.invalid';
+                    }
+                    $messages[] = trans($key, ['attribute' => $field, 'limit' => $parameters[0] ?? '', 'other' => implode(', ', $parameters)], $locale);
+                }
+                $details[$field][$locale] = implode(' ', $messages);
+            }
+        }
+        throw new HttpResponseException(ResponseHelper::error(
+            ['ar' => 'يرجى مراجعة البيانات المدخلة', 'en' => 'Please review the submitted data'], $details, 422, 'VALIDATION_ERROR'));
     }
 }

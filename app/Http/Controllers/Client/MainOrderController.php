@@ -6,10 +6,8 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\AddNewOrder;
 use App\Http\Resources\OrderResource;
-use App\Models\User;
+use App\Models\Order;
 use App\Services\Client\MainOrderService;
-use Exception;
-use Illuminate\Http\Request;
 
 class MainOrderController extends Controller
 {
@@ -17,10 +15,10 @@ class MainOrderController extends Controller
         protected MainOrderService $mainOrderService
     ) {}
 
-    public function getUserOrders(User $user)
+    public function getUserOrders()
     {
 
-        $orders_list = $this->mainOrderService->getUserOrders($user->id);
+        $orders_list = $this->mainOrderService->getUserOrders();
 
         return ResponseHelper::success(
             OrderResource::collection($orders_list),
@@ -34,30 +32,22 @@ class MainOrderController extends Controller
 
     public function addNewOrder(AddNewOrder $request)
     {
-        try{
 
-            $order_details = $this->mainOrderService->addNewOrder($request->validated());
+        $order_details = $this->mainOrderService->addNewOrder($request->validated());
 
-            return ResponseHelper::success(
-                new OrderResource($order_details),
-                [
-                    'en' => trans('validation.add_new_order', [], 'en'),
-                    'ar' => trans('validation.add_new_order', [], 'ar'),
-                ],
-                200
-            );
-        } catch(Exception $exception){
-            return ResponseHelper::error(
-                [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
-                ],
-                $exception->getMessage(),
-                500);
+        return ResponseHelper::success(
+            new OrderResource($order_details),
+            [
+                'en' => trans('validation.add_new_order', [], 'en'),
+                'ar' => trans('validation.add_new_order', [], 'ar'),
+            ],
+            200
+        );
 
-        }
     }
 
-
-
+    public function cancelOrder(Order $order)
+    {
+        return ResponseHelper::success(OrderResource::make($this->mainOrderService->cancelOrder($order)), ['ar' => 'تم إلغاء الطلب', 'en' => 'Order canceled']);
+    }
 }

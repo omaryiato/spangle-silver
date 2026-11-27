@@ -2,21 +2,18 @@
 
 namespace App\Services\Dashboard;
 
-use App\Helpers\ResponseHelper;
 use App\Models\Product;
 use App\Repositories\Dashboard\ProductRepository;
-use Illuminate\Support\Facades\DB;
+use App\Services\ActingUserService;
+use App\Services\MediaStorageService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
-use Intervention\Image\Format;
-use Intervention\Image\Laravel\Facades\Image;
-
+use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
-
     protected $productRepository;
-    public function __construct(ProductRepository $productRepository,)
+
+    public function __construct(ProductRepository $productRepository, protected ActingUserService $actingUserService, protected MediaStorageService $mediaStorage)
     {
         $this->productRepository = $productRepository;
     }
@@ -24,7 +21,7 @@ class ProductService
     // getProductsList Funtion To Get Product List
     public function getProductsList()
     {
-        return  $this->productRepository->getProductsList();
+        return $this->productRepository->getProductsList();
     }
 
     // getProductDetails Funtion To Get Product Details
@@ -36,69 +33,78 @@ class ProductService
     // addNewProduct Funtion To Add new Product
     public function addNewProduct(array $product_request)
     {
-        return DB::transaction(function () use ($product_request) {
+        $newPaths = [];
+        try {
+            return DB::transaction(function () use ($product_request, &$newPaths) {
+                if (($product_request['product_reels'] ?? null) instanceof UploadedFile) {
+                    $product_request['product_reels'] = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name'], $product_request);
+                    $newPaths[] = $product_request['product_reels'];
+                }
+                $product = $this->productRepository->addNewProduct($this->prepareProductRequest($product_request));
+                if (! empty($product_request['product_images'])) {
+                    $images = $this->uploadProductImages($product_request, $product->product_en_name);
+                    foreach ($images as $image) {
+                        $newPaths[] = $image['image'];
+                    }
+                    $this->productRepository->addProductImages($product, $images);
+                }
+                if (! empty($product_request['product_variants'])) {
+                    $this->productRepository->addProductVariants($product, $this->prepareProductVariants($product_request));
+                }
 
-            if (!empty($product_request['product_reels'])) {
-                $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name'], $product_request);
-                $product_request['product_reels'] = $reels;
+                return $this->productRepository->getProductDetails($product);
+            });
+        } catch (\Throwable $exception) {
+            foreach ($newPaths as $path) {
+                $this->mediaStorage->delete($path);
             }
-
-            $product = $this->productRepository->addNewProduct($this->prepareProductRequest($product_request));
-
-            if (!empty($product_request['product_images'])) {
-                $images = $this->uploadProductImages($product_request, $product['product_en_name']);
-                $this->productRepository->addProductImages($product, $images);
-            }
-
-            if (!empty($product_request['product_variants'])) {
-                $variants = $this->prepareProductVariants($product_request);
-                $this->productRepository->addProductVariants($product, $variants);
-            }
-
-            return $product;
-        });
+            throw $exception;
+        }
     }
 
     public function updateProduct(array $product_request, Product $product)
     {
-        return DB::transaction(function () use ($product_request, $product) {
+        $newPaths = [];
+        $oldReels = $product->product_reels;
+        $replacedReels = false;
+        try {
+            $result = DB::transaction(function () use ($product_request, $product, &$newPaths, &$replacedReels) {
+                if (($product_request['product_reels'] ?? null) instanceof UploadedFile) {
+                    $product_request['product_reels'] = $this->uploadProductReels($product_request['product_reels'], $product->product_en_name, $product_request);
+                    $newPaths[] = $product_request['product_reels'];
+                    $replacedReels = true;
+                } else {
+                    unset($product_request['product_reels']);
+                }
+                $this->productRepository->updateProduct($product, $this->prepareProductRequest($product_request, true));
+                // New images are appended. Missing images and variants are never deleted implicitly.
+                if (! empty($product_request['product_images'])) {
+                    $images = $this->uploadProductImages($product_request, $product->product_en_name);
+                    foreach ($images as $image) {
+                        $newPaths[] = $image['image'];
+                    }
+                    $this->productRepository->addProductImages($product, $images);
+                }
+                if (! empty($product_request['product_variants'])) {
+                    $this->productRepository->saveProductVariants($product, $this->prepareProductVariants($product_request));
+                }
 
-            // $product = $this->productRepository->getProductDetails($id);
-
-            if (!empty($product_request['product_reels'])) {
-                $reels = $this->uploadProductReels($product_request['product_reels'], $product_request['product_en_name'], $product_request);
-                $product_request['product_reels'] = $reels;
+                return $this->productRepository->getProductDetails($product);
+            });
+        } catch (\Throwable $exception) {
+            foreach ($newPaths as $path) {
+                $this->mediaStorage->delete($path);
             }
+            throw $exception;
+        }
+        if ($replacedReels) {
+            $this->mediaStorage->delete($oldReels);
+        }
 
-            $this->productRepository->updateProduct(
-                $product,
-                $this->prepareProductRequest($product_request)
-            );
-
-            if (isset($product_request['product_images'])) {
-
-                $this->productRepository->deleteProductImages($product);
-
-                $images = $this->uploadProductImages($product_request, $product->product_en_name);
-
-                $this->productRepository->addProductImages($product, $images);
-            }
-
-            if (isset($product_request['product_variants'])) {
-
-                $this->productRepository->deleteProductVariants($product);
-
-                $variants = $this->prepareProductVariants($product_request);
-
-                $this->productRepository->addProductVariants($product, $variants);
-            }
-
-            return $product;
-        });
+        return $result;
     }
 
-
-    public function prepareProductRequest(array $product_request)
+    public function prepareProductRequest(array $product_request, bool $updating = false)
     {
         $request_data = [
             'product_en_name' => $product_request['product_en_name'] ?? null,
@@ -106,135 +112,54 @@ class ProductService
             'product_en_description' => $product_request['product_en_description'] ?? null,
             'product_ar_description' => $product_request['product_ar_description'] ?? null,
             'product_status' => $product_request['product_status'] ?? 1,
-            'product_price' => $product_request['product_price'] ?? null,
+            'product_price' => $product_request['product_price'] ?? 0,
             'product_reels' => $product_request['product_reels'] ?? null,
+            'product_material' => $product_request['product_material'] ?? null,
+            'product_stone' => $product_request['product_stone'] ?? null,
             'category_id' => $product_request['category_id'] ?? null,
-            'created_by' => $product_request['created_by'] ?? null,
-            'updated_by' => $product_request['created_by'] ?? null,
         ];
 
-        if (isset($product_request['created_by'])) {
-            $request_data['created_by'] = $product_request['created_by'];
+        if ($updating) {
+            $request_data = array_intersect_key($request_data, $product_request);
         }
 
-
-        if (isset($product_request['updated_by'])) {
-            $request_data['updated_by'] = $product_request['updated_by'];
-        }
-
-
-        return $request_data;
+        return $this->actingUserService->attributes($request_data, $updating);
     }
 
-    public function uploadProductImages(array $product_request, string $product_en_name)
+    public function uploadProductImages(array $product_request, string $product_en_name): array
     {
-        $product_images = [];
-
-        foreach ($product_request['product_images'] as $product_image) {
-
-            $product_name = str_replace(' ', '_', strtolower($product_request['product_en_name']));
-            $extension = $product_image['image']->getClientOriginalExtension();
-            $file_name = "{$product_name}_" . uniqid() . ".{$extension}";
-
-            $path = public_path("documents/{$product_request['category_id']}/{$product_name}_product");
-
-            if (!File::exists($path)) {
-                File::makeDirectory($path, 0755, true);
+        $images = [];
+        try {
+            foreach ($product_request['product_images'] as $image) {
+                $images[] = $this->actingUserService->attributes([
+                    'image' => $this->mediaStorage->store($image['image'], 'products/images', true),
+                    'is_primary' => $image['is_primary'] ?? 0, 'sort_order' => $image['sort_order'] ?? 0,
+                ]);
             }
-
-            $webp_name = pathinfo($file_name, PATHINFO_FILENAME) . '.webp';
-
-            $image = Image::decode($product_image['image']);
-
-            // encode to webp
-            $encoded = $image->encodeUsingFormat(
-                Format::WEBP,
-                quality: 85
-            );
-
-            // save encoded image
-            $encoded->save("{$path}/{$webp_name}");
-
-            // $image['file']->move($path, $file_name);
-
-            $product_images[] = [
-                'image' => "documents/{$product_request['category_id']}/{$product_name}_product/{$webp_name}",
-                'is_primary' => $product_image['is_primary'] ?? 0,
-                'sort_order' => $product_image['sort_order'] ?? 0,
-                'created_by' => $product_request['updated_by'],
-                'updated_by' => $product_request['updated_by'],
-            ];
+        } catch (\Throwable $exception) {
+            foreach ($images as $image) {
+                $this->mediaStorage->delete($image['image']);
+            }
+            throw $exception;
         }
 
-        return $product_images;
+        return $images;
     }
 
-    public function prepareProductVariants(array $product_request)
+    public function prepareProductVariants(array $product_request): array
     {
-        $product_variants = [];
-
-        foreach ($product_request['product_variants'] as $product_variant) {
-
-            $request_data = [
-                'color_id' => $product_variant['color_id'] ?? null,
-                'size_id' => $product_variant['size_id'] ?? null,
-                'sku' => $product_variant['sku'] ?? null,
-                'stock' => $product_variant['stock'] ?? 0,
-                'price' => $product_variant['price'] ?? 0,
-                'status' => $product_variant['status'] ?? 1,
-                'material_id' => $product_request['material_id'] ?? 20,
-                'stone_id' => $product_request['stone_id'] ?? null,
-                'length' => $product_request['length'] ?? null,
-            ];
-
-            if (isset($product_request['created_by'])) {
-                $request_data['created_by'] = $product_request['created_by'];
+        $variants = [];
+        foreach ($product_request['product_variants'] as $variant) {
+            $updating = isset($variant['id']);
+            $data = array_intersect_key($variant, array_flip(['id', 'color_id', 'size_id', 'sku', 'stock', 'price', 'status']));
+            if (! $updating) {
+                $data += ['stock' => 0, 'price' => null, 'status' => 1];
             }
-
-            if (isset($product_request['updated_by'])) {
-                $request_data['updated_by'] = $product_request['updated_by'];
-            }
-
-            $product_variants[] = $request_data;
-
+            $variants[] = $this->actingUserService->attributes($data, $updating);
         }
 
-        return $product_variants;
+        return $variants;
     }
-
-    // public function prepareProductVariants(array $product_request)
-    // {
-    //     $product_variants = $product_request['product_variants'];
-
-    //     // if (is_array($product_variants) && isset($product_variants[0]) && is_string($product_variants[0])) {
-    //     //     $product_variants = json_decode($product_variants[0], true);
-    //     // }
-
-    //     if (is_string($product_variants)) {
-    //         $product_variants = json_decode($product_variants, true);
-    //     }
-
-    //     return array_map(function ($product_variant) use ($product_request) {
-    //         $request_data = [
-    //             'color_id' => $product_variant['color_id'] ?? null,
-    //             'size_id' => $product_variant['size_id'] ?? null,
-    //             'sku' => $product_variant['sku'] ?? null,
-    //             'stock' => $product_variant['stock'] ?? 0,
-    //             'price' => $product_variant['price'] ?? 0,
-    //             'status' => $product_variant['status'] ?? 1,
-    //         ];
-
-    //         if (isset($product_request['created_by'])) {
-    //             $request_data['created_by'] = $product_request['created_by'];
-    //         }
-
-    //         if (isset($product_request['updated_by'])) {
-    //             $request_data['updated_by'] = $product_request['updated_by'];
-    //         }
-
-    //         return $request_data;
-    //     }, $product_variants);
-    // }
 
     // deleteProduct Funtion To Delete Product
     public function deleteProduct(Product $product)
@@ -245,36 +170,6 @@ class ProductService
 
     protected function uploadProductReels(UploadedFile $file, string $product_en_name, array $product_request): string
     {
-
-        $destination_path = public_path("documents/{$product_request['category_id']}/{$product_en_name}_product");
-
-        if (!File::exists($destination_path)) {
-            File::makeDirectory(
-                $destination_path,
-                0755,
-                true
-            );
-        }
-
-        // $video_name = pathinfo(
-        //     $media_name,
-        //     PATHINFO_FILENAME
-        // ) . '.mp4';
-
-        $extension = $file->getClientOriginalExtension();
-
-        $file_name = str_replace(' ','_',$product_en_name)
-            .'_'.uniqid()
-            .'.'.$extension;
-
-        $file->move(
-            $destination_path,
-            $file_name
-        );
-
-
-        return "documents/{$product_request['category_id']}/{$product_en_name}_product/{$file_name}";
+        return $this->mediaStorage->store($file, 'products/reels');
     }
-
 }
-

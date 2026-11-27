@@ -29,6 +29,7 @@ return [
     */
 
     'disks' => [
+        'documents' => ['driver' => 'local', 'root' => public_path('documents'), 'visibility' => 'public', 'throw' => true],
 
         'local' => [
             'driver' => 'local',

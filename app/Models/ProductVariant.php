@@ -6,21 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductVariant extends Model
 {
-    protected $table = "product_variants";
+    protected $table = 'product_variants';
 
     protected $fillable = [
-        "product_id",
-        "color_id",
-        "size_id",
-        'material_id',
-        'stone_id',
-        'length',
-        "sku",
-        "stock",
-        "price",
-        "status",
-        "created_by",
-        "updated_by",
+        'product_id',
+        'color_id',
+        'size_id',
+        'sku',
+        'stock',
+        'price',
+        'status',
+        'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
@@ -29,8 +26,9 @@ class ProductVariant extends Model
         'deleted_at' => 'datetime',
     ];
 
-    public function product(){
-        return $this->belongsTo(Product::class, "product_id", 'id');
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
     public function color()
@@ -41,11 +39,6 @@ class ProductVariant extends Model
     public function size()
     {
         return $this->belongsTo(LookupValue::class, 'size_id', 'id');
-    }
-
-    public function material()
-    {
-        return $this->belongsTo(LookupValue::class, 'material_id', 'id');
     }
 
     public function stone()

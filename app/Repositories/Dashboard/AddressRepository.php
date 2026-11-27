@@ -4,10 +4,8 @@ namespace App\Repositories\Dashboard;
 
 use App\Models\Address;
 
-
 class AddressRepository
 {
-
     // getAddressesList Funtion To Get Addresses List
     public function getAddressesList()
     {
@@ -30,6 +28,7 @@ class AddressRepository
     public function updateAddress(Address $address, array $address_request)
     {
         $address->update($address_request);
+
         return $address;
     }
 
@@ -37,7 +36,12 @@ class AddressRepository
     public function deleteAddress(Address $address)
     {
         $address->delete();
+
         return $address;
     }
-}
 
+    public function findOwned(int $id, int $userId): Address
+    {
+        return Address::whereKey($id)->where('user_id', $userId)->firstOrFail();
+    }
+}

@@ -4,18 +4,16 @@ namespace App\Services\Dashboard;
 
 use App\Helpers\ResponseHelper;
 use App\Repositories\Dashboard\SiteMediaRepository;
+use App\Services\ActingUserService;
+use App\Services\MediaStorageService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
-use Intervention\Image\Format;
-use Intervention\Image\Laravel\Facades\Image;
-
+use Illuminate\Support\Facades\Storage;
 
 class SiteMediaService
 {
-
     protected $siteMediaRepository;
 
-    public function __construct(SiteMediaRepository $siteMediaRepository)
+    public function __construct(SiteMediaRepository $siteMediaRepository, protected ActingUserService $actingUserService, protected MediaStorageService $mediaStorage)
     {
         $this->siteMediaRepository = $siteMediaRepository;
     }
@@ -23,7 +21,7 @@ class SiteMediaService
     // getSiteMediaList Funtion To Get Shipping Methods List
     public function getSiteMediaList()
     {
-        return  $this->siteMediaRepository->getSiteMediaList();
+        return $this->siteMediaRepository->getSiteMediaList();
     }
 
     // getSiteMediaDetails Funtion To Get Shipping Method Details
@@ -35,186 +33,52 @@ class SiteMediaService
     // addNewSiteMedia Funtion To Add new Shipping Method
     public function addNewSiteMedia($request)
     {
-        $site_media_request = $request->all();
-
-        if ($request->hasFile('media')) {
-
-            $media_details = $this->prepareMedia(
-                $request->file('media'),
-                $site_media_request['type']
-            );
-
-            $media_details['alt_text'] = $site_media_request['alt_text'] ?? null;
-            $media_details['type'] = $site_media_request['type'] ?? null;
-            $media_details['status'] = $site_media_request['status'] ?? null;
-            $media_details['created_by'] = $site_media_request['created_by'] ?? null;
-            $media_details['updated_by'] = $site_media_request['updated_by'] ?? null;
-
-            return $this->siteMediaRepository->addNewSiteMedia($media_details);
-
+        $data = $request->validated();
+        $media = $this->prepareMedia($request->file('media'));
+        unset($data['media']);
+        try {
+            return $this->siteMediaRepository->addNewSiteMedia($this->actingUserService->attributes(array_merge($data, $media)));
+        } catch (\Throwable $exception) {
+            $this->mediaStorage->delete($media['file_path']);
+            throw $exception;
         }
-
-        // if ($request->hasFile('image')) {
-        //     $site_image = $this->uploadSiteMedia(
-        //         $request->file('image'),
-        //         $site_media_request['type']
-        //     );
-
-        //     $site_media_request['image'] = $site_image;
-        // }
-        // return $this->siteMediaRepository->addNewSiteMedia($this->prepareRequestInfo($site_media_request));
     }
 
     // updateSiteMedia Funtion To Update Shipping Method info
     public function updateSiteMedia($request, object $siteMedia)
     {
-        $site_media_request = $request->all();
-
+        $data = $request->validated();
+        unset($data['media']);
+        if (isset($data['alt_text'])) {
+            $data['alt_text'] = array_replace($siteMedia->alt_text ?? [], $data['alt_text']);
+        }
+        $oldPath = $siteMedia->file_path;
+        $media = null;
         if ($request->hasFile('media')) {
-
-            $this->deleteSiteMedia($siteMedia);
-
-
-            $media_details = $this->prepareMedia(
-                $request->file('media'),
-                $site_media_request['type']
-            );
-
-            $media_details['alt_text'] = $site_media_request['alt_text'] ?? null;
-            $media_details['type'] = $site_media_request['type'] ?? null;
-            $media_details['status'] = $site_media_request['status'] ?? null;
-            $media_details['created_by'] = $site_media_request['created_by'] ?? null;
-            $media_details['updated_by'] = $site_media_request['updated_by'] ?? null;
-
-            return $this->siteMediaRepository->addNewSiteMedia($media_details);
-
+            $media = $this->prepareMedia($request->file('media'));
+            $data = array_merge($data, $media);
+        }
+        try {
+            $result = $this->siteMediaRepository->updateSiteMedia($siteMedia, $this->actingUserService->attributes($data, true));
+        } catch (\Throwable $exception) {
+            $this->mediaStorage->delete($media['file_path'] ?? null);
+            throw $exception;
+        }
+        if ($media) {
+            $this->mediaStorage->delete($oldPath);
         }
 
-        return null;
+        return $result;
     }
 
-    public function prepareMedia(UploadedFile $file, string $folder = 'website_media')
+    public function prepareMedia(UploadedFile $file, string $folder = 'website_media'): array
     {
-        $media_name = $this->generateMediaName($file);
+        $mime = $file->getMimeType();
+        $type = str_starts_with($mime, 'image/') ? 'image' : 'video';
+        $path = $this->mediaStorage->store($file, 'website_media', $type === 'image');
 
-        $original_name = $file->getClientOriginalName();
-        $mime_type     = $file->getMimeType();
-        $file_size     = $file->getSize();
-        // $file_type     = $this->detectFileType($file);
-
-        // $media_path = $this->uploadMediaFile($file, $media_name, $folder);
-
-        $file_type = $this->detectFileType($file);
-
-        if ($file_type === 'image') {
-
-            $media_path = $this->uploadImage(
-                $file,
-                $media_name,
-                $folder
-            );
-
-        } elseif ($file_type === 'video') {
-
-            $media_path = $this->uploadVideo(
-                $file,
-                $media_name,
-                $folder
-            );
-
-        } else {
-
-            $media_path = $this->uploadFile(
-                $file,
-                $media_name,
-                $folder
-            );
-        }
-
-        return [
-                'file_name'     => $media_name,
-                'original_name' => $original_name,
-                'file_path'     => $media_path,
-                'file_type'     => $file_type,
-                'mime_type'     => $mime_type,
-                'file_size'     => $file_size,
-            ];
-    }
-
-    protected function generateMediaName(UploadedFile $file): string
-    {
-        $original_name = pathinfo(
-            $file->getClientOriginalName(),
-            PATHINFO_FILENAME
-        );
-
-        $original_name = str_replace(' ', '_', $original_name);
-
-        $date = now()->format('Ymd');
-
-        $extension = $file->getClientOriginalExtension();
-
-        return "{$original_name}_{$date}.{$extension}";
-    }
-
-    protected function uploadFile(UploadedFile $file,string $media_name,string $folder): string
-    {
-        $destination_path = public_path("documents/website_media/{$folder}");
-
-        if (!File::exists($destination_path)) {
-            File::makeDirectory($destination_path, 0755, true);
-        }
-
-        $file->move($destination_path, $media_name);
-
-        return "documents/website_media/{$folder}/{$media_name}";
-    }
-
-    protected function uploadImage(UploadedFile $file,string $media_name,string $folder): string
-    {
-        $destination_path = public_path("documents/website_media/{$folder}");
-
-        if (!File::exists($destination_path)) {
-            File::makeDirectory($destination_path, 0755, true);
-        }
-
-        $webp_name = pathinfo($media_name, PATHINFO_FILENAME) . '.webp';
-
-        $image = Image::decode($file);
-
-        // encode to webp
-        $encoded = $image->encodeUsingFormat(
-            Format::WEBP,
-            quality: 85
-        );
-
-        // save encoded image
-        $encoded->save("{$destination_path}/{$webp_name}");
-
-        return "documents/website_media/{$folder}/{$webp_name}";
-    }
-
-    protected function uploadVideo(UploadedFile $file, string $media_name, string $folder): string
-    {
-
-        $destination_path = public_path("documents/website_media/{$folder}");
-
-        if (!File::exists($destination_path)) {
-            File::makeDirectory(
-                $destination_path,
-                0755,
-                true
-            );
-        }
-
-        // $video_name = pathinfo(
-        //     $media_name,
-        //     PATHINFO_FILENAME
-        // ) . '.mp4';
-
-        $file->move($destination_path,$media_name);
-
-        return "documents/website_media/{$folder}/{$media_name}";
+        return ['file_name' => basename($path), 'original_name' => basename($file->getClientOriginalName()),
+            'file_path' => $path, 'file_type' => $type, 'mime_type' => $type === 'image' ? 'image/webp' : $mime, 'file_size' => Storage::disk('documents')->size(substr($path, 10))];
     }
 
     protected function detectFileType(UploadedFile $file): string
@@ -242,18 +106,11 @@ class SiteMediaService
 
     public function deleteSiteMedia(object $siteMedia)
     {
-        if (!$siteMedia) {
-            return false;
-        }
+        $path = $siteMedia->file_path;
+        $result = $this->siteMediaRepository->deleteSiteMedia($siteMedia);
+        $this->mediaStorage->delete($path);
 
-        if (
-            $siteMedia->file_path &&
-            File::exists(public_path($siteMedia->file_path))
-        ) {
-            File::delete(public_path($siteMedia->file_path));
-        }
-
-        return $this->siteMediaRepository->deleteSiteMedia($siteMedia);
+        return $result;
     }
 
     public function stream(object $siteMedia)
@@ -264,30 +121,30 @@ class SiteMediaService
         //     return false;
         // }
 
-        if (!str_starts_with($siteMedia->mime_type, 'video/')) {
+        if (! str_starts_with($siteMedia->mime_type, 'video/')) {
             return ResponseHelper::error(
                 $siteMedia,
                 [
-                    'en' => "This file is not a video",
-                    'ar' => "This file is not a video",
+                    'en' => 'This file is not a video',
+                    'ar' => 'This file is not a video',
                 ],
                 400);
         }
 
-        $relativePath = ltrim('api/'.$siteMedia?->file_path, '/');
+        $relativePath = ltrim($siteMedia?->file_path ?? '', '/');
         $path = public_path($relativePath);
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             return ResponseHelper::error(
-                $path,
+                null,
                 [
-                    'en' => "File not found on disk: $path",
-                    'ar' => "File not found on disk: $path",
+                    'en' => 'Media file not found',
+                    'ar' => 'Media file not found',
                 ],
                 400);
         }
 
-        $size     = filesize($path);
+        $size = filesize($path);
         $mimeType = $siteMedia->mime_type;
 
         if (request()->hasHeader('Range')) {
@@ -296,16 +153,16 @@ class SiteMediaService
 
         return response()->stream(function () use ($path) {
             $stream = fopen($path, 'rb');
-            while (!feof($stream)) {
+            while (! feof($stream)) {
                 echo fread($stream, 65536);
                 flush();
             }
             fclose($stream);
         }, 200, [
-            'Content-Type'   => $mimeType,
+            'Content-Type' => $mimeType,
             'Content-Length' => $size,
-            'Accept-Ranges'  => 'bytes',
-            'Cache-Control'  => 'no-cache',
+            'Accept-Ranges' => 'bytes',
+            'Cache-Control' => 'no-cache',
         ]);
     }
 
@@ -314,7 +171,7 @@ class SiteMediaService
         preg_match('/bytes=(\d+)-(\d*)/', request()->header('Range'), $matches);
 
         $start = (int) $matches[1];
-        $end   = isset($matches[2]) && $matches[2] !== ''
+        $end = isset($matches[2]) && $matches[2] !== ''
                     ? (int) $matches[2]
                     : $size - 1;
 
@@ -325,7 +182,7 @@ class SiteMediaService
             fseek($stream, $start);
             $remaining = $chunkSize;
 
-            while (!feof($stream) && $remaining > 0) {
+            while (! feof($stream) && $remaining > 0) {
                 $toRead = min(65536, $remaining);
                 echo fread($stream, $toRead);
                 $remaining -= $toRead;
@@ -334,12 +191,10 @@ class SiteMediaService
 
             fclose($stream);
         }, 206, [
-            'Content-Type'   => $mimeType,
-            'Content-Range'  => "bytes $start-$end/$size",
+            'Content-Type' => $mimeType,
+            'Content-Range' => "bytes $start-$end/$size",
             'Content-Length' => $chunkSize,
-            'Accept-Ranges'  => 'bytes',
+            'Accept-Ranges' => 'bytes',
         ]);
     }
-
 }
-

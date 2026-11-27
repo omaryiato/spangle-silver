@@ -31,9 +31,9 @@ class UpdateCartDetails extends BaseRequest
                 'min:1',
                 function ($attribute, $value, $fail) {
 
-                    $variant = ProductVariant::find(request('variant_id'));
+                    $variant = ProductVariant::find($this->route('cartProduct')->variant_id);
 
-                    if (!$variant) {
+                    if (! $variant) {
                         return;
                     }
 

@@ -6,7 +6,6 @@ use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
-
 class UpdateLookupType extends BaseRequest
 {
     /**
@@ -24,42 +23,39 @@ class UpdateLookupType extends BaseRequest
      */
     public function rules(): array
     {
-        $id = $this->route("lookupValue");
+        $id = $this->route('lookupType');
+
         return [
             'type_en_name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:100',
                 Rule::unique('lookup_types', 'type_en_name')
-                        ->ignore($id)
-                        ->where('id', $this->input('id')),
+                    ->ignore($id),
             ],
 
             'type_ar_name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:100',
                 Rule::unique('lookup_types', 'type_ar_name')
-                        ->ignore($id)
-                        ->where('id', $this->input('id')),
+                    ->ignore($id),
             ],
 
             'type_description' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:255',
             ],
 
             'status' => [
-                'nullable',
-                'integer',
-                'in:0,1',
-            ],
-
-            'updated_by' => [
+                'sometimes',
                 'required',
                 'integer',
-                'exists:users,id'
+                'in:0,1',
             ],
         ];
     }

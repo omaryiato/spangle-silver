@@ -5,7 +5,6 @@ namespace App\Http\Requests\Dashboard\SiteTheme;
 use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-
 class UpdateTheme extends BaseRequest
 {
     /**
@@ -26,24 +25,28 @@ class UpdateTheme extends BaseRequest
         return [
 
             'theme_name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:100',
             ],
 
             'color_scheme' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:255',
             ],
 
             'font_style' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:100',
             ],
 
             'background_image' => [
+                'sometimes',
                 'required',
                 'file',
                 'mimes:jpg,jpeg,png,webp',
@@ -51,21 +54,17 @@ class UpdateTheme extends BaseRequest
             ],
 
             'borders' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:100',
             ],
 
             'status' => [
-                'nullable',
-                'integer',
-                'in:0,1',
-            ],
-
-            'updated_by' => [
+                'sometimes',
                 'required',
                 'integer',
-                'exists:users,id'
+                'in:0,1',
             ],
         ];
     }

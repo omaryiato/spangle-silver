@@ -6,7 +6,6 @@ use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
-
 class UpdateCategory extends BaseRequest
 {
     /**
@@ -24,34 +23,36 @@ class UpdateCategory extends BaseRequest
      */
     public function rules(): array
     {
-        $id = $this->route("category");
+        $id = $this->route('category');
 
         return [
             'category_en_name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('category', 'category_en_name')
-                        ->ignore($id)
-                        ->where('id', $this->input('id')),
+                    ->ignore($id),
             ],
 
             'category_ar_name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('category', 'category_ar_name')
-                        ->ignore($id)
-                        ->where('id', $this->input('id')),
+                    ->ignore($id),
             ],
 
             'category_description' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:500',
             ],
 
             'category_image' => [
+                'sometimes',
                 'required',
                 'file',
                 'mimes:jpg,jpeg,png,webp',
@@ -59,15 +60,10 @@ class UpdateCategory extends BaseRequest
             ],
 
             'status' => [
-                'nullable',
-                'integer',
-                'in:0,1',
-            ],
-
-            'updated_by' => [
+                'sometimes',
                 'required',
                 'integer',
-                'exists:users,id'
+                'in:0,1',
             ],
         ];
     }

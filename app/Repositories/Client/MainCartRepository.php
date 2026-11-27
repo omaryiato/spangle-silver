@@ -6,7 +6,6 @@ use App\Models\CartProduct;
 
 class MainCartRepository
 {
-
     public function getCartDetails(int $id)
     {
         return CartProduct::with([
@@ -15,10 +14,9 @@ class MainCartRepository
             'variant.color',
             'variant.size',
             'variant.product.images',
-            'variant.material',
-            'variant.stone'
         ])->findOrFail($id);
     }
+
     public function getUserCartList(int $user_id)
     {
         return CartProduct::with([
@@ -27,8 +25,6 @@ class MainCartRepository
             'variant.color',
             'variant.size',
             'variant.product.images',
-            'variant.material',
-            'variant.stone'
         ])->where('user_id', $user_id)->get();
     }
 
@@ -40,12 +36,14 @@ class MainCartRepository
     public function updateCartDetails(CartProduct $cart_details, $cart_request)
     {
         $cart_details->update($cart_request);
+
         return $cart_details;
     }
 
     public function deleteCartDetails(CartProduct $cart_details)
     {
         $cart_details->delete();
+
         return $cart_details;
     }
 
@@ -53,5 +51,4 @@ class MainCartRepository
     {
         return CartProduct::where('user_id', $user_id)->delete();
     }
-
 }

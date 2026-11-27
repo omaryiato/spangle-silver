@@ -5,7 +5,6 @@ namespace App\Http\Requests\Dashboard\Coupon;
 use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-
 class AddCoupon extends BaseRequest
 {
     /**
@@ -39,7 +38,8 @@ class AddCoupon extends BaseRequest
             ],
 
             'minimum_order_amount' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'numeric',
                 'min:0',
             ],
@@ -51,7 +51,8 @@ class AddCoupon extends BaseRequest
             ],
 
             'used_count' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'min:0',
             ],
@@ -62,21 +63,10 @@ class AddCoupon extends BaseRequest
             ],
 
             'status' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
-            ],
-
-            'created_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
-
-            'updated_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
             ],
         ];
     }

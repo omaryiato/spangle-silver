@@ -23,17 +23,11 @@ class AddToWishList extends BaseRequest
     public function rules(): array
     {
         return [
-            'user_id' => [
-                'bail',
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
             'product_id' => [
                 'bail',
                 'required',
                 'integer',
-                'exists:products,id'
+                'exists:products,id',
             ],
         ];
     }

@@ -8,8 +8,8 @@ use App\Http\Requests\Dashboard\SiteMedia\AddMedia;
 use App\Http\Requests\Dashboard\SiteMedia\UpdateMedia;
 use App\Http\Resources\SiteMediaResource;
 use App\Models\SiteMedia;
-use Illuminate\Http\Request;
 use App\Services\Dashboard\SiteMediaService;
+use Illuminate\Http\Request;
 
 class SiteMediaController extends Controller
 {
@@ -20,142 +20,115 @@ class SiteMediaController extends Controller
         $this->siteMediaService = $siteMediaService;
     }
 
-    public function index(){
+    public function index()
+    {
         $site_media_list = $this->siteMediaService->getSiteMediaList();
+
         return ResponseHelper::success(
-                SiteMediaResource::collection($site_media_list),
-                [
-                    'en' => trans('validation.data_retrieved', [], 'en'),
-                    'ar' => trans('validation.data_retrieved', [], 'ar'),
-                ],
-                200);
+            SiteMediaResource::collection($site_media_list),
+            [
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
+            ],
+            200);
     }
 
     //  Funtion to Get User Details
     public function show(SiteMedia $siteMedia)
     {
 
-        $site_media_details =  $this->siteMediaService->getSiteMediaDetails($siteMedia);
+        $site_media_details = $this->siteMediaService->getSiteMediaDetails($siteMedia);
 
         return ResponseHelper::success(
-                new SiteMediaResource($site_media_details),
-                [
-                    'en' => trans('validation.data_retrieved', [], 'en'),
-                    'ar' => trans('validation.data_retrieved', [], 'ar'),
-                ],
-                200);
+            new SiteMediaResource($site_media_details),
+            [
+                'en' => trans('validation.data_retrieved', [], 'en'),
+                'ar' => trans('validation.data_retrieved', [], 'ar'),
+            ],
+            200);
 
     }
 
     //  Funtion To Add New User
     public function store(AddMedia $request)
     {
-        try{
 
-            $site_media_details = $this->siteMediaService->addNewSiteMedia($request);
-            return ResponseHelper::success(
-                new SiteMediaResource($site_media_details),
-                [
-                    'en' => trans('validation.data_added', [], 'en'),
-                    'ar' => trans('validation.data_added', [], 'ar'),
-                ],
-                201);
+        $site_media_details = $this->siteMediaService->addNewSiteMedia($request);
 
-        } catch(\Exception $exception){
-            return ResponseHelper::error(
-                [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
-                ],
-                $exception->getMessage(),
-                500);
-        }
+        return ResponseHelper::success(
+            new SiteMediaResource($site_media_details),
+            [
+                'en' => trans('validation.data_added', [], 'en'),
+                'ar' => trans('validation.data_added', [], 'ar'),
+            ],
+            201);
 
     }
 
     //  Funtion To Update User
     public function update(UpdateMedia $request, SiteMedia $siteMedia)
     {
-        try {
 
-            $site_media_details =  $this->siteMediaService->updateSiteMedia($request, $siteMedia);
+        $site_media_details = $this->siteMediaService->updateSiteMedia($request, $siteMedia);
 
-            if (!$site_media_details) {
-                return ResponseHelper::error(
-                    new SiteMediaResource($site_media_details),
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
-
-            return ResponseHelper::success(
-                $site_media_details,
-                [
-                    'en' => trans('validation.data_updated', [], 'en'),
-                    'ar' => trans('validation.data_updated', [], 'ar'),
-                ],
-                201);
-
-        } catch (\Exception $exception) {
+        if (! $site_media_details) {
             return ResponseHelper::error(
+                new SiteMediaResource($site_media_details),
                 [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                $exception->getMessage(),
-                500);
+                404);
         }
+
+        return ResponseHelper::success(
+            $site_media_details,
+            [
+                'en' => trans('validation.data_updated', [], 'en'),
+                'ar' => trans('validation.data_updated', [], 'ar'),
+            ],
+            200);
+
     }
 
     // deleteUser Funtion To Delete User
     public function destroy(Request $request, SiteMedia $siteMedia)
     {
-        try {
 
-            $site_media_details = $this->siteMediaService->deleteSiteMedia($siteMedia);
+        $site_media_details = $this->siteMediaService->deleteSiteMedia($siteMedia);
 
-            if (!$site_media_details) {
-                return ResponseHelper::error(
-                    $site_media_details,
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
-
-            return ResponseHelper::success(
-                    null,
-                    [
-                        'en' => trans('validation.data_deleted', [], 'en'),
-                        'ar' => trans('validation.data_deleted', [], 'ar'),
-                    ],
-                    200);
-        } catch (\Exception $exception) {
+        if (! $site_media_details) {
             return ResponseHelper::error(
+                $site_media_details,
                 [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                $exception->getMessage(),
-                500);
+                404);
         }
+
+        return ResponseHelper::success(
+            null,
+            [
+                'en' => trans('validation.data_deleted', [], 'en'),
+                'ar' => trans('validation.data_deleted', [], 'ar'),
+            ],
+            200);
+
     }
 
     public function stream(SiteMedia $siteMedia)
     {
         $media_details = $this->siteMediaService->stream($siteMedia);
 
-        if(!$media_details){
+        if (! $media_details) {
             return ResponseHelper::error(
-                    $media_details,
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
+                $media_details,
+                [
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
+                ],
+                404);
         }
 
         return $media_details;

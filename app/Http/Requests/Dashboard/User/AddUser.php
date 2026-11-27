@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Dashboard\User;
 
 use App\Http\Requests\Base\BaseRequest;
+use App\Rules\PasswordInput;
 use Illuminate\Contracts\Validation\ValidationRule;
-
 
 class AddUser extends BaseRequest
 {
@@ -50,7 +50,7 @@ class AddUser extends BaseRequest
                 'unique:users,email_address',
             ],
 
-            'password' => [
+            'password' => [new PasswordInput,
                 'required',
                 'string',
                 'min:8',
@@ -58,27 +58,17 @@ class AddUser extends BaseRequest
             ],
 
             'status' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
             ],
 
             'user_type' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1,2',
-            ],
-
-            'created_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
-
-            'updated_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
             ],
         ];
     }

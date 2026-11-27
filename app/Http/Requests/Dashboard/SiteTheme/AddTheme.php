@@ -5,7 +5,6 @@ namespace App\Http\Requests\Dashboard\SiteTheme;
 use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-
 class AddTheme extends BaseRequest
 {
     /**
@@ -57,21 +56,10 @@ class AddTheme extends BaseRequest
             ],
 
             'status' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
-            ],
-
-            'created_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
-
-            'updated_by' => [
-                'required',
-                'integer',
-                'exists:users,id'
             ],
         ];
     }

@@ -6,7 +6,6 @@ use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
-
 class UpdateLookupValue extends BaseRequest
 {
     /**
@@ -24,59 +23,60 @@ class UpdateLookupValue extends BaseRequest
      */
     public function rules(): array
     {
-        $id = $this->route("lookupValue");
+        $id = $this->route('lookupValue');
 
         return [
             'type_id' => [
+                'sometimes',
                 'required',
                 'integer',
                 'exists:lookup_types,id',
             ],
 
             'code' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:50',
                 Rule::unique('lookup_values')
-                ->ignore($id)
-                ->where(fn ($query) => $query->where('type_id', $this->type_id)),
+                    ->ignore($id)
+                    ->where(fn ($query) => $query->where('type_id', $this->input('type_id', $id?->type_id))),
             ],
 
             'en_meaning' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
             ],
 
             'ar_meaning' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
             ],
 
             'color' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'required_if:type_id,1',
                 'string',
-                'max:255',
+                'max:100',
             ],
 
             'description' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:500',
             ],
 
             'status' => [
-                'nullable',
-                'integer',
-                'in:0,1',
-            ],
-
-            'updated_by' => [
+                'sometimes',
                 'required',
                 'integer',
-                'exists:users,id'
+                'in:0,1',
             ],
         ];
     }

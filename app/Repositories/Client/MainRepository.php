@@ -11,25 +11,22 @@ class MainRepository
     public function getAllActiveData()
     {
         return Category::where('status', 1)
-                ->whereHas('products', function ($query) {
+            ->whereHas('products', function ($query) {
+                $query->where('product_status', 1);
+            })
+            ->with([
+                'products' => function ($query) {
                     $query->where('product_status', 1);
-                })
-                ->with([
-                    'products' => function ($query) {
-                        $query->where('product_status', 1);
-                    },
-                    'products.images',
-                    'products.variants' => fn($q) => $q->where('status', 1),
-                    'products.variants.color',
-                    'products.variants.size',
-                    'products.variants.material',
-                    'products.variants.stone',
-                    'products.reviews',
-                    'products.reviews.user' => fn($q) => $q->where('status', 1),
-                ])
-                ->get();
+                },
+                'products.images',
+                'products.variants' => fn ($q) => $q->where('status', 1),
+                'products.variants.color',
+                'products.variants.size',
+                'products.reviews',
+                'products.reviews.user' => fn ($q) => $q->where('status', 1),
+            ])
+            ->get();
     }
-
 
     public function getSiteTheme()
     {
@@ -45,6 +42,4 @@ class MainRepository
     {
         return SiteMedia::findOrFail($media_id);
     }
-
-
 }

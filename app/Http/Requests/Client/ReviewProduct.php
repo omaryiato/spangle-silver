@@ -23,24 +23,18 @@ class ReviewProduct extends BaseRequest
     public function rules(): array
     {
         return [
-            'user_id' => [
-                'bail',
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
             'product_id' => [
                 'bail',
                 'required',
                 'integer',
-                'exists:products,id'
+                'exists:products,id',
             ],
             'comment' => [
                 'bail',
                 'required_without:rating',
                 'nullable',
                 'string',
-                'max:1000'
+                'max:1000',
             ],
             'rating' => [
                 'bail',

@@ -1,78 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\Dashboard;
 
 use App\Models\Order;
-use App\Models\ProductVariant;
 use App\Repositories\Dashboard\OrderRepository;
+use App\Services\ActingUserService;
+use App\Services\LoggingService;
+use App\Services\Products\InventoryService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
+    public function __construct(private OrderRepository $repository, private InventoryService $inventory,
+        private ActingUserService $actor, private LoggingService $logging) {}
 
-    protected $orderRepository;
-
-    public function __construct(OrderRepository $orderRepository)
+    public function getOrdersList(): Collection
     {
-        $this->orderRepository = $orderRepository;
+        return $this->repository->getOrdersList();
     }
 
-    // getOrdersList Funtion To Get Orders List
-    public function getOrdersList()
+    public function getOrderDetails(Order $order): Order
     {
-        return  $this->orderRepository->getOrdersList();
+        return $this->repository->getOrderDetails($order);
     }
 
-    // getOrderDetails Funtion To Get Order Details
-    public function getOrderDetails(Order $order)
+    public function confirmOrder(array $data, Order $order): Order
     {
-        return $this->orderRepository->getOrderDetails($order);
-    }
-
-    // confirmOrder Funtion To Confirm Order
-    public function confirmOrder(array $order_request, Order $order)
-    {
-
-        DB::beginTransaction();
-        try {
-
-            // $order_details = $this->orderRepository->getOrderDetails($order);
-            // if(!$order_details){
-            //     return null;
-            // }
-            $this->orderRepository->confirmOrder($order, $order_request);
-
-            $order_details = $order->load('details');
-
-            if($order_request['status'] == 2){
-
-                foreach ($order_details->details as $detail) {
-
-                    $variant = ProductVariant::where('id', $detail->variant_id)
-                        ->lockForUpdate()
-                        ->first();
-
-                    if (!$variant) {
-                        throw new \Exception("Variant not found");
-                    }
-
-                    if ($variant->quantity < $detail->quantity) {
-                        throw new \Exception("Insufficient stock for variant: {$variant->id}");
-                    }
-
-                    $variant->decrement('quantity', $detail->quantity);
-                }
-
-                DB::commit();
-
+        return DB::transaction(function () use ($data, $order): Order {
+            $order = $this->repository->lockOrder($order);
+            $from = (int) $order->status;
+            $to = (int) $data['status'];
+            if ($from === $to) {
+                return $this->repository->getOrderDetails($order);
             }
-            
-            return true;
+            // Rejection is allowed before stock deduction. Approved orders progress forward only.
+            $transitions = [1 => [2, 5], 2 => [3], 3 => [4]];
+            abort_unless(in_array($to, $transitions[$from] ?? [], true), 409);
+            if ($to === 2) {
+                $quantities = [];
+                foreach ($order->details as $detail) {
+                    $quantities[(int) $detail->variant_id] = ($quantities[(int) $detail->variant_id] ?? 0) + (int) $detail->quantity;
+                }
+                abort_if($quantities === [], 409);
+                $this->inventory->deduct($quantities);
+            }
+            $order = $this->repository->confirmOrder($order, $this->actor->attributes(['status' => $to], true));
+            DB::afterCommit(function (): void {
+                $this->logging->record('UpdateOrderStatus', $this->actor->id(), 'SUCCESS');
+            });
 
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+            return $this->repository->getOrderDetails($order);
+        });
     }
-
 }
-

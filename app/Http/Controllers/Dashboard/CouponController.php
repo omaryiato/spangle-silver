@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\Dashboard\CouponService;
-use App\Http\Resources\CouponResource;
 use App\Helpers\ResponseHelper;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Coupon\AddCoupon;
 use App\Http\Requests\Dashboard\Coupon\UpdateCoupon;
+use App\Http\Resources\CouponResource;
 use App\Models\Coupon;
-use Illuminate\Support\Facades\DB;
+use App\Services\Dashboard\CouponService;
+use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
-
     protected $couponService;
 
     public function __construct(CouponService $couponService)
@@ -40,7 +38,7 @@ class CouponController extends Controller
     // show Funtion to Get Coupon Details
     public function show(Coupon $coupon)
     {
-        $coupon_details =  $this->couponService->getCouponDetails($coupon);
+        $coupon_details = $this->couponService->getCouponDetails($coupon);
 
         return ResponseHelper::success(
             new CouponResource($coupon_details),
@@ -55,99 +53,67 @@ class CouponController extends Controller
     public function store(AddCoupon $request)
     {
 
-        try {
-            $coupon_details = $this->couponService->addNewCoupon($request->validated());
+        $coupon_details = $this->couponService->addNewCoupon($request->validated());
 
-            return ResponseHelper::success(
-                new CouponResource($coupon_details),
-                [
-                    'en' => trans('validation.data_added', [], 'en'),
-                    'ar' => trans('validation.data_added', [], 'ar'),
-                ],
-                201);
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return ResponseHelper::error(
-                [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
-                ],
-                $exception->getMessage(),
-                500);
-        }
+        return ResponseHelper::success(
+            new CouponResource($coupon_details),
+            [
+                'en' => trans('validation.data_added', [], 'en'),
+                'ar' => trans('validation.data_added', [], 'ar'),
+            ],
+            201);
+
     }
 
     // update Funtion To Update Coupon
     public function update(UpdateCoupon $request, Coupon $coupon)
     {
-        try {
 
-            $coupon_details =  $this->couponService->updateCoupon($request->validated(), $coupon);
+        $coupon_details = $this->couponService->updateCoupon($request->validated(), $coupon);
 
-            if (!$coupon_details) {
-                return ResponseHelper::error(
-                    new CouponResource($coupon_details),
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
-
-            return ResponseHelper::success(
+        if (! $coupon_details) {
+            return ResponseHelper::error(
                 new CouponResource($coupon_details),
                 [
-                    'en' => trans('validation.data_updated', [], 'en'),
-                    'ar' => trans('validation.data_updated', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                201);
-
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return ResponseHelper::error(
-                [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
-                ],
-                $exception->getMessage(),
-                500);
+                404);
         }
+
+        return ResponseHelper::success(
+            new CouponResource($coupon_details),
+            [
+                'en' => trans('validation.data_updated', [], 'en'),
+                'ar' => trans('validation.data_updated', [], 'ar'),
+            ],
+            200);
+
     }
 
     // deleteCoupon Funtion To Delete Coupon
     public function destroy(Request $request, Coupon $coupon)
     {
-        try {
 
-            $coupon_details = $this->couponService->deleteCoupon($request->all(), $coupon);
+        $coupon_details = $this->couponService->deleteCoupon($coupon);
 
-            if (!$coupon_details) {
-                return ResponseHelper::error(
-                    $coupon_details,
-                    [
-                        'en' => trans('validation.data_not_found', [], 'en'),
-                        'ar' => trans('validation.data_not_found', [], 'ar'),
-                    ],
-                    404);
-            }
-
-            return ResponseHelper::success(
-                null,
-                [
-                    'en' => trans('validation.data_deleted', [], 'en'),
-                    'ar' => trans('validation.data_deleted', [], 'ar'),
-                ],
-                200);
-        } catch (\Exception $exception) {
-            DB::rollBack();
+        if (! $coupon_details) {
             return ResponseHelper::error(
+                $coupon_details,
                 [
-                    'en' => trans('validation.exception_error', [], 'en'),
-                    'ar' => trans('validation.exception_error', [], 'ar'),
+                    'en' => trans('validation.data_not_found', [], 'en'),
+                    'ar' => trans('validation.data_not_found', [], 'ar'),
                 ],
-                $exception->getMessage(),
-                500);
+                404);
         }
-    }
 
+        return ResponseHelper::success(
+            null,
+            [
+                'en' => trans('validation.data_deleted', [], 'en'),
+                'ar' => trans('validation.data_deleted', [], 'ar'),
+            ],
+            200);
+
+    }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-
 class OrderResource extends JsonResource
 {
     /**
@@ -16,17 +15,21 @@ class OrderResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'user' => UserResource::make($this->whenLoaded('user')),
+            'address_details' => AddressResource::make($this->whenLoaded('address')),
+            'shipping' => ShippingMethodResource::make($this->whenLoaded('shipping')),
+
             'id' => $this->id ?? null,
 
             'user_id' => $this->user_id ?? null,
-            'user_name' => $this->user?->user_name ?? null,
+            'user_name' => $this->whenLoaded('user', fn () => $this->user?->user_name ?? null),
 
             'address_id' => $this->address_id ?? null,
-            'address' => $this->address?->full_name ?? null,
+            'address' => $this->whenLoaded('address', fn () => $this->address?->full_name ?? null),
 
             'shipping_id' => $this->shipping_id ?? null,
-            'method_en_name' => $this->shipping?->method_en_name ?? null,
-            'method_ar_name' => $this->shipping?->method_ar_name ?? null,
+            'method_en_name' => $this->whenLoaded('shipping', fn () => $this->shipping?->method_en_name ?? null),
+            'method_ar_name' => $this->whenLoaded('shipping', fn () => $this->shipping?->method_ar_name ?? null),
 
             'subtotal' => $this->subtotal ?? null,
             'shipping_cost' => $this->shipping_cost ?? null,

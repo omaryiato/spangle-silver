@@ -5,17 +5,19 @@ namespace App\Services\Client;
 use App\Helpers\ContactMessageHelper;
 use App\Models\CartProduct;
 use App\Repositories\Client\MainCartRepository;
+use App\Services\ActingUserService;
 
 class MainCartService
 {
     public function __construct(
         protected MainCartRepository $mainCartRepository,
-        protected ContactMessageHelper $contactMessageHelper
+        protected ContactMessageHelper $contactMessageHelper,
+        protected ActingUserService $actingUserService,
     ) {}
 
-    public function getUserCartList(int $user_id)
+    public function getUserCartList()
     {
-        return $this->mainCartRepository->getUserCartList($user_id);
+        return $this->mainCartRepository->getUserCartList($this->actingUserService->id());
     }
 
     public function addToCart($cart_request)
@@ -36,10 +38,11 @@ class MainCartService
 
     public function deleteCartList($cart_request)
     {
-        if(isset($cart_request['user_id'])){
-            return $this->mainCartRepository->deleteUserCart($cart_request['user_id']);
+        if (! isset($cart_request['cart_id'])) {
+            return $this->mainCartRepository->deleteUserCart($this->actingUserService->id());
         }
         $cart_details = $this->mainCartRepository->getCartDetails($cart_request['cart_id']);
+
         return $this->mainCartRepository->deleteCartDetails($cart_details);
 
     }
@@ -48,13 +51,11 @@ class MainCartService
     {
 
         $request_data = [
-            'user_id' => $cart_request['user_id'] ?? null,
+            'user_id' => $this->actingUserService->id(),
             'variant_id' => $cart_request['variant_id'] ?? null,
             'quantity' => $cart_request['quantity'] ?? 1,
         ];
 
         return $request_data;
     }
-
-
 }

@@ -4,11 +4,8 @@ namespace App\Repositories\Dashboard;
 
 use App\Models\SiteMedia;
 
-
-
 class SiteMediaRepository
 {
-
     // getSiteMediaList Funtion To Get Shipping Methods List
     public function getSiteMediaList()
     {
@@ -18,13 +15,20 @@ class SiteMediaRepository
     // getSiteMediaDetails Funtion To Get Shipping Method Details
     public function getSiteMediaDetails(object $siteMedia)
     {
-        return  $siteMedia;
+        return $siteMedia;
     }
 
     // addNewSiteMedia Funtion To Add new Shipping Method
     public function addNewSiteMedia(array $site_media_request)
     {
         return SiteMedia::create($site_media_request);
+    }
+
+    public function updateSiteMedia(object $media, array $data)
+    {
+        $media->update($data);
+
+        return $media;
     }
 
     public function findById(int $media_id)
@@ -37,4 +41,3 @@ class SiteMediaRepository
         return $siteMedia?->delete();
     }
 }
-

@@ -4,8 +4,6 @@ namespace App\Http\Requests\Dashboard\Address;
 
 use App\Http\Requests\Base\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Validation\Rule;
-
 
 class UpdateAddress extends BaseRequest
 {
@@ -28,55 +26,64 @@ class UpdateAddress extends BaseRequest
         return [
 
             'user_id' => [
+                'sometimes',
                 'required',
                 'integer',
                 'exists:users,id',
             ],
 
             'label' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:50',
             ],
 
             'full_name' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:255',
             ],
 
             'address_line' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:500',
             ],
 
             'city' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:100',
             ],
 
             'country' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:100',
             ],
 
             'postal_code' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:20',
             ],
 
             'phone' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'max:20',
             ],
 
             'is_default' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 'in:0,1',
             ],

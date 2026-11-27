@@ -36,30 +36,30 @@ class MainService
         //     return false;
         // }
 
-        if (!str_starts_with($siteMedia->mime_type, 'video/')) {
+        if (! str_starts_with($siteMedia->mime_type, 'video/')) {
             return ResponseHelper::error(
                 $siteMedia,
                 [
-                    'en' => "This file is not a video",
-                    'ar' => "This file is not a video",
+                    'en' => 'This file is not a video',
+                    'ar' => 'This file is not a video',
                 ],
                 400);
         }
 
-        $relativePath = ltrim('api/'.$siteMedia?->file_path, '/');
+        $relativePath = ltrim($siteMedia?->file_path ?? '', '/');
         $path = public_path($relativePath);
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             return ResponseHelper::error(
-                $path,
+                null,
                 [
-                    'en' => "File not found on disk: $path",
-                    'ar' => "File not found on disk: $path",
+                    'en' => 'Media file not found',
+                    'ar' => 'Media file not found',
                 ],
                 400);
         }
 
-        $size     = filesize($path);
+        $size = filesize($path);
         $mimeType = $siteMedia->mime_type;
 
         if (request()->hasHeader('Range')) {
@@ -68,16 +68,16 @@ class MainService
 
         return response()->stream(function () use ($path) {
             $stream = fopen($path, 'rb');
-            while (!feof($stream)) {
+            while (! feof($stream)) {
                 echo fread($stream, 65536);
                 flush();
             }
             fclose($stream);
         }, 200, [
-            'Content-Type'   => $mimeType,
+            'Content-Type' => $mimeType,
             'Content-Length' => $size,
-            'Accept-Ranges'  => 'bytes',
-            'Cache-Control'  => 'no-cache',
+            'Accept-Ranges' => 'bytes',
+            'Cache-Control' => 'no-cache',
         ]);
     }
 
@@ -86,7 +86,7 @@ class MainService
         preg_match('/bytes=(\d+)-(\d*)/', request()->header('Range'), $matches);
 
         $start = (int) $matches[1];
-        $end   = isset($matches[2]) && $matches[2] !== ''
+        $end = isset($matches[2]) && $matches[2] !== ''
                     ? (int) $matches[2]
                     : $size - 1;
 
@@ -97,7 +97,7 @@ class MainService
             fseek($stream, $start);
             $remaining = $chunkSize;
 
-            while (!feof($stream) && $remaining > 0) {
+            while (! feof($stream) && $remaining > 0) {
                 $toRead = min(65536, $remaining);
                 echo fread($stream, $toRead);
                 $remaining -= $toRead;
@@ -106,10 +106,10 @@ class MainService
 
             fclose($stream);
         }, 206, [
-            'Content-Type'   => $mimeType,
-            'Content-Range'  => "bytes $start-$end/$size",
+            'Content-Type' => $mimeType,
+            'Content-Range' => "bytes $start-$end/$size",
             'Content-Length' => $chunkSize,
-            'Accept-Ranges'  => 'bytes',
+            'Accept-Ranges' => 'bytes',
         ]);
     }
 
@@ -129,24 +129,18 @@ class MainService
 
     //         if (isset($next_approver_number)) {
 
-
     //             // Get person ID
 
     //             $person_id = $this->contactInfoProvider->GetPersonID($next_approver_number);
 
-
     //             // Get employee phone number
     //             $phone_number = $this->contactInfoProvider->GetPhoneEmpFromPersonId($person_id);
-
 
     //             // Get employee phone number
     //             $email_address = $this->contactInfoProvider->GetEmailEmployee($next_approver_number);
 
-
-
     //             $notification_details['mail_to'] = $email_address?->email;
     //             $notification_details['next_approver_name'] = $email_address->full_name ?? null;
-
 
     //             // Initialize status tracking
     //             $smsSent = false;
@@ -170,7 +164,6 @@ class MainService
     //             // } catch (\Exception $exception) {
     //             // }
 
-
     //             // Try to send email
     //             try {
     //                 if($type == 'Approver'){
@@ -182,7 +175,6 @@ class MainService
     //             } catch (\Exception $exception) {
     //             }
 
-
     //             // Check the overall status and handle accordingly
     //             if (!$emailSent) {
     //                 $status = [
@@ -192,7 +184,6 @@ class MainService
     //                 return "failure";
     //             }
 
-
     //             return "Done";
     //         } else {
     //             return "warning";
@@ -201,6 +192,5 @@ class MainService
     //         throw $exception;
     //     }
     // }
-
 
 }

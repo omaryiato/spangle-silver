@@ -18,9 +18,10 @@ class LookupValueResource extends JsonResource
         return [
             'id' => $this->id ?? null,
 
+            'type' => LookupTypeResource::make($this->whenLoaded('type')),
             'type_id' => $this->type_id ?? null,
-            'type_en_name' => $this->type?->type_en_name ?? null,
-            'type_ar_name' => $this->type?->type_ar_name ?? null,
+            'type_en_name' => $this->whenLoaded('type', fn () => $this->type?->type_en_name),
+            'type_ar_name' => $this->whenLoaded('type', fn () => $this->type?->type_ar_name),
 
             'code' => $this->code ?? null,
             'color' => $this->color ?? null,

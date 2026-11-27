@@ -23,17 +23,11 @@ class DeleteWishList extends BaseRequest
     public function rules(): array
     {
         return [
-            'user_id' => [
-                'bail',
-                'required',
-                'integer',
-                'exists:users,id'
-            ],
             'wishlist_id' => [
                 'bail',
-                'required',
+                'sometimes',
                 'integer',
-                'exists:user_wishlist,id'
+                'exists:user_wishlist,id',
             ],
         ];
     }
