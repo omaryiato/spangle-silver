@@ -31,14 +31,18 @@ class StoreSettingsResource extends JsonResource
             'whatsapp_number' => $this->whatsapp_number,
             'currency_code' => $this->currency_code,
             'social_links' => (object) ($this->social_links ?? []),
-            $this->mergeWhen($this->includeAudit, [
-                'created_by' => $this->created_by,
-                'updated_by' => $this->updated_by,
-                'created_at' => $this->created_at?->toIso8601String(),
-                'updated_at' => $this->updated_at?->toIso8601String(),
-                'created_by_user' => UserResource::make($this->whenLoaded('createdBy')),
-                'updated_by_user' => UserResource::make($this->whenLoaded('updatedBy')),
-            ]),
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s') ?? null,
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s') ?? null,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
+            // $this->mergeWhen($this->includeAudit, [
+            //     'created_by' => $this->created_by,
+            //     'updated_by' => $this->updated_by,
+            //     // 'created_at' => $this->created_at?->toIso8601String(),
+            //     // 'updated_at' => $this->updated_at?->toIso8601String(),
+            //     // 'created_by_user' => UserResource::make($this->whenLoaded('createdBy')),
+            //     // 'updated_by_user' => UserResource::make($this->whenLoaded('updatedBy')),
+            // ]),
         ];
     }
 }

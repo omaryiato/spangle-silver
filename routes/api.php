@@ -45,7 +45,7 @@ Route::middleware([
         Route::get('store-settings', [StoreSettingsController::class, 'index'])->name('dashboard.store-settings.index');
         Route::post('store-settings', [StoreSettingsController::class, 'store'])->name('dashboard.store-settings.store');
         Route::match(['POST', 'PATCH'], 'store-settings/{storeSetting}', [StoreSettingsController::class, 'update'])->name('dashboard.store-settings.update');
-        Route::delete('store-settings/{storeSetting}', [StoreSettingsController::class, 'destroy'])->name('dashboard.store-settings.destroy');
+        // Route::delete('store-settings/{storeSetting}', [StoreSettingsController::class, 'destroy'])->name('dashboard.store-settings.destroy');
 
         /***************************************** Lookup Types *******************************************/
 
