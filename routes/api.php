@@ -6,6 +6,7 @@ use App\Http\Controllers\Client\MainController;
 use App\Http\Controllers\Client\MainOrderController;
 use App\Http\Controllers\Client\MainProductController;
 use App\Http\Controllers\Client\MainWishListController;
+use App\Http\Controllers\Client\StoreSettings\StoreSettingsController as PublicStoreSettingsController;
 use App\Http\Controllers\Dashboard\AddressController;
 use App\Http\Controllers\Dashboard\CartProductController;
 use App\Http\Controllers\Dashboard\CategoryController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Dashboard\ProductReviewController;
 use App\Http\Controllers\Dashboard\ShippingMethodController;
 use App\Http\Controllers\Dashboard\SiteMediaController;
 use App\Http\Controllers\Dashboard\SiteThemeController;
+use App\Http\Controllers\Dashboard\StoreSettings\StoreSettingsController;
 use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\UserWishListController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +42,10 @@ Route::middleware([
     // Authentication endpoints are shared with active customers.
 
     Route::group(['prefix' => 'dashboard'], function () {
+        Route::get('store-settings', [StoreSettingsController::class, 'index'])->name('dashboard.store-settings.index');
+        Route::post('store-settings', [StoreSettingsController::class, 'store'])->name('dashboard.store-settings.store');
+        Route::match(['POST', 'PATCH'], 'store-settings/{storeSetting}', [StoreSettingsController::class, 'update'])->name('dashboard.store-settings.update');
+        Route::delete('store-settings/{storeSetting}', [StoreSettingsController::class, 'destroy'])->name('dashboard.store-settings.destroy');
 
         /***************************************** Lookup Types *******************************************/
 
@@ -172,6 +178,8 @@ Route::middleware([
 });
 
 Route::group(['prefix' => 'client'], function () {
+    Route::get('store-settings', [PublicStoreSettingsController::class, 'index'])->name('client.store-settings.index');
+
     Route::middleware(['auth:sanctum', 'active.user', 'client.owner'])->group(function () {
         Route::get('get-user-cart-list', [MainCartController::class, 'getUserCartList']);
         Route::get('get-user-wish-list', [MainWishListController::class, 'getUserWishList']);
